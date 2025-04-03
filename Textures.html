@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale="1.0" />
   <title>menubase</title>
   <style>
     :root {
@@ -111,7 +111,7 @@
     #toggleRGB:hover {
       opacity: 0.8;
     }
-</style>
+  </style>
 </head>
 <body>
   <div class="menu-wrapper">
@@ -119,18 +119,10 @@
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
     </div>
     <div class="menu-container">
-      <div class="menu-header"></div>
+      <div class="menu-header">Menu Base</div>
       <div class="menu-items-container">
         <div class="menu-items" id="menu-items">
-          <div class="menu-item selected">Self</div>
-          <div class="menu-item">Players</div>
-          <div class="menu-item">Visuals</div>
-          <div class="menu-item">Combat</div>
-          <div class="menu-item">Weapons</div>
-          <div class="menu-item">Vehicles</div>
-          <div class="menu-item">Miscellaneous</div>
-          <div class="menu-item">Server</div>
-          <div class="menu-item">Settings</div>
+          <!-- Menu items will be dynamically populated here -->
         </div>
       </div>
       <div class="menu-footer">
@@ -142,25 +134,73 @@
   </div>
   <script>
     let selectedIndex = 0;
-    const menuItems = document.querySelectorAll('.menu-item');
+    const menuItemsContainer = document.getElementById('menu-items');
     const scrollbarThumb = document.getElementById('scrollbar-thumb');
     const menuCounter = document.getElementById('menu-counter');
-    const totalItems = menuItems.length;
-    const maxScrollHeight = 250;
+
+    // Function to update menu selection
+    function updateMenuSelection(direction) {
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems[selectedIndex].classList.remove('selected');
+      selectedIndex = (selectedIndex + direction + menuItems.length) % menuItems.length;
+      menuItems[selectedIndex].classList.add('selected');
+      
+      const scrollStep = 250 / (menuItems.length - 1);
+      scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
+      menuCounter.textContent = `${selectedIndex + 1}/${menuItems.length}`;
+    }
 
     // Function to handle menu selection
     function handleMenuSelection() {
-      const selectedItem = menuItems[selectedIndex].textContent;
-      console.log(`Selected: ${selectedItem}`);
-      // Add logic to handle the selected menu item
+      const selectedItem = document.querySelector('.menu-item.selected');
+      if (selectedItem) {
+        console.log(`Selected: ${selectedItem.textContent}`);
+        // Add logic to handle the selected menu item
+      }
+    }
+
+    // Function to create a menu item
+    function createMenuItem(item, index) {
+      const menuItem = document.createElement('div');
+      menuItem.className = `menu-item ${index === selectedIndex ? 'selected' : ''}`;
+      menuItem.textContent = item.label;
+
+      if (item.type === "checkbox") {
+        const checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.checked = item.value;
+        menuItem.appendChild(checkbox);
+      } else if (item.type === "slider") {
+        const slider = document.createElement('input');
+        slider.type = "range";
+        slider.min = item.min;
+        slider.max = item.max;
+        slider.value = item.value;
+        menuItem.appendChild(slider);
+      }
+
+      return menuItem;
+    }
+
+    // Function to update the menu
+    function updateMenu(menu, selectedIndex) {
+      menuItemsContainer.innerHTML = '';
+      menu.forEach((item, index) => {
+        const menuItem = createMenuItem(item, index);
+        menuItemsContainer.appendChild(menuItem);
+      });
+      updateMenuSelection(0); // Reset selection
     }
 
     // Listen for messages from the Lua script
     window.addEventListener("message", function (event) {
       const message = JSON.parse(event.data);
+      console.log("Received message: ", message); // Debug log
 
       if (message.type === "toggleMenu") {
         document.querySelector('.menu-wrapper').style.display = message.data.visible ? 'flex' : 'none';
+      } else if (message.type === "updateMenu") {
+        updateMenu(message.data.menu, message.data.selectedIndex);
       } else if (message.type === "navigate") {
         if (message.data.direction === "up") {
           updateMenuSelection(-1);
