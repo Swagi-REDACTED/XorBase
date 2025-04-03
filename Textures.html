@@ -148,17 +148,6 @@
     const totalItems = menuItems.length;
     const maxScrollHeight = 250;
 
-    // Function to update menu selection
-    function updateMenuSelection(direction) {
-      menuItems[selectedIndex].classList.remove('selected');
-      selectedIndex = (selectedIndex + direction + totalItems) % totalItems;
-      menuItems[selectedIndex].classList.add('selected');
-      
-      const scrollStep = maxScrollHeight / (totalItems - 1);
-      scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
-      menuCounter.textContent = `${selectedIndex + 1}/${totalItems}`;
-    }
-
     // Function to handle menu selection
     function handleMenuSelection() {
       const selectedItem = menuItems[selectedIndex].textContent;
