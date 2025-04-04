@@ -51,7 +51,15 @@
       position: relative;
     }
     .menu-header {
-      display: none; /* Removed header text */
+      background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
+      background-size: cover;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      padding: 60px 0;
+      text-transform: uppercase;
     }
     .menu-items-container {
       position: relative;
@@ -96,7 +104,7 @@
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
     </div>
     <div class="menu-container">
-      <div class="menu-header"></div> <!-- Removed header text -->
+      <div class="menu-header">Menu Base</div>
       <div class="menu-items-container">
         <div class="menu-items" id="menu-items">
           <!-- Menu items will be dynamically populated here -->
@@ -122,15 +130,15 @@
       menuItems[selectedIndex].classList.add('selected');
       
       const scrollStep = 250 / (menuItems.length - 1);
-      scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
-      menuCounter.textContent = `${selectedIndex + 1}/${menuItems.length}`;
+      scrollbarThumb.style.top = ${selectedIndex * scrollStep}px;
+      menuCounter.textContent = ${selectedIndex + 1}/${menuItems.length};
     }
 
     // Function to handle menu selection
     function handleMenuSelection() {
       const selectedItem = document.querySelector('.menu-item.selected');
       if (selectedItem) {
-        console.log(`Selected: ${selectedItem.textContent}`);
+        console.log(Selected: ${selectedItem.textContent});
         // Add logic to handle the selected menu item
       }
     }
@@ -138,7 +146,7 @@
     // Function to create a menu item
     function createMenuItem(item, index) {
       const menuItem = document.createElement('div');
-      menuItem.className = `menu-item ${index === selectedIndex ? 'selected' : ''}`;
+      menuItem.className = menu-item ${index === selectedIndex ? 'selected' : ''};
       menuItem.textContent = item.label;
 
       if (item.type === "checkbox") {
@@ -153,11 +161,6 @@
         slider.max = item.max;
         slider.value = item.value;
         menuItem.appendChild(slider);
-
-        // Adjust slider handle size based on menu items count
-        const totalMenuItems = document.querySelectorAll('.menu-item').length;
-        const handleSize = 100 / totalMenuItems;
-        slider.style.width = `${handleSize}%`;
       }
 
       return menuItem;
