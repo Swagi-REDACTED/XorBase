@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale="1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>menubase</title>
   <style>
     :root {
       --primary: #6a0dad; /* Default purple */
     }
-
     body {
       margin: 0;
       overflow: hidden;
@@ -112,7 +111,7 @@
       </div>
       <div class="menu-footer">
         Version: Beta | 24hrs ago
-        <span class="right-text" id="menu-counter">1/9</span>
+        <span class="right-text" id="menu-counter">1/1</span>
       </div>
     </div>
   </div>
@@ -122,37 +121,39 @@
     const scrollbarThumb = document.getElementById('scrollbar-thumb');
     const menuCounter = document.getElementById('menu-counter');
 
-    // Function to update menu selection
+    // Function to update menu selection visuals
     function updateMenuSelection(direction) {
       const menuItems = document.querySelectorAll('.menu-item');
+      if (menuItems.length === 0) return;
       menuItems[selectedIndex].classList.remove('selected');
       selectedIndex = (selectedIndex + direction + menuItems.length) % menuItems.length;
       menuItems[selectedIndex].classList.add('selected');
       
       const scrollStep = 250 / (menuItems.length - 1);
-      scrollbarThumb.style.top = ${selectedIndex * scrollStep}px;
-      menuCounter.textContent = ${selectedIndex + 1}/${menuItems.length};
+      scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
+      menuCounter.textContent = `${selectedIndex + 1}/${menuItems.length}`;
     }
 
-    // Function to handle menu selection
+    // Function to handle menu selection (triggered by Lua "select" message)
     function handleMenuSelection() {
       const selectedItem = document.querySelector('.menu-item.selected');
       if (selectedItem) {
-        console.log(Selected: ${selectedItem.textContent});
-        // Add logic to handle the selected menu item
+        console.log("Selected: " + selectedItem.textContent);
+        // Additional logic can be added here based on the selected menu item
       }
     }
 
-    // Function to create a menu item
+    // Function to create a menu item element
     function createMenuItem(item, index) {
       const menuItem = document.createElement('div');
-      menuItem.className = menu-item ${index === selectedIndex ? 'selected' : ''};
+      menuItem.className = "menu-item " + (index === selectedIndex ? 'selected' : '');
       menuItem.textContent = item.label;
 
       if (item.type === "checkbox") {
         const checkbox = document.createElement('input');
         checkbox.type = "checkbox";
         checkbox.checked = item.value;
+        checkbox.style.marginLeft = "10px";
         menuItem.appendChild(checkbox);
       } else if (item.type === "slider") {
         const slider = document.createElement('input');
@@ -160,20 +161,21 @@
         slider.min = item.min;
         slider.max = item.max;
         slider.value = item.value;
+        slider.style.marginLeft = "10px";
         menuItem.appendChild(slider);
       }
-
       return menuItem;
     }
 
-    // Function to update the menu
-    function updateMenu(menu, selectedIndex) {
+    // Function to update the entire menu from data sent by Lua
+    function updateMenu(menu, luaSelectedIndex) {
+      selectedIndex = luaSelectedIndex || 0;
       menuItemsContainer.innerHTML = '';
       menu.forEach((item, index) => {
         const menuItem = createMenuItem(item, index);
         menuItemsContainer.appendChild(menuItem);
       });
-      updateMenuSelection(0); // Reset selection
+      updateMenuSelection(0); // Refresh visuals
     }
 
     // Listen for messages from the Lua script
