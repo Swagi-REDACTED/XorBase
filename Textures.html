@@ -96,21 +96,6 @@
     .right-text {
       font-weight: bold;
     }
-    /* Button to toggle RGB mode in Settings */
-    #toggleRGB {
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      border-radius: 4px;
-      transition: background 0.2s ease-in-out;
-    }
-    #toggleRGB:hover {
-      opacity: 0.8;
-    }
   </style>
 </head>
 <body>
@@ -128,7 +113,6 @@
       <div class="menu-footer">
         Version: Beta | 24hrs ago
         <span class="right-text" id="menu-counter">1/9</span>
-        <button id="toggleRGB">Toggle RGB</button>
       </div>
     </div>
   </div>
@@ -209,37 +193,9 @@
         }
       } else if (message.type === "select") {
         handleMenuSelection();
-      }
-    });
-
-    // RGB Mode variables and functions
-    let rgbEnabled = false;
-    let rgbInterval;
-
-    function toggleRGB() {
-      rgbEnabled = !rgbEnabled;
-      if (rgbEnabled) {
-        startRGBShift();
-      } else {
-        clearInterval(rgbInterval);
-        // Reset primary color to default purple
-        document.documentElement.style.setProperty('--primary', '#6a0dad');
-      }
-    }
-
-    function startRGBShift() {
-      let hue = 0;
-      rgbInterval = setInterval(() => {
-        hue = (hue + 1) % 360;
-        const rgbColor = `hsl(${hue}, 100%, 50%)`;
-        document.documentElement.style.setProperty('--primary', rgbColor);
-      }, 50); // Adjust the interval (in ms) to control speed
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      const rgbButton = document.getElementById("toggleRGB");
-      if (rgbButton) {
-        rgbButton.addEventListener("click", toggleRGB);
+      } else if (message.type === "updatePrimaryColor") {
+        // Update the primary color based on Lua input
+        document.documentElement.style.setProperty('--primary', message.data.color);
       }
     });
   </script>
