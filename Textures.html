@@ -1,205 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>menubase</title>
-  <style>
-    :root {
-      --primary: #6a0dad; /* Default purple */
-    }
-    body {
-      margin: 0;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0);
-    }
-    .menu-wrapper {
-      display: flex;
-      align-items: center;
-    }
-    .scrollbar-container {
-      width: 12px;
-      height: 550px;
-      background: #222;
-      border-radius: 10px;
-      position: relative;
-      margin-right: 10px;
-    }
-    .scrollbar-thumb {
-      width: 100%;
-      background: var(--primary);
-      border-radius: 10px;
-      position: absolute;
-      top: 0;
-      height: 50px;
-      transition: top 0.2s ease-in-out;
-    }
-    .menu-container {
-      width: 400px;
-      background: #000000e5;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 2px solid var(--primary);
-      position: relative;
-    }
-    .menu-header {
-      background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
-      background-size: cover;
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      padding: 60px 0;
-      text-transform: uppercase;
-    }
-    .menu-items-container {
-      position: relative;
-    }
-    .menu-items {
-      display: flex;
-      flex-direction: column;
-    }
-    .menu-item {
-      padding: 12px;
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background 0.2s ease-in-out;
-      border-left: 4px solid transparent;
-      padding-left: 20px;
-    }
-    .menu-item:hover,
-    .selected {
-      background: var(--primary);
-    }
-    .menu-footer {
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid transparent;
-    }
-    .right-text {
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>menubase</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0);
+        }
+        .menu-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .scrollbar-container {
+            width: 8px;
+            height: 300px;
+            background: #222;
+            border-radius: 10px;
+            position: relative;
+            margin-right: 10px;
+        }
+        .scrollbar-thumb {
+            width: 100%;
+            background: #6a0dad;
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            height: 50px;
+            transition: top 0.2s ease-in-out;
+        }
+        .menu-container {
+            width: 400px;
+            background: #000000e5;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #6a0dad;
+            position: relative;
+        }
+        .menu-header {
+        background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
+        background-size: cover;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        padding: 60px 0;
+        text-transform: uppercase;
+        }
+        .menu-items-container {
+            position: relative;
+        }
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            padding: 12px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+            padding-left: 20px;
+        }
+        .menu-item:hover, .selected {
+            background: #6a0dad;
+            border-left: 4px solid none;
+        }
+        .menu-footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid none;
+        }
+        .right-text {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="menu-wrapper">
-    <div class="scrollbar-container">
-      <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
-    </div>
-    <div class="menu-container">
-      <div class="menu-header"></div>
-      <div class="menu-items-container">
-        <div class="menu-items" id="menu-items">
-          <!-- Menu items will be dynamically populated here -->
+    <div class="menu-wrapper">
+        <div class="scrollbar-container">
+            <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
         </div>
-      </div>
-      <div class="menu-footer">
-        Version: Beta | 24hrs ago
-        <span class="right-text" id="menu-counter">1/1</span>
-      </div>
+        <div class="menu-container">
+            <div class="menu-header"></div>
+            <div class="menu-items-container">
+                <div class="menu-items" id="menu-items">
+                    <div class="menu-item selected">Self</div>
+                    <div class="menu-item">Players</div>
+                    <div class="menu-item">Visuals</div>
+                    <div class="menu-item">Combat</div>
+                    <div class="menu-item">Weapons</div>
+                    <div class="menu-item">Vehicles</div>
+                    <div class="menu-item">Miscellaneous</div>
+                    <div class="menu-item">Server</div>
+                    <div class="menu-item">Settings</div>
+                </div>
+            </div>
+            <div class="menu-footer">
+                Version: Beta | 24hrs ago <span class="right-text" id="menu-counter">1/9</span>
+            </div>
+        </div>
     </div>
-  </div>
-  <script>
-    let selectedIndex = 0;
-    const menuItemsContainer = document.getElementById('menu-items');
-    const scrollbarThumb = document.getElementById('scrollbar-thumb');
-    const menuCounter = document.getElementById('menu-counter');
+    <script>
+        let selectedIndex = 0;
+        const menuItems = document.querySelectorAll('.menu-item');
+        const scrollbarThumb = document.getElementById('scrollbar-thumb');
+        const menuCounter = document.getElementById('menu-counter');
+        const totalItems = menuItems.length;
+        const maxScrollHeight = 250;
 
-    // Function to update menu selection visuals
-    function updateMenuSelection(direction) {
-      const menuItems = document.querySelectorAll('.menu-item');
-      if (menuItems.length === 0) return;
-      menuItems[selectedIndex].classList.remove('selected');
-      selectedIndex = (selectedIndex + direction + menuItems.length) % menuItems.length;
-      menuItems[selectedIndex].classList.add('selected');
-      
-      const scrollStep = 250 / (menuItems.length - 1);
-      scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
-      menuCounter.textContent = `${selectedIndex + 1}/${menuItems.length}`;
-    }
-
-    // Function to handle menu selection (triggered by Lua "select" message)
-    function handleMenuSelection() {
-      const selectedItem = document.querySelector('.menu-item.selected');
-      if (selectedItem) {
-        console.log("Selected: " + selectedItem.textContent);
-        // Additional logic can be added here based on the selected menu item
-      }
-    }
-
-    // Function to create a menu item element
-    function createMenuItem(item, index) {
-      const menuItem = document.createElement('div');
-      menuItem.className = "menu-item " + (index === selectedIndex ? 'selected' : '');
-      menuItem.textContent = item.label;
-
-      if (item.type === "checkbox") {
-        const checkbox = document.createElement('input');
-        checkbox.type = "checkbox";
-        checkbox.checked = item.value;
-        checkbox.style.marginLeft = "10px";
-        menuItem.appendChild(checkbox);
-      } else if (item.type === "slider") {
-        const slider = document.createElement('input');
-        slider.type = "range";
-        slider.min = item.min;
-        slider.max = item.max;
-        slider.value = item.value;
-        slider.style.marginLeft = "10px";
-        menuItem.appendChild(slider);
-      }
-      return menuItem;
-    }
-
-    // Function to update the entire menu from data sent by Lua
-    function updateMenu(menu, luaSelectedIndex) {
-      selectedIndex = luaSelectedIndex || 0;
-      menuItemsContainer.innerHTML = '';
-      menu.forEach((item, index) => {
-        const menuItem = createMenuItem(item, index);
-        menuItemsContainer.appendChild(menuItem);
-      });
-      updateMenuSelection(0); // Refresh visuals
-    }
-
-    // Listen for messages from the Lua script
-    window.addEventListener("message", function (event) {
-      const message = JSON.parse(event.data);
-      console.log("Received message: ", message); // Debug log
-
-      if (message.type === "toggleMenu") {
-        document.querySelector('.menu-wrapper').style.display = message.data.visible ? 'flex' : 'none';
-      } else if (message.type === "updateMenu") {
-        updateMenu(message.data.menu, message.data.selectedIndex);
-      } else if (message.type === "navigate") {
-        if (message.data.direction === "up") {
-          updateMenuSelection(-1);
-        } else if (message.data.direction === "down") {
-          updateMenuSelection(1);
+        function updateMenuSelection(direction) {
+            menuItems[selectedIndex].classList.remove('selected');
+            selectedIndex = (selectedIndex + direction + totalItems) % totalItems;
+            menuItems[selectedIndex].classList.add('selected');
+            
+            const scrollStep = maxScrollHeight / (totalItems - 1);
+            scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
+            menuCounter.textContent = `${selectedIndex + 1}/${totalItems}`;
         }
-      } else if (message.type === "select") {
-        handleMenuSelection();
-      } else if (message.type === "updatePrimaryColor") {
-        // Update the primary color based on Lua input
-        document.documentElement.style.setProperty('--primary', message.data.color);
-      }
-    });
-  </script>
+
+        // Key events using DUI, testing.
+        window.addEventListener("message", function (event) {
+            if (event.data.type === "navigate") {
+                if (event.data.direction === "up") {
+                    updateMenuSelection(-1);
+                } else if (event.data.direction === "down") {
+                    updateMenuSelection(1);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
