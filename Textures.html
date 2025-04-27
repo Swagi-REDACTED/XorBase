@@ -237,87 +237,98 @@
     </div>
     <script>
       // State
-      let selectedIndex = 0
-      let currentTab    = 0   // 0=Local, 1=Online, 2=Spawn
-    
+      let selectedIndex = 0;
+      let currentTab    = 0;   // 0=Local, 1=Online, 2=Spawn
+  
       // DOM refs
-      const tabs               = document.querySelectorAll('.menu-tab')
+      const tabs               = document.querySelectorAll('.menu-tab');
       const containers         = [
         document.getElementById('local-items'),
         document.getElementById('online-items'),
         document.getElementById('spawn-items'),
-      ]
-      const playerOptions      = document.getElementById('player-options')
-      const playerOptionsItems = document.getElementById('player-options-items')
-      const scrollbarThumb     = document.getElementById('scrollbar-thumb')
-      const menuCounter        = document.getElementById('menu-counter')
-    
+      ];
+      const playerOptions      = document.getElementById('player-options');
+      const playerOptionsItems = document.getElementById('player-options-items');
+      const scrollbarThumb     = document.getElementById('scrollbar-thumb');
+      const menuCounter        = document.getElementById('menu-counter');
+  
       // Dimensions
-      const maxScrollHeight = 410 - 35  // container height minus thumb height
-    
+      const maxScrollHeight = 410 - 35;
+  
       // Helpers
       function getMenuItems() {
-        return containers[currentTab].querySelectorAll('.menu-item')
+        return containers[currentTab].querySelectorAll('.menu-item');
       }
-    
+  
       function updateMenuSelection(direction) {
-        const items = getMenuItems()
-        const total = items.length
-        if (!total) return
-    
-        items[selectedIndex]?.classList.remove('selected')
-        selectedIndex = (selectedIndex + direction + total) % total
-        items[selectedIndex].classList.add('selected')
-    
-        const step = maxScrollHeight / (total - 1)
-        scrollbarThumb.style.top = `${selectedIndex * step}px`
-        menuCounter.textContent = `${selectedIndex + 1}/${total}`
+        const items = getMenuItems();
+        if (!items.length) return;
+  
+        items[selectedIndex]?.classList.remove('selected');
+        selectedIndex = (selectedIndex + direction + items.length) % items.length;
+        items[selectedIndex].classList.add('selected');
+  
+        const step = maxScrollHeight / (items.length - 1);
+        scrollbarThumb.style.top = `${selectedIndex * step}px`;
+        menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
       }
-    
+  
       function updateTabUI(index) {
-        // Tab buttons
-        tabs.forEach((tab, i) => {
-          tab.classList.toggle('selected', i === index)
-        })
-        // Content containers
-        containers.forEach((c, i) => {
-          c.style.display = i === index ? 'block' : 'none'
-        })
-        // Reset item-selection for new tab
-        selectedIndex = 0
-        updateMenuSelection(0)
+        tabs.forEach((tab, i) => tab.classList.toggle('selected', i === index));
+        containers.forEach((c, i) => c.style.display = i === index ? 'block' : 'none');
+        selectedIndex = 0;
+        updateMenuSelection(0);
       }
-    
-      function updateTabSelection(direction) {
-        currentTab = (currentTab + direction + tabs.length) % tabs.length
-        updateTabUI(currentTab)
+  
+      function updateTabSelection(dir) {
+        currentTab = (currentTab + dir + tabs.length) % tabs.length;
+        updateTabUI(currentTab);
       }
-    
-      // ——— Initial render ———
-      updateTabUI(0)
-    
-      // ——— Handle DUI messages (keyboard navigation & tabbing) ———
-      window.addEventListener('message', event => {
-        let msg = event.data
+  
+      // Expand/collapse Player Options
+      playerOptions.addEventListener('click', () => {
+        const show = !playerOptionsItems.style.display || playerOptionsItems.style.display === 'none';
+        playerOptionsItems.style.display = show ? 'block' : 'none';
+      });
+  
+      // One‐time setup on load
+      window.addEventListener('load', () => {
+        updateTabUI(0);
+      });
+  
+      // Named handler so we can remove/re-add on reinjection
+      function onDuiMessage(event) {
+        let msg = event.data;
         if (typeof msg === 'string') {
-          try { msg = JSON.parse(msg) }
-          catch (e) { console.error('Bad DUI JSON', e); return }
+          try { msg = JSON.parse(msg); }
+          catch { return; }
         }
-    
+  
         switch (msg.type) {
           case 'navigate':
             if (msg.data?.direction) {
-              const dir = msg.data.direction === 'up' ? -1 : 1
-              updateMenuSelection(dir)
+              updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
             }
-            break
-    
+            break;
           case 'tab':
-            if (msg.data?.direction === 'left')  updateTabSelection(-1)
-            else if (msg.data?.direction === 'right') updateTabSelection(1)
-            break
+            if (msg.data?.direction === 'left')  updateTabSelection(-1);
+            else if (msg.data?.direction === 'right') updateTabSelection(1);
+            break;
+          case 'select':
+            const items = getMenuItems();
+            items[selectedIndex]?.click();
+            break;
         }
-      })
-    </script>    
+      }
+  
+      // Clean up old listener (if any) then add ours
+      window.removeEventListener('message', onDuiMessage);
+      window.addEventListener('message', onDuiMessage);
+  
+      // When the page unloads, remove our listener so we don't double‐fire
+      window.addEventListener('beforeunload', () => {
+        window.removeEventListener('message', onDuiMessage);
+      });
+    </script>
 </body>
 </html>
