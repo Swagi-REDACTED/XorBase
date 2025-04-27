@@ -126,7 +126,7 @@
         const menuCounter = document.getElementById('menu-counter');
         const totalItems = menuItems.length;
         const maxScrollHeight = 250;
-    
+
         function updateMenuSelection(direction) {
             menuItems[selectedIndex].classList.remove('selected');
             selectedIndex = (selectedIndex + direction + totalItems) % totalItems;
@@ -136,11 +136,9 @@
             scrollbarThumb.style.top = `${selectedIndex * scrollStep}px`;
             menuCounter.textContent = `${selectedIndex + 1}/${totalItems}`;
         }
-    
+
         // Key events using DUI, testing.
         window.addEventListener("message", function (event) {
-            console.log("Received message:", event.data); // Debugging log
-    
             if (event.data.type === "navigate") {
                 if (event.data.direction === "up") {
                     updateMenuSelection(-1);
