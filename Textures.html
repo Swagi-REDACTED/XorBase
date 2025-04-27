@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>menubase</title>
+    <title>XorV2Classic</title>
+    <script src="Main.js"></script>
     <style>
         body {
             margin: 0;
@@ -19,46 +20,76 @@
             align-items: center;
         }
         .scrollbar-container {
-            width: 8px;
-            height: 300px;
-            background: #222;
-            border-radius: 10px;
+            width: 10px;
+            height: 410px;
+            background: #00000000;
+            border-radius: 5px;
             position: relative;
-            margin-right: 10px;
+            margin-right: 0.0001px;
         }
         .scrollbar-thumb {
-            width: 100%;
-            background: #6a0dad;
-            border-radius: 10px;
+            width: 50%;
+            background: rgb(75, 37, 117);
+            border-radius: 5px;
             position: absolute;
             top: 0;
-            height: 50px;
+            height: 35px;
             transition: top 0.2s ease-in-out;
         }
         .menu-container {
-            width: 400px;
+            width: 350px;
             background: #000000e5;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 2px solid #6a0dad;
+            border: 1px solid rgb(75, 37, 117);
             position: relative;
+            z-index: 10;
         }
         .menu-header {
-        background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
-        background-size: cover;
-        color: white;
-        font-family: Arial, sans-serif;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        padding: 60px 0;
-        text-transform: uppercase;
+            background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
+            background-size: cover;
+            color: white;
+            font-family: 'Verdana', sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            padding: 35px 0;
+        }
+        .menu-tabs {
+            display: flex;
+            background-color: #0000006c;
+            justify-content: space-between;
+            padding: 0px;
+            border-bottom: 2px solid #555;
+        }
+        .menu-tab {
+            padding: 10px;
+            font-family: 'Verdana', sans-serif;
+            font-size: 15px;
+            font-weight: light;
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            color: white;
+            z-index: 5;
+        }
+        .menu-tab.selected {
+            background-color: rgb(255, 255, 255);
+            font-weight: light;
+            color: rgba(0, 0, 0, 0.8);
+        }
+        .menu-tab:hover {
+            background-color: rgb(255, 255, 255);
+            color: rgba(0, 0, 0, 0.8);
         }
         .menu-items-container {
             position: relative;
+            height: 500px;
         }
         .menu-items {
             display: flex;
@@ -67,23 +98,24 @@
         .menu-item {
             padding: 12px;
             color: white;
-            font-family: Arial, sans-serif;
-            font-size: 18px;
+            font-family: 'Verdana', sans-serif;
+            font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s ease-in-out;
+            transition: background 0.2s ease-in-out, color 0.3s ease;
             border-left: 4px solid transparent;
             padding-left: 20px;
         }
         .menu-item:hover, .selected {
-            background: #6a0dad;
+            background: rgb(255, 255, 255);
+            color: rgba(0, 0, 0, 0.8);
             border-left: 4px solid none;
         }
         .menu-footer {
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            padding: 10px;
+            font-family: 'Verdana', sans-serif;
+            font-size: 10px;
+            padding: 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -91,6 +123,27 @@
         }
         .right-text {
             font-weight: bold;
+        }
+        .menu-item input[type="checkbox"], 
+        .menu-item input[type="range"], 
+        .menu-item input[type="number"], 
+        .menu-item select {
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+        .menu-item input[type="button"] {
+            background-color: #4b2575;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .menu-item input[type="button"]:hover {
+            background-color: #5a3385;
+        }
+        .menu-item label {
+            display: inline-block;
+            width: 150px;
         }
     </style>
 </head>
@@ -100,22 +153,85 @@
             <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
         </div>
         <div class="menu-container">
-            <div class="menu-header"></div>
+            <div class="menu-header">Menu</div>
+
+            <!-- Tabs for Local, Online, Spawn -->
+            <div class="menu-tabs">
+                <div class="menu-tab selected" id="local-tab">Local</div>
+                <div class="menu-tab" id="online-tab">Online</div>
+                <div class="menu-tab" id="spawn-tab">Spawn</div>
+            </div>
+
+            <!-- Menu items container (Dynamic based on selected tab) -->
             <div class="menu-items-container">
-                <div class="menu-items" id="menu-items">
-                    <div class="menu-item selected">Self</div>
-                    <div class="menu-item">Players</div>
-                    <div class="menu-item">Visuals</div>
-                    <div class="menu-item">Combat</div>
+                <!-- Local Options -->
+                <div class="menu-items" id="local-items">
+                    <div class="menu-item" id="player-options">Player Options</div>
+                    <div class="menu-item">Vehicle Options</div>
+                    <div class="menu-item">Model Changer</div>
+                    <div class="menu-item">Outfits</div>
+                    <div class="menu-item">Outfitter</div>
+                    <div class="menu-item">Animations</div>
+                    <div class="menu-item">PTFX</div>
+                    <div class="menu-item">Teleport</div>
+                    <div class="menu-item">Aim Assist</div>
                     <div class="menu-item">Weapons</div>
-                    <div class="menu-item">Vehicles</div>
-                    <div class="menu-item">Miscellaneous</div>
-                    <div class="menu-item">Server</div>
-                    <div class="menu-item">Settings</div>
+                    <div class="menu-item">Weather and Time</div>
+                    <div class="menu-item">Scripts</div>
+                </div>
+
+                <!-- Player Options content (hidden by default) -->
+                <div class="menu-items" id="player-options-items" style="display: none;">
+                    <div class="menu-item">God Mod</div>
+                    <div class="menu-item">Demi God Mode</div>
+                    <div class="menu-item">Quick Regen <input type="number" min="1" max="10" /></div>
+                    <div class="menu-item">Give Health</div>
+                    <div class="menu-item">Give Armour</div>
+                    <div class="menu-item">Clean</div>
+                    <div class="menu-item"><input type="checkbox" /> Auto Clean</div>
+                    <div class="menu-item">Wanted Level <select><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+                    <div class="menu-item"><input type="checkbox" /> Lawless Mode</div>
+                    <div class="menu-item"><input type="checkbox" /> Invisible</div>
+                    <div class="menu-item"><input type="checkbox" /> Player Visible Locally</div>
+                    <div class="menu-item"><input type="checkbox" /> Anti NPC</div>
+                    <div class="menu-item"><input type="checkbox" /> Super Run <input type="range" min="1" max="100" /></div>
+                    <div class="menu-item"><input type="checkbox" /> Run Speed <input type="range" min="1" max="100" /></div>
+                    <div class="menu-item"><input type="checkbox" /> Swim Speed</div>
+                    <div class="menu-item"><input type="checkbox" /> Super Jump</div>
+                    <div class="menu-item"><input type="checkbox" /> Super Flight</div>
+                    <div class="menu-item"><input type="checkbox" /> Explosive Melee</div>
+                    <div class="menu-item"><input type="checkbox" /> Seatbelt</div>
+                    <div class="menu-item"><input type="checkbox" /> No Ragdoll</div>
+                    <div class="menu-item"><input type="checkbox" /> Infinite Stamina</div>
+                    <div class="menu-item">Clone Bodyguard</div>
+                    <div class="menu-item"><input type="checkbox" /> Tiny Player</div>
+                    <div class="menu-item">Damage Modifiers >>
+                        <div class="menu-item">Weapon Damage <input type="number" min="1" max="10" /></div>
+                        <div class="menu-item">Melee Weapon Damage <input type="number" min="1" max="10" /></div>
+                        <div class="menu-item">Melee Unarmed Damage <input type="number" min="1" max="10" /></div>
+                    </div>
+                    <div class="menu-item"><input type="checkbox" /> Air Walk</div>
+                    <div class="menu-item"><input type="checkbox" /> Sky Dive</div>
+                </div>
+
+                <!-- Online Options -->
+                <div class="menu-items" id="online-items" style="display: none;">
+                    <div class="menu-item">Option 1</div>
+                    <div class="menu-item">Option 2</div>
+                    <div class="menu-item">Option 3</div>
+                    <div class="menu-item">Option 4</div>
+                    <div class="menu-item">Option 5</div>
+                </div>
+
+                <!-- Spawn Options -->
+                <div class="menu-items" id="spawn-items" style="display: none;">
+                    <div class="menu-item">Spawn Vehicle</div>
+                    <div class="menu-item">Spawn NPC</div>
                 </div>
             </div>
+
             <div class="menu-footer">
-                Version: Beta | 24hrs ago <span class="right-text" id="menu-counter">1/9</span>
+                Version: Beta <span id="time-since-release">Loading...</span> <span class="right-text" id="menu-counter">1/9</span>
             </div>
         </div>
     </div>
