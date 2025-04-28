@@ -300,8 +300,8 @@
     menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
   }
 
-  // Switch between Local/Online/Spawn/PlayerOptions
-  function updateTabUI(tabIdx) {
+  // now with an optional `reset` (defaults to true)
+  function updateTabUI(tabIdx, reset = true) {
     currentTab = tabIdx;
 
     // swap which tab-bar is visible
@@ -322,9 +322,13 @@
       );
     }
 
-    // reset selection
-    selectedIndex = 0;
-    updateMenuSelection(0);
+    // optionally reset selection to the top, or simply re-highlight
+    if (reset) {
+      selectedIndex = 0;
+      updateMenuSelection(0);
+    } else {
+      updateMenuSelection(0);
+    }
   }
 
   // Cycle left/right across the appropriate tab-bar
@@ -363,7 +367,10 @@
       case 'toggleMenu':
         menuVisible = !!msg.data.visible;
         menuWrapper.style.display = menuVisible ? 'flex' : 'none';
-        if (menuVisible) updateTabUI(0);
+        if (menuVisible) {
+          // restore last tab & selection, without resetting to 0
+          updateTabUI(currentTab, false);
+        }
         break;
       case 'navigate':
         if (msg.data.direction)
