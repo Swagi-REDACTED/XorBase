@@ -48,7 +48,7 @@
 
     /* glow effects */
     box-shadow:
-    inset 0 0 6px 3px rgba(78, 0, 151, 0.7), /* soft purple inner glow */
+    inset 0 -18px 15px 2px rgba(78, 0, 151, 0.7), /* soft purple inner glow */
     0 0 10px rgba(78, 0, 151, 0.7),          /* outer halo */
     0 0 10px rgba(78, 0, 151, 0.4);             /* original black shadow */
     }
@@ -144,7 +144,15 @@
       <div class="menu-items-container">
         <!-- Local -->
         <div class="menu-items" id="local-items">
-          <div class="menu-item" id="player-options">Player Options</div>
+          <div class="menu-item" id="player-options-toggle">Player Options</div>
+          <div class="submenu-items" id="player-options-submenu" style="display: none;">
+            <div class="menu-item">God Mode</div>
+            <div class="menu-item">No Clip</div>
+            <div class="menu-item">Invisible</div>
+            <div class="menu-item">Super Jump</div>
+            <div class="menu-item">Run Speed</div>
+            <!-- Add more player options here -->
+          </div>
           <div class="menu-item">Vehicle Options</div>
           <div class="menu-item">Model Changer</div>
           <div class="menu-item">Outfits</div>
@@ -156,36 +164,6 @@
           <div class="menu-item">Weapons</div>
           <div class="menu-item">Weather and Time</div>
           <div class="menu-item">Scripts</div>
-        </div>
-
-        <!-- Player Options submenu -->
-        <div class="menu-items" id="player-options-items" style="display: none;">
-          <div class="menu-item">God Mod</div>
-          <div class="menu-item">Demi God Mode</div>
-          <div class="menu-item">Quick Regen</div>
-          <div class="menu-item">Give Health</div>
-          <div class="menu-item">Give Armour</div>
-          <div class="menu-item">Clean</div>
-          <div class="menu-item">Auto Clean</div>
-          <div class="menu-item">Wanted Level</div>
-          <div class="menu-item">Lawless Mode</div>
-          <div class="menu-item">Invisible</div>
-          <div class="menu-item">Player Visible Locally</div>
-          <div class="menu-item">Anti NPC</div>
-          <div class="menu-item">Super Run</div>
-          <div class="menu-item">Run Speed</div>
-          <div class="menu-item">Swim Speed</div>
-          <div class="menu-item">Super Jump</div>
-          <div class="menu-item">Super Flight</div>
-          <div class="menu-item">Explosive Melee</div>
-          <div class="menu-item">Seatbelt</div>
-          <div class="menu-item">No Ragdoll</div>
-          <div class="menu-item">Infinite Stamina</div>
-          <div class="menu-item">Clone Bodyguard</div>
-          <div class="menu-item">Tiny Player</div>
-          <div class="menu-item">Damage Modifiers >></div>
-          <div class="menu-item">Air Walk</div>
-          <div class="menu-item">Sky Dive</div>
         </div>
 
         <!-- Online -->
@@ -210,6 +188,11 @@
       </div>
     </div>
   </div>
+  <style>
+    .submenu-items {
+      padding-left: 20px;
+    }
+  </style>
 
   <script>
     // State
@@ -223,10 +206,11 @@
       document.getElementById('online-items'),
       document.getElementById('spawn-items'),
     ];
-    const playerOptions      = document.getElementById('player-options');
-    const playerOptionsItems = document.getElementById('player-options-items');
     const scrollbarThumb     = document.getElementById('scrollbar-thumb');
     const menuCounter        = document.getElementById('menu-counter');
+
+    const playerOptionsToggle  = document.getElementById('player-options-toggle');
+    const playerOptionsSubmenu = document.getElementById('player-options-submenu');
 
     const maxScrollHeight = 410 - 35;
 
@@ -259,10 +243,15 @@
       updateTabUI(currentTab);
     }
 
-    // Expand/collapse Player Options
-    playerOptions.addEventListener('click', () => {
-      const show = !playerOptionsItems.style.display || playerOptionsItems.style.display === 'none';
-      playerOptionsItems.style.display = show ? 'block' : 'none';
+    // Expand/collapse Player Options submenu
+    playerOptionsToggle.addEventListener('click', () => {
+      const isVisible = playerOptionsSubmenu.style.display === 'block';
+      playerOptionsSubmenu.style.display = isVisible ? 'none' : 'block';
+
+      // Update selection count and scrollbar after expanding/collapsing
+      setTimeout(() => {
+        updateMenuSelection(0);
+      }, 50);
     });
 
     window.addEventListener('load', () => {
