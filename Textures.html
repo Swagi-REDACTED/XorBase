@@ -87,7 +87,8 @@
       /* inner + outer glow */
       box-shadow:
       inset 0 0 4px 2px  rgba(154, 104, 255, 0.85),  /* dark purple inner glow */
-      0 0 6px rgba(180, 180, 180, 0.944);            /* soft outer halo */
+      0 0 6px rgba(180, 180, 180, 0.944);   
+      transition: background-color 0.5s, color 0.3s;         /* soft outer halo */
     }
     .menu-items-container {
       height: 500px;
@@ -174,12 +175,12 @@
 
         <!-- Online -->
         <div class="menu-items" id="online-items" style="display: none;">
-          <div class="menu-item" onclick="sendOptionClick(1)">Option 1</div>
-          <div class="menu-item" onclick="sendOptionClick(2)">Option 2</div>
-          <div class="menu-item" onclick="sendOptionClick(3)">Option 3</div>
-          <div class="menu-item" onclick="sendOptionClick(4)">Option 4</div>
-          <div class="menu-item" onclick="sendOptionClick(5)">Option 5</div>
-      </div>
+          <div class="menu-item" id="option1">Option 1</div>
+          <div class="menu-item">Option 2</div>
+          <div class="menu-item">Option 3</div>
+          <div class="menu-item">Option 4</div>
+          <div class="menu-item">Option 5</div>
+        </div>
 
         <!-- Spawn -->
         <div class="menu-items" id="spawn-items" style="display: none;">
@@ -263,18 +264,25 @@
 
   // Return only the .menu-item elements in the active view
   function getMenuItems() {
+    let menuItems;
+    
     if (currentTab < 3) {
-      return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
-                  .filter(i => i.offsetParent !== null);
+        menuItems = Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+                         .filter(i => i.offsetParent !== null);
     } else {
-      return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                  .filter(i => i.offsetParent !== null);
+        menuItems = Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                         .filter(i => i.offsetParent !== null);
     }
-  }
 
-  // JavaScript function to send option click to Lua
-  function sendOptionClick(optionId) {
-      window.dispatchEvent(new CustomEvent('optionClicked', { detail: { option: optionId }}));
+    // Attach click event listener only to Option 1
+    const option1 = menuItems.find(item => item.id === "option1");
+    if (option1) {
+        option1.addEventListener('click', () => {
+            triggerLuaFunction(); // Call the Lua function on Option 1 click
+        });
+    }
+
+    return menuItems;
   }
 
   // Highlight + scroll + counter
@@ -369,6 +377,18 @@
     currentSubTab = 0;      // <-- only reset once, here
     updateTabUI(3);
   });
+
+  function triggerLuaFunction() {
+    const data = {
+        data: "Example data"
+    };
+    
+    // Send the data to Lua using SendNUIMessage
+    SendNUIMessage({
+        action: "triggerLuaFunction", // A custom action to be used in Lua
+        data: data
+    });
+  }
 
   // Listen for Lua/gamepad events
   window.addEventListener('message', ({ data }) => {
