@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>insightClassic</title>
+  <title>XorV2Classic</title>
   <style>
     body {
       margin: 0;
@@ -174,12 +174,12 @@
 
         <!-- Online -->
         <div class="menu-items" id="online-items" style="display: none;">
-          <div class="menu-item">Option 1</div>
-          <div class="menu-item">Option 2</div>
-          <div class="menu-item">Option 3</div>
-          <div class="menu-item">Option 4</div>
-          <div class="menu-item">Option 5</div>
-        </div>
+          <div class="menu-item" onclick="sendOptionClick(1)">Option 1</div>
+          <div class="menu-item" onclick="sendOptionClick(2)">Option 2</div>
+          <div class="menu-item" onclick="sendOptionClick(3)">Option 3</div>
+          <div class="menu-item" onclick="sendOptionClick(4)">Option 4</div>
+          <div class="menu-item" onclick="sendOptionClick(5)">Option 5</div>
+      </div>
 
         <!-- Spawn -->
         <div class="menu-items" id="spawn-items" style="display: none;">
@@ -192,7 +192,7 @@
 
           <!-- Main panel -->
           <div class="menu-items" id="player-main-items">
-            <div class="menu-item" id="god-mode-toggle">God Mode</div>
+            <div class="menu-item">God Mode</div>
             <div class="menu-item">No Clip</div>
             <div class="menu-item">Invisible</div>
             <!-- etc… -->
@@ -270,6 +270,11 @@
       return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
                   .filter(i => i.offsetParent !== null);
     }
+  }
+
+  // JavaScript function to send option click to Lua
+  function sendOptionClick(optionId) {
+      window.dispatchEvent(new CustomEvent('optionClicked', { detail: { option: optionId }}));
   }
 
   // Highlight + scroll + counter
