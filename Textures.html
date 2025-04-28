@@ -134,25 +134,17 @@
       <div class="menu-header"></div>
 
       <!-- Tabs -->
-      <div class="menu-tabs">
+      <div class="menu-tabs" id="menu-tabs">
         <div class="menu-tab selected" id="local-tab">Local</div>
         <div class="menu-tab" id="online-tab">Online</div>
         <div class="menu-tab" id="spawn-tab">Spawn</div>
       </div>
 
       <!-- Menu items -->
-      <div class="menu-items-container">
+      <div class="menu-items-container" id="menu-items-container">
         <!-- Local -->
         <div class="menu-items" id="local-items">
           <div class="menu-item" id="player-options-toggle">Player Options</div>
-          <div class="submenu-items" id="player-options-submenu" style="display: none;">
-            <div class="menu-item">God Mode</div>
-            <div class="menu-item">No Clip</div>
-            <div class="menu-item">Invisible</div>
-            <div class="menu-item">Super Jump</div>
-            <div class="menu-item">Run Speed</div>
-            <!-- Add more player options here -->
-          </div>
           <div class="menu-item">Vehicle Options</div>
           <div class="menu-item">Model Changer</div>
           <div class="menu-item">Outfits</div>
@@ -180,6 +172,16 @@
           <div class="menu-item">Spawn Vehicle</div>
           <div class="menu-item">Spawn NPC</div>
         </div>
+
+        <!-- Player Options (new full page) -->
+        <div class="menu-items" id="player-options-items" style="display: none;">
+          <div class="menu-item" id="god-mode-toggle">God Mode</div>
+          <div class="menu-item">No Clip</div>
+          <div class="menu-item">Invisible</div>
+          <div class="menu-item">Super Jump</div>
+          <div class="menu-item">Run Speed</div>
+          <!-- You can add more here -->
+        </div>
       </div>
 
       <div class="menu-footer">
@@ -188,29 +190,33 @@
       </div>
     </div>
   </div>
+
   <style>
     .submenu-items {
       padding-left: 20px;
+    }
+    #menu-items-container {
+      overflow-y: auto;
+      max-height: 410px;
     }
   </style>
 
   <script>
     // State
     let selectedIndex = 0;
-    let currentTab    = 0;   // 0=Local, 1=Online, 2=Spawn
-
-    // DOM refs
-    const tabs               = document.querySelectorAll('.menu-tab');
-    const containers         = [
+    let currentTab = 0; // 0=Local, 1=Online, 2=Spawn, 3=Player Options
+    const tabs = document.querySelectorAll('.menu-tab');
+    const containers = [
       document.getElementById('local-items'),
       document.getElementById('online-items'),
       document.getElementById('spawn-items'),
+      document.getElementById('player-options-items')
     ];
-    const scrollbarThumb     = document.getElementById('scrollbar-thumb');
-    const menuCounter        = document.getElementById('menu-counter');
+    const menuWrapper = document.getElementById('menu-items-container');
+    const scrollbarThumb = document.getElementById('scrollbar-thumb');
+    const menuCounter = document.getElementById('menu-counter');
 
-    const playerOptionsToggle  = document.getElementById('player-options-toggle');
-    const playerOptionsSubmenu = document.getElementById('player-options-submenu');
+    const playerOptionsToggle = document.getElementById('player-options-toggle');
 
     const maxScrollHeight = 410 - 35;
 
@@ -226,13 +232,26 @@
       selectedIndex = (selectedIndex + direction + items.length) % items.length;
       items[selectedIndex].classList.add('selected');
 
+      const selectedElement = items[selectedIndex];
+      const containerRect = menuWrapper.getBoundingClientRect();
+      const itemRect = selectedElement.getBoundingClientRect();
+
+      // If the selected item is outside visible container, scroll it into view
+      if (itemRect.top < containerRect.top) {
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (itemRect.bottom > containerRect.bottom) {
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+
+      // Update scrollbar
       const step = maxScrollHeight / (items.length - 1);
       scrollbarThumb.style.top = `${selectedIndex * step}px`;
+
       menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
     }
 
     function updateTabUI(index) {
-      tabs.forEach((tab, i) => tab.classList.toggle('selected', i === index));
+      tabs.forEach((tab, i) => tab.classList.toggle('selected', i === index && i < 3)); // only tabs 0-2
       containers.forEach((c, i) => c.style.display = i === index ? 'block' : 'none');
       selectedIndex = 0;
       updateMenuSelection(0);
@@ -243,15 +262,9 @@
       updateTabUI(currentTab);
     }
 
-    // Expand/collapse Player Options submenu
     playerOptionsToggle.addEventListener('click', () => {
-      const isVisible = playerOptionsSubmenu.style.display === 'block';
-      playerOptionsSubmenu.style.display = isVisible ? 'none' : 'block';
-
-      // Update selection count and scrollbar after expanding/collapsing
-      setTimeout(() => {
-        updateMenuSelection(0);
-      }, 50);
+      currentTab = 3; // go to Player Options "tab"
+      updateTabUI(3);
     });
 
     window.addEventListener('load', () => {
@@ -261,8 +274,7 @@
     function onDuiMessage(event) {
       let msg = event.data;
       if (typeof msg === 'string') {
-        try { msg = JSON.parse(msg); }
-        catch { return; }
+        try { msg = JSON.parse(msg); } catch { return; }
       }
 
       switch (msg.type) {
@@ -272,12 +284,26 @@
           }
           break;
         case 'tab':
-          if (msg.data?.direction === 'left')  updateTabSelection(-1);
+          if (msg.data?.direction === 'left') updateTabSelection(-1);
           else if (msg.data?.direction === 'right') updateTabSelection(1);
           break;
         case 'select':
           const items = getMenuItems();
           items[selectedIndex]?.click();
+          break;
+        case 'back':
+          // Check if a submenu is open
+          if (playerOptionsSubmenu.style.display === 'block') {
+            // Close the submenu
+            playerOptionsSubmenu.style.display = 'none';
+            // Reset selection to the "Player Options" main item
+            const items = getMenuItems();
+            selectedIndex = Array.from(items).indexOf(playerOptionsToggle);
+            updateMenuSelection(0);
+          } else {
+            // If no submenu open, you could add logic to go to a previous tab, or do nothing
+            console.log('Already at main menu');
+          }
           break;
       }
     }
@@ -288,5 +314,6 @@
       window.removeEventListener('message', onDuiMessage);
     });
   </script>
+</body>
 </body>
 </html>
