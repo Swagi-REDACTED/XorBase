@@ -59,7 +59,7 @@
         0 0 10px rgba(78, 0, 151, 0.4);             /* original black shadow */
     }
     .menu-header {
-      background: url("http://i.ibb.co/8LxNKZXD/output.webp") no-repeat center center;
+      background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
       background-size: cover;
       text-align: center;
       padding: 55px 0px;
@@ -87,8 +87,7 @@
       /* inner + outer glow */
       box-shadow:
       inset 0 0 4px 2px  rgba(154, 104, 255, 0.85),  /* dark purple inner glow */
-      0 0 6px rgba(180, 180, 180, 0.944);   
-      transition: background-color 0.5s, color 0.3s;         /* soft outer halo */
+      0 0 6px rgba(180, 180, 180, 0.944);            /* soft outer halo */
     }
     .menu-items-container {
       height: 500px;
@@ -117,7 +116,7 @@
       box-shadow:
         inset 0 0 4px 2px rgba(78, 0, 151, 0.7),  /* dark purple inner glow */
         0 0 6px rgba(78, 0, 151, 0.4); /* soft outer halo */
-        transition: background-color 0.3s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
+        transition: background-color 0.5s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
     }
     .menu-footer {
       background: rgba(0, 0, 0, 0.8);
@@ -175,6 +174,11 @@
 
         <!-- Online -->
         <div class="menu-items" id="online-items" style="display: none;">
+          <div class="menu-item">Option 1</div>
+          <div class="menu-item">Option 2</div>
+          <div class="menu-item">Option 3</div>
+          <div class="menu-item">Option 4</div>
+          <div class="menu-item">Option 5</div>
         </div>
 
         <!-- Spawn -->
@@ -188,7 +192,7 @@
 
           <!-- Main panel -->
           <div class="menu-items" id="player-main-items">
-            <div class="menu-item">God Mode</div>
+            <div class="menu-item" id="god-mode-toggle">God Mode</div>
             <div class="menu-item">No Clip</div>
             <div class="menu-item">Invisible</div>
             <!-- etc… -->
@@ -257,6 +261,7 @@
   const menuCounter    = document.getElementById('menu-counter');
   const playerToggle   = document.getElementById('player-options-toggle');
 
+  // Return only the .menu-item elements in the active view
   function getMenuItems() {
     if (currentTab < 3) {
       return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
@@ -307,31 +312,19 @@
     mainTabs.forEach((t,i)=> t.classList.toggle('selected', i === tabIdx));
     playerTabs.forEach((t,i)=> t.classList.toggle('selected', i === currentSubTab));
 
-    // Show only the current container
+    // show only the current container
     containers.forEach((c,i)=> c.style.display = (i === tabIdx ? 'block' : 'none'));
 
-    // If we're in PlayerOptions, show the right sub-panel
+    // if we're in PlayerOptions, show the right sub-panel
     if (tabIdx === 3) {
       subContainers.forEach((c,i)=>
         c.style.display = (i === currentSubTab ? 'block' : 'none')
       );
     }
 
-    // Reset selection for menu items
-    resetHoverEffect();
-
-    // Reset selection
+    // reset selection
     selectedIndex = 0;
     updateMenuSelection(0);
-  }
-
-  // Reset hover effect for all items in the active menu
-  function resetHoverEffect() {
-    // Remove hover and selected states from all menu items
-    const allItems = document.querySelectorAll('.menu-item');
-    allItems.forEach(item => {
-      item.classList.remove('hover', 'selected');
-    });
   }
 
   // Cycle left/right across the appropriate tab-bar
@@ -395,27 +388,6 @@
         } else {
           menuVisible = false;
           menuWrapper.style.display = 'none';
-        }
-        break;
-      case 'option': 
-        // Handle Lua-sent options, including name and associated functions
-        if (msg.data && msg.data.action) {
-          const name = msg.data.name || 'Unnamed Option';
-          const action = msg.data.action;
-          console.log(`Option triggered: ${name}`);
-
-          // Create a new menu item
-          const menuItem = document.createElement('div');
-          menuItem.classList.add('menu-item');
-          menuItem.textContent = name;
-
-          // Attach the action to the menu item (if exists)
-          if (typeof action === 'function') {
-            menuItem.addEventListener('click', action);
-          }
-
-          // Append the menu item to the specified tab
-          document.getElementById(msg.data.tab).appendChild(menuItem);
         }
         break;
     }
