@@ -36,7 +36,7 @@
         transition: top 0.2s ease-in-out;
     }
     .menu-container {
-    width: 350px;
+    width: 410px;
     background: #000000e5;
     border-radius: 15px;
     display: flex;
@@ -173,16 +173,23 @@
           <div class="menu-item">Spawn NPC</div>
         </div>
 
-        <!-- Player Options (new full page) -->
+        <!-- Player Options (new full page with submenu dropdown) -->
         <div class="menu-items" id="player-options-items" style="display: none;">
+          <div class="menu-item" id="movement-options-toggle">Movement Options</div>
+          <div class="submenu-items" id="movement-options-submenu" style="display: none;">
+            <div class="menu-item">Super Jump</div>
+            <div class="menu-item">Run Speed</div>
+            <div class="menu-item">Swim Speed</div>
+            <div class="menu-item">No Ragdoll</div>
+          </div>
+
           <div class="menu-item" id="god-mode-toggle">God Mode</div>
           <div class="menu-item">No Clip</div>
           <div class="menu-item">Invisible</div>
-          <div class="menu-item">Super Jump</div>
-          <div class="menu-item">Run Speed</div>
-          <!-- You can add more here -->
+          <!-- Add more player options here -->
         </div>
       </div>
+
 
       <div class="menu-footer">
         Version: Beta <span id="time-since-release">Loading...</span>
@@ -221,7 +228,8 @@
     const maxScrollHeight = 410 - 35;
 
     function getMenuItems() {
-      return containers[currentTab].querySelectorAll('.menu-item');
+    return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+    .filter(item => item.offsetParent !== null);
     }
 
     function updateMenuSelection(direction) {
@@ -314,6 +322,5 @@
       window.removeEventListener('message', onDuiMessage);
     });
   </script>
-</body>
 </body>
 </html>
