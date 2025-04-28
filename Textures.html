@@ -250,11 +250,10 @@
       items[selectedIndex].classList.add('selected');
 
       // auto‐scroll
-      const sel = items[selectedIndex],
-            wrap = menuWrapper.getBoundingClientRect(),
-            rect = sel.getBoundingClientRect();
-      if (rect.top < wrap.top)    sel.scrollIntoView({behavior:'smooth',block:'start'});
-      if (rect.bottom > wrap.bottom) sel.scrollIntoView({behavior:'smooth',block:'end'});
+      items[selectedIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
 
       // update thumb & counter
       const step = maxScrollHeight / (items.length - 1);
