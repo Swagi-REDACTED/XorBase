@@ -435,23 +435,20 @@
         getMenuItems()[selectedIndex]?.click();
         break;
       case 'back':
-        if(currentTab===3 && currentSubTab>0){
-          currentSubTab=0; updateTabUI(3);
-        } else if(currentTab===3){
-          updateTabUI(0);
-        } else if(currentTab===4 && currentSubTab>0){
-          currentSubTab=0; updateTabUI(4);
-        } else if(currentTab===4){
-          updateTabUI(2);
-        } else if(currentTab===5 && currentSubTab>0){
-          currentSubTab=0; updateTabUI(5);
-        } else if(currentTab===5){
-          updateTabUI(1);
-        } else if(currentTab>0){
+        // First, if we’re in a submenu (any tab with currentSubTab)
+        if (currentSubTab > 0) {
+          // step back by one sub-tab
+          currentSubTab--;
+          updateTabUI(currentTab);
+        }
+        // no more sub-tabs, but we’re not at the very first main tab
+        else if (currentTab > 0) {
           updateTabSelection(-1);
-        } else {
-          menuVisible=false;
-          menuWrapper.style.display='none';
+        }
+        // we are at main tab = 0, subTab = 0 → close
+        else {
+          menuVisible = false;
+          menuWrapper.style.display = 'none';
         }
         break;
     }
