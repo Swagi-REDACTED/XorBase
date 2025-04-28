@@ -297,9 +297,16 @@
     menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
   }
 
+  // Remove every `.selected` class from menu-items
+  function clearSelection() {
+    document.querySelectorAll('.menu-item.selected')
+            .forEach(el => el.classList.remove('selected'));
+  }
+
   // now with an optional `reset` (defaults to true)
   function updateTabUI(tabIdx, reset = true) {
     currentTab = tabIdx;
+    clearSelection();
 
     // swap which tab-bar is visible
     mainTabsEl.style.display   = (tabIdx === 3 ? 'none' : 'flex');
