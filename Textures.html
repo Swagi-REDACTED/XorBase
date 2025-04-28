@@ -59,7 +59,7 @@
         0 0 10px rgba(78, 0, 151, 0.4);             /* original black shadow */
     }
     .menu-header {
-      background: url("https://i.ibb.co/HwbsTcz/Xor.gif") no-repeat center center;
+      background: url("http://i.ibb.co/8LxNKZXD/output.webp") no-repeat center center;
       background-size: cover;
       text-align: center;
       padding: 55px 0px;
@@ -140,26 +140,37 @@
     </div>
     <div class="menu-container">
       <div class="menu-header"></div>
-
+  
       <!-- original top-level tabs -->
       <div class="menu-tabs" id="menu-tabs">
-        <div class="menu-tab selected" id="local-tab">Local</div>
-        <div class="menu-tab" id="online-tab">Online</div>
-        <div class="menu-tab" id="spawn-tab">Spawn</div>
+        <div class="menu-tab selected" id="main-tab">Main</div>
+        <div class="menu-tab" id="scripts-tab">Scripts</div>
+        <div class="menu-tab" id="settings-tab">Settings</div>
       </div>
-
+  
       <!-- new Player-Options tabs (hidden until you enter PO) -->
       <div class="menu-tabs" id="player-tabs" style="display: none;">
-        <div class="menu-tab selected" id="player-main-tab">Main</div>
+        <div class="menu-tab selected" id="player-main-tab">Player</div>
         <div class="menu-tab" id="player-movement-tab">Movement</div>
       </div>
 
+      <div class="menu-tabs" id="misc-tabs" style="display: none;">
+        <div class="menu-tab selected" id="misc-main-tab">Misc</div>
+        <div class="menu-tab" id="misc-settings-tab">Extra Options</div>
+      </div>
+
+      <div class="menu-tabs" id="scripts-tabs" style="display: none;">
+        <div class="menu-tab selected" id="scripts-main-tab">Main</div>
+        <div class="menu-tab" id="scripts-Built-tab">Built-in</div>
+        <div class="menu-tab" id="scripts-misc-tab">Misc</div>
+      </div>
+  
       <!-- Menu items -->
       <div class="menu-items-container" id="menu-items-container">
-        <!-- Local -->
-        <div class="menu-items" id="local-items">
+        <!-- Main -->
+        <div class="menu-items" id="main-items">
           <div class="menu-item" id="player-options-toggle">Player Options</div>
-          <div class="menu-item">Vehicle Options</div>
+          <div class="menu-item">Vehicle</div>
           <div class="menu-item">Esp</div>
           <div class="menu-item">Teleport</div>
           <div class="menu-item">Aimbot</div>
@@ -167,52 +178,74 @@
           <div class="menu-item">Model Changer</div>
           <div class="menu-item">Outfits</div>
           <div class="menu-item">World</div>
-          <div class="menu-item">Scripts</div>
-          <div class="menu-item">Misc</div>
-          <div class="menu-item">Settings</div>
+        </div>
+  
+        <!-- Scripts -->
+        <div class="menu-items" id="scripts-items" style="display: none;">
+          <div class="menu-item" id="scripts-options-toggle">Scripts</div>
+          <div class="menu-item">Force Emote</div>
+        </div>
+  
+        <!-- Settings -->
+        <div class="menu-items" id="settings-items" style="display: none;">
+          <div class="menu-item">safe mode</div>
+          <div class="menu-item">uninject</div>
+          <div class="menu-item" id="misc-options-toggle">Misc</div>
         </div>
 
-        <!-- Online -->
-        <div class="menu-items" id="online-items" style="display: none;">
-          <div class="menu-item">Option 1</div>
-          <div class="menu-item">Option 2</div>
-          <div class="menu-item">Option 3</div>
-          <div class="menu-item">Option 4</div>
-          <div class="menu-item">Option 5</div>
+        <div class="menu-items" id="scripts-options-items" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="scripts-main-items">
+            <div class="menu-item">add item to inventory</div>
+            <div class="menu-item">Force hands up with F6</div>
+            <!-- etc… -->
+          </div>
+          <div class="menu-items" id="misc-Built-items" style="display: none;">
+            <div class="menu-item">Throw Cars/Props/Peds</div>
+            <div class="menu-item">Earthquake</div>
+          </div>
+          <div class="menu-items" id="scripts-misc-items" style="display: none;">
+            <div class="menu-item">Block logs</div>
+          </div>
         </div>
+        
 
-        <!-- Spawn -->
-        <div class="menu-items" id="spawn-items" style="display: none;">
-          <div class="menu-item">Spawn Vehicle</div>
-          <div class="menu-item">Spawn NPC</div>
+        <div class="menu-items" id="misc-options-items" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="misc-main-items">
+            <div class="menu-item">menu size</div>
+            <div class="menu-item">menu color</div>
+            <!-- etc… -->
+          </div>
+          <!-- Movement panel -->
+          <div class="menu-items" id="misc-misc-items" style="display: none;">
+            <div class="menu-item">menu pos x</div>
+            <div class="menu-item">menu pos y</div>
+          </div>
         </div>
-
+  
         <!-- Player Options full screen -->
         <div class="menu-items" id="player-options-items" style="display: none;">
-
           <!-- Main panel -->
           <div class="menu-items" id="player-main-items">
             <div class="menu-item">God Mode</div>
             <div class="menu-item">Invisible</div>
             <!-- etc… -->
           </div>
-
           <!-- Movement panel -->
           <div class="menu-items" id="player-movement-items" style="display: none;">
             <div class="menu-item">No Clip</div>
             <div class="menu-item">Run Speed</div>
           </div>
-
         </div>
       </div>
-
-
+  
       <div class="menu-footer">
         Version: Beta <span id="time-since-release">Loading...</span>
         <span class="right-text" id="menu-counter">1/9</span>
       </div>
     </div>
-  </div>
+  </div>  
   <style>
     .submenu-items {
       padding-left: 20px;
@@ -233,100 +266,115 @@
 <script>
   // State
   let selectedIndex   = 0;
-  let currentTab      = 0; // 0=Local,1=Online,2=Spawn,3=PlayerOptions
-  let currentSubTab   = 0; // 0=Main,1=Movement
+  let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
+  let currentSubTab   = 0;
   let menuVisible     = true;
 
   // DOM refs
-  const menuWrapper    = document.querySelector('.menu-wrapper');
-  const mainTabs       = document.querySelectorAll('#menu-tabs .menu-tab');
-  const playerTabs     = document.querySelectorAll('#player-tabs .menu-tab');
-  const containers     = [
-    document.getElementById('local-items'),
-    document.getElementById('online-items'),
-    document.getElementById('spawn-items'),
-    document.getElementById('player-options-items')
+  const menuWrapper     = document.querySelector('.menu-wrapper');
+  const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
+  const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
+  const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
+  const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
+  const containers      = [
+    document.getElementById('main-items'),         // 0
+    document.getElementById('scripts-items'),      // 1
+    document.getElementById('settings-items'),     // 2
+    document.getElementById('player-options-items'),// 3
+    document.getElementById('misc-options-items'), // 4
+    document.getElementById('scripts-options-items')// 5
   ];
-  const subContainers  = [
+  const subContainers   = [
+    // PlayerOptions
     document.getElementById('player-main-items'),
-    document.getElementById('player-movement-items')
+    document.getElementById('player-movement-items'),
+    // Misc
+    document.getElementById('misc-main-items'),
+    document.getElementById('misc-settings-items'),
+    // ScriptsOpts
+    document.getElementById('scripts-main-items'),
+    document.getElementById('misc-Built-items'),
+    document.getElementById('scripts-misc-items'),
   ];
-  const mainTabsEl     = document.getElementById('menu-tabs');
-  const playerTabsEl   = document.getElementById('player-tabs');
+  const mainTabsEl      = document.getElementById('menu-tabs');
+  const playerTabsEl    = document.getElementById('player-tabs');
+  const miscTabsEl      = document.getElementById('misc-tabs');
+  const scriptsTabsEl   = document.getElementById('scripts-tabs');
   const scrollbarContainer = document.querySelector('.scrollbar-container');
-  const scrollbarThumb = document.getElementById('scrollbar-thumb');
-  const menuCounter    = document.getElementById('menu-counter');
-  const playerToggle   = document.getElementById('player-options-toggle');
+  const scrollbarThumb  = document.getElementById('scrollbar-thumb');
+  const menuCounter     = document.getElementById('menu-counter');
+  const playerToggle    = document.getElementById('player-options-toggle');
+  const miscToggle      = document.getElementById('misc-options-toggle');
+  const scriptsToggle   = document.getElementById('scripts-options-toggle');
 
-  // Return only the .menu-item elements in the active view
+  // collect only visible items
   function getMenuItems() {
-    if (currentTab < 3) {
+    if (currentTab <= 2) {
       return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
                   .filter(i => i.offsetParent !== null);
-    } else {
-      return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                  .filter(i => i.offsetParent !== null);
     }
+    // for submenus: tab 3 & 4 each have 2 subtabs, tab 5 has 3 subtabs
+    let start, count;
+    if (currentTab === 3) { start = 0; count = 2; }
+    else if (currentTab === 4) { start = 2; count = 2; }
+    else /* currentTab===5 */ { start = 4; count = 3; }
+    return Array.from(subContainers.slice(start, start + count)[currentSubTab]
+      .querySelectorAll('.menu-item'))
+      .filter(i => i.offsetParent !== null);
   }
 
-  // Highlight + scroll + counter
   function updateMenuSelection(dir) {
     const items = getMenuItems();
     if (!items.length) return;
-
-    // Remove 'selected' from the old item
     items[selectedIndex]?.classList.remove('selected');
-
-    // Calculate new selected index
     selectedIndex = (selectedIndex + dir + items.length) % items.length;
-
-    // Add 'selected' to the new item
     items[selectedIndex].classList.add('selected');
-
-    // Smooth scroll to the selected item
     items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Update the scrollbar thumb position
-    const containerHeight = scrollbarContainer.clientHeight;
-    const thumbHeight = scrollbarThumb.clientHeight;
-    const maxScrollTop = containerHeight - thumbHeight;
-    const step = items.length > 1 ? maxScrollTop / (items.length - 1) : 0;
-    scrollbarThumb.style.top = `${selectedIndex * step}px`;
-
-    // Update the menu counter
-    menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
+    const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
+    const step = items.length>1 ? max/(items.length-1) : 0;
+    scrollbarThumb.style.top = `${selectedIndex*step}px`;
+    menuCounter.textContent = `${selectedIndex+1}/${items.length}`;
   }
 
-  // Remove every `.selected` class from menu-items
   function clearSelection() {
     document.querySelectorAll('.menu-item.selected')
-            .forEach(el => el.classList.remove('selected'));
+            .forEach(el=>el.classList.remove('selected'));
   }
 
-  // now with an optional `reset` (defaults to true)
-  function updateTabUI(tabIdx, reset = true) {
+  function updateTabUI(tabIdx, reset=true) {
     currentTab = tabIdx;
     clearSelection();
 
-    // swap which tab-bar is visible
-    mainTabsEl.style.display   = (tabIdx === 3 ? 'none' : 'flex');
-    playerTabsEl.style.display = (tabIdx === 3 ? 'flex' : 'none');
+    // show/hide each tab-bar
+    mainTabsEl  .style.display = (tabIdx<=2) ? 'flex' : 'none';
+    playerTabsEl.style.display = (tabIdx===3)? 'flex':'none';
+    miscTabsEl  .style.display = (tabIdx===4)? 'flex':'none';
+    scriptsTabsEl.style.display= (tabIdx===5)? 'flex':'none';
 
-    // highlight the correct tab
-    mainTabs.forEach((t,i)=> t.classList.toggle('selected', i === tabIdx));
-    playerTabs.forEach((t,i)=> t.classList.toggle('selected', i === currentSubTab));
+    // highlight active in each bar
+    mainTabs.forEach((t,i)=>t.classList.toggle('selected', i===tabIdx));
+    playerTabs.forEach((t,i)=>t.classList.toggle('selected', tabIdx===3 && i===currentSubTab));
+    miscTabs.forEach((t,i)=>t.classList.toggle('selected', tabIdx===4 && i===currentSubTab));
+    scriptsTabs.forEach((t,i)=>t.classList.toggle('selected', tabIdx===5 && i===currentSubTab));
 
-    // show only the current container
-    containers.forEach((c,i)=> c.style.display = (i === tabIdx ? 'block' : 'none'));
+    // containers
+    containers.forEach((c,i)=> c.style.display = (i===tabIdx?'block':'none'));
 
-    // if we're in PlayerOptions, show the right sub-panel
-    if (tabIdx === 3) {
-      subContainers.forEach((c,i)=>
-        c.style.display = (i === currentSubTab ? 'block' : 'none')
-      );
+    // subpanels
+    if (tabIdx===3) {
+      subContainers[0].style.display = currentSubTab===0?'block':'none';
+      subContainers[1].style.display = currentSubTab===1?'block':'none';
+    }
+    if (tabIdx===4) {
+      subContainers[2].style.display = currentSubTab===0?'block':'none';
+      subContainers[3].style.display = currentSubTab===1?'block':'none';
+    }
+    if (tabIdx===5) {
+      subContainers[4].style.display = currentSubTab===0?'block':'none';
+      subContainers[5].style.display = currentSubTab===1?'block':'none';
+      subContainers[6].style.display = currentSubTab===2?'block':'none';
     }
 
-    // optionally reset selection to the top, or simply re-highlight
     if (reset) {
       selectedIndex = 0;
       updateMenuSelection(0);
@@ -335,70 +383,75 @@
     }
   }
 
-  // Cycle left/right across the appropriate tab-bar
   function updateTabSelection(dir) {
-    if (currentTab === 3) {
-      // inside PO → flip Main<->Movement
-      currentSubTab = (currentSubTab + dir + playerTabs.length) % playerTabs.length;
+    if (currentTab===3) {
+      currentSubTab = (currentSubTab+dir+playerTabs.length)%playerTabs.length;
       updateTabUI(3);
+    } else if (currentTab===4) {
+      currentSubTab = (currentSubTab+dir+miscTabs.length)%miscTabs.length;
+      updateTabUI(4);
+    } else if (currentTab===5) {
+      currentSubTab = (currentSubTab+dir+scriptsTabs.length)%scriptsTabs.length;
+      updateTabUI(5);
     } else {
-      // normal three-way
-      const len = mainTabs.length;
-      updateTabUI((currentTab + dir + len) % len);
+      currentTab = (currentTab + dir + mainTabs.length)%mainTabs.length;
+      updateTabUI(currentTab);
     }
   }
 
-  // wire clicks on both tab-bars
-  mainTabs.forEach((t,i)=> t.addEventListener('click', ()=> updateTabUI(i)));
-  playerTabs.forEach((t,i)=> t.addEventListener('click', ()=>{
-    currentSubTab = i;
-    updateTabUI(3);
+  // clicks
+  mainTabs   .forEach((t,i)=>t.addEventListener('click',()=>updateTabUI(i)));
+  playerTabs .forEach((t,i)=>t.addEventListener('click',()=>{
+    currentSubTab=i; updateTabUI(3);
+  }));
+  miscTabs   .forEach((t,i)=>t.addEventListener('click',()=>{
+    currentSubTab=i; updateTabUI(4);
+  }));
+  scriptsTabs.forEach((t,i)=>t.addEventListener('click',()=>{
+    currentSubTab=i; updateTabUI(5);
   }));
 
-  // “Player Options” menu‐item takes you into PO (initialize subTab here)
-  playerToggle.addEventListener('click', () => {
-    currentSubTab = 0;      // <-- only reset once, here
-    updateTabUI(3);
-  });
+  // submenu toggles
+  playerToggle.addEventListener('click', ()=>{ currentSubTab=0; updateTabUI(3); });
+  miscToggle  .addEventListener('click', ()=>{ currentSubTab=0; updateTabUI(4); });
+  scriptsToggle.addEventListener('click', ()=>{ currentSubTab=0; updateTabUI(5); });
 
-  // Listen for Lua/gamepad events
-  window.addEventListener('message', ({ data }) => {
-    let msg = data;
-    if (typeof msg === 'string') {
-      try { msg = JSON.parse(msg); } catch { return; }
-    }
-    switch (msg.type) {
+  // gamepad messages
+  window.addEventListener('message',({data})=>{
+    let msg = typeof data==='string'? JSON.parse(data):data;
+    switch(msg.type){
       case 'toggleMenu':
-        menuVisible = !!msg.data.visible;
-        menuWrapper.style.display = menuVisible ? 'flex' : 'none';
-        if (menuVisible) {
-          // restore last tab & selection, without resetting to 0
-          updateTabUI(currentTab, false);
-        }
+        menuVisible=!!msg.data.visible;
+        menuWrapper.style.display= menuVisible?'flex':'none';
+        if(menuVisible) updateTabUI(currentTab,false);
         break;
       case 'navigate':
-        if (msg.data.direction)
-          updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
+        updateMenuSelection(msg.data.direction==='up'?-1:1);
         break;
       case 'tab':
-        updateTabSelection(msg.data.direction === 'left' ? -1 : 1);
+        updateTabSelection(msg.data.direction==='left'?-1:1);
         break;
       case 'select':
         getMenuItems()[selectedIndex]?.click();
         break;
       case 'back':
-        if (currentTab === 3 && currentSubTab === 1) {
-          // Movement → back to Main
-          currentSubTab = 0;
-          updateTabUI(3);
-        } else if (currentTab === 3) {
-          // exit Player Options
+        if(currentTab===3 && currentSubTab>0){
+          currentSubTab=0; updateTabUI(3);
+        } else if(currentTab===3){
           updateTabUI(0);
-        } else if (currentTab > 0) {
+        } else if(currentTab===4 && currentSubTab>0){
+          currentSubTab=0; updateTabUI(4);
+        } else if(currentTab===4){
+          updateTabUI(2);
+        } else if(currentTab===5 && currentSubTab>0){
+          currentSubTab=0; updateTabUI(5);
+        } else if(currentTab===5){
+          updateTabUI(1);
+        } else if(currentTab>0){
           updateTabSelection(-1);
         } else {
-          menuVisible = false;
-          menuWrapper.style.display = 'none';
+          menuVisible=false;
+          menuWrapper.style.display='none';
         }
         break;
     }
