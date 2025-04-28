@@ -435,7 +435,7 @@
         getMenuItems()[selectedIndex]?.click();
         break;
       case 'back':
-        // First, if we’re in a submenu (any tab with currentSubTab)
+        // First, if we’re in a submenu (any tab with a nonzero currentSubTab)
         if (currentSubTab > 0) {
           // step back by one sub-tab
           currentSubTab--;
