@@ -19,21 +19,26 @@
       align-items: center;
     }
     .scrollbar-container {
-        width: 12px;
-        height: 600px;
-        background: #22222270;
-        border-radius: 10px;
-        position: relative;
-        margin-right: 12px;
+      width: 12px;
+      height: 600px;
+      background: #22222270;
+      border-radius: 10px;
+      position: relative;
+      margin-right: 12px;
     }
     .scrollbar-thumb {
-        width: 100%;
-        background: #370467;
-        border-radius: 20px;
-        position: absolute;
-        top: 0;
-        height: 40px;
-        transition: top 0.2s ease-in-out;
+      width: 100%;
+      height: 40px;
+      position: absolute;
+      top: 0;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #6e0cff 0%, #6e0cff 100%);
+      transition: top 0.2s ease-in-out;
+      box-shadow:
+        inset 0 0 16px 5px rgba(158, 0, 255, 0.8),
+        inset 0 0 60px 20px rgba(158, 0, 255, 0.4),
+        0 0 5px 0px rgba(158, 0, 255, 0.8),
+        0 0 15px 1px rgba(158, 0, 255, 0.6);
     }
     .menu-container {
         width: 410px;
@@ -248,10 +253,10 @@
   ];
   const mainTabsEl     = document.getElementById('menu-tabs');
   const playerTabsEl   = document.getElementById('player-tabs');
+  const scrollbarContainer = document.querySelector('.scrollbar-container');
   const scrollbarThumb = document.getElementById('scrollbar-thumb');
   const menuCounter    = document.getElementById('menu-counter');
   const playerToggle   = document.getElementById('player-options-toggle');
-  const maxScroll      = 410 - 35;
 
   // Return only the .menu-item elements in the active view
   function getMenuItems() {
@@ -272,7 +277,12 @@
     selectedIndex = (selectedIndex + dir + items.length) % items.length;
     items[selectedIndex].classList.add('selected');
     items[selectedIndex].scrollIntoView({ behavior:'smooth', block:'nearest' });
-    const step = maxScroll / (items.length - 1 || 1);
+    const containerHeight = scrollbarContainer.clientHeight;
+    const thumbHeight     = scrollbarThumb.clientHeight;
+    const maxScrollTop    = containerHeight - thumbHeight;
+    const step            = items.length > 1
+                          ? maxScrollTop / (items.length - 1)
+                          : 0;
     scrollbarThumb.style.top = `${selectedIndex * step}px`;
     menuCounter.textContent = `${selectedIndex+1}/${items.length}`;
   }
