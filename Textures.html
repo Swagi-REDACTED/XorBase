@@ -397,17 +397,25 @@
           menuWrapper.style.display = 'none';
         }
         break;
-      case 'option':
+      case 'option': 
         // Handle Lua-sent options, including name and associated functions
         if (msg.data && msg.data.action) {
           const name = msg.data.name || 'Unnamed Option';
           const action = msg.data.action;
           console.log(`Option triggered: ${name}`);
 
-          // Execute the action sent from Lua if it exists
+          // Create a new menu item
+          const menuItem = document.createElement('div');
+          menuItem.classList.add('menu-item');
+          menuItem.textContent = name;
+
+          // Attach the action to the menu item (if exists)
           if (typeof action === 'function') {
-            action();
+            menuItem.addEventListener('click', action);
           }
+
+          // Append the menu item to the specified tab
+          document.getElementById(msg.data.tab).appendChild(menuItem);
         }
         break;
     }
