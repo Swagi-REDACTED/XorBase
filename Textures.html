@@ -312,19 +312,31 @@
     mainTabs.forEach((t,i)=> t.classList.toggle('selected', i === tabIdx));
     playerTabs.forEach((t,i)=> t.classList.toggle('selected', i === currentSubTab));
 
-    // show only the current container
+    // Show only the current container
     containers.forEach((c,i)=> c.style.display = (i === tabIdx ? 'block' : 'none'));
 
-    // if we're in PlayerOptions, show the right sub-panel
+    // If we're in PlayerOptions, show the right sub-panel
     if (tabIdx === 3) {
       subContainers.forEach((c,i)=>
         c.style.display = (i === currentSubTab ? 'block' : 'none')
       );
     }
 
-    // reset selection
+    // Reset selection for menu items
+    resetHoverEffect();
+
+    // Reset selection
     selectedIndex = 0;
     updateMenuSelection(0);
+  }
+
+  // Reset hover effect for all items in the active menu
+  function resetHoverEffect() {
+    // Remove hover and selected states from all menu items
+    const allItems = document.querySelectorAll('.menu-item');
+    allItems.forEach(item => {
+      item.classList.remove('hover', 'selected');
+    });
   }
 
   // Cycle left/right across the appropriate tab-bar
