@@ -175,11 +175,6 @@
 
         <!-- Online -->
         <div class="menu-items" id="online-items" style="display: none;">
-          <div class="menu-item" id="option1">Option 1</div>
-          <div class="menu-item">Option 2</div>
-          <div class="menu-item">Option 3</div>
-          <div class="menu-item">Option 4</div>
-          <div class="menu-item">Option 5</div>
         </div>
 
         <!-- Spawn -->
@@ -262,27 +257,14 @@
   const menuCounter    = document.getElementById('menu-counter');
   const playerToggle   = document.getElementById('player-options-toggle');
 
-  // Return only the .menu-item elements in the active view
   function getMenuItems() {
-    let menuItems;
-    
     if (currentTab < 3) {
-        menuItems = Array.from(containers[currentTab].querySelectorAll('.menu-item'))
-                         .filter(i => i.offsetParent !== null);
+      return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+                  .filter(i => i.offsetParent !== null);
     } else {
-        menuItems = Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                         .filter(i => i.offsetParent !== null);
+      return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                  .filter(i => i.offsetParent !== null);
     }
-
-    // Attach click event listener only to Option 1
-    const option1 = menuItems.find(item => item.id === "option1");
-    if (option1) {
-        option1.addEventListener('click', () => {
-            triggerLuaFunction(); // Call the Lua function on Option 1 click
-        });
-    }
-
-    return menuItems;
   }
 
   // Highlight + scroll + counter
@@ -378,18 +360,6 @@
     updateTabUI(3);
   });
 
-  function triggerLuaFunction() {
-    const data = {
-        data: "Example data"
-    };
-    
-    // Send the data to Lua using SendNUIMessage
-    SendNUIMessage({
-        action: "triggerLuaFunction", // A custom action to be used in Lua
-        data: data
-    });
-  }
-
   // Listen for Lua/gamepad events
   window.addEventListener('message', ({ data }) => {
     let msg = data;
@@ -425,6 +395,19 @@
         } else {
           menuVisible = false;
           menuWrapper.style.display = 'none';
+        }
+        break;
+      case 'option':
+        // Handle Lua-sent options, including name and associated functions
+        if (msg.data && msg.data.action) {
+          const name = msg.data.name || 'Unnamed Option';
+          const action = msg.data.action;
+          console.log(`Option triggered: ${name}`);
+
+          // Execute the action sent from Lua if it exists
+          if (typeof action === 'function') {
+            action();
+          }
         }
         break;
     }
