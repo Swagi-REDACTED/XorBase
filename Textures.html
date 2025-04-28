@@ -46,6 +46,7 @@
         border-radius: 15px;
         display: flex;
         flex-direction: column;
+        transition: transform 0.1s linear; /* No easing effect, pure snap */
         overflow: hidden;
         position: relative;
         z-index: 10;
@@ -102,7 +103,7 @@
       font-size: 14px;
       cursor: pointer;
       border-left: 4px solid transparent;
-      transition: background 0.25s ease, color 0.3s ease, transform 0.3s ease; /* Keep smooth transitions for background, color, and transform */
+      transition: background-color 0.3s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
     }
 
     .menu-item:hover,
@@ -115,10 +116,7 @@
       box-shadow:
         inset 0 0 4px 2px rgba(78, 0, 151, 0.7),  /* dark purple inner glow */
         0 0 6px rgba(78, 0, 151, 0.4); /* soft outer halo */
-      
-      /* Add smooth scaling for the selected effect */
-      transform: scale(1.00); /* slightly enlarge the selected item */
-      transition: transform 0.4s ease-in-out; /* smooth scaling transition */
+        transition: background-color 0.3s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
     }
     .menu-footer {
       background: rgba(0, 0, 0, 0.8);
