@@ -207,7 +207,6 @@
       max-height: 410px;
     }
   </style>
-
   <script>
     // State
     let selectedIndex = 0;
@@ -300,23 +299,24 @@
           items[selectedIndex]?.click();
           break;
         case 'back':
-          // Check if a submenu is open
           if (playerOptionsSubmenu.style.display === 'block') {
-            // Close the submenu
+            // If in player options submenu, close it
             playerOptionsSubmenu.style.display = 'none';
-            // Reset selection to the "Player Options" main item
             const items = getMenuItems();
             selectedIndex = Array.from(items).indexOf(playerOptionsToggle);
             updateMenuSelection(0);
+          } else if (currentTab !== 0) {
+            // If not in the first tab, go back to previous tab
+            updateTabSelection(-1);
           } else {
-            // If no submenu open, you could add logic to go to a previous tab, or do nothing
+            // Already at main menu - maybe close menu or reset selection
             console.log('Already at main menu');
           }
           break;
+
       }
     }
 
-    window.removeEventListener('message', onDuiMessage);
     window.addEventListener('message', onDuiMessage);
     window.addEventListener('beforeunload', () => {
       window.removeEventListener('message', onDuiMessage);
