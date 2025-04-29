@@ -824,6 +824,8 @@ function goBack() {
     currentTab = previousTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
+  } else if (currentTab > 0) {
+    updateTabUI(0, true);
   } else {
     menuVisible = false;
     menuWrapper.style.display = 'none';
