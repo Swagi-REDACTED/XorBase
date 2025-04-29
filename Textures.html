@@ -60,6 +60,55 @@
         0 0 10px rgba(78, 0, 151, 0.7),          /* outer halo */
         0 0 10px rgba(78, 0, 151, 0.4);             /* original black shadow */
     }
+    /* Style for the bind menu */
+    .menu-binds {
+        position: absolute;
+        bottom: -100%; /* Initially hidden, will slide up */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%; /* Adjust based on your needs */
+        max-width: 500px;
+        height: 200px; /* Adjust based on your needs */
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 20px; /* Outer rounded corners */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: bottom 0.5s ease; /* Smooth slide effect */
+    }
+
+    /* Inner sharp rectangle */
+    .menu-binds .inner-rect {
+        width: 80%; /* Inner rectangle width */
+        height: 60%; /* Inner rectangle height */
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Text box style in the middle */
+    .menu-binds input {
+        width: 80%;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 18px;
+        text-align: center;
+        outline: none;
+    }
+
+    /* Style for the key text */
+    .menu-binds input:focus {
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 5px #ffdd00;
+    }
     .menu-header {
       background: url("http://i.ibb.co/8LxNKZXD/output.webp") no-repeat center center;
       background-size: cover;
@@ -860,6 +909,63 @@ function goBack() {
   }
 }
 
+// This function is responsible for showing the bind menu
+let bindMenuVisible = false;
+let currentBindKey = null;
+
+function showbindmenu() {
+    const bindMenu = document.querySelector('.menu-binds');
+    const inputBox = bindMenu.querySelector('input');
+    
+    // Slide the bind menu up from the bottom
+    if (!bindMenuVisible) {
+        bindMenu.style.bottom = '0'; // This will trigger the smooth slide effect
+        bindMenuVisible = true;
+
+        // Clear previous key binding
+        inputBox.value = '';
+
+        // Start listening for key press
+        listenForKeyPress(inputBox);
+    } else {
+        bindMenu.style.bottom = '-100%'; // Slide it back down
+        bindMenuVisible = false;
+    }
+}
+
+function listenForKeyPress(inputBox) {
+    document.addEventListener('keydown', function(event) {
+        // Only capture keypresses when bind menu is visible
+        if (bindMenuVisible && event.key !== 'Enter') {
+            currentBindKey = event.key;
+            inputBox.value = currentBindKey; // Display the pressed key in the text box
+        } else if (event.key === 'Enter') {
+            // Lock the key binding when Enter is pressed
+            lockKeyBinding(inputBox);
+        }
+    });
+}
+
+function lockKeyBinding(inputBox) {
+    // You can store the key binding or use it for functionality
+    console.log('Key bound to: ' + currentBindKey);
+    
+    // Optionally, slide the bind menu back into the main menu
+    showbindmenu();
+}
+
+// This is the function that will run the appropriate case based on some input
+function handleAction(action) {
+    switch (action) {
+        case 'keybind':
+            showbindmenu();
+            break;
+        // You can add other cases for different actions
+        default:
+            console.log('Action not found');
+    }
+}
+
 window.addEventListener('message', ({ data }) => {
   let msg = typeof data === 'string' ? JSON.parse(data) : data;
   switch (msg.type) {
@@ -881,6 +987,7 @@ window.addEventListener('message', ({ data }) => {
     case 'slide':    updateslidervalue(msg.data.direction === 'left' ? -1 : 1); break;
     case 'select':   getMenuItems()[selectedIndex]?.click(); break;
     case 'back':     goBack(); break;
+    case 'keybind':  handleAction('keybind'); break;
   }
 });
 
