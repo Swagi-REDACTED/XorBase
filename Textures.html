@@ -1009,7 +1009,7 @@
     });
   });
 
-  function goBack() {
+  function goBack() { 
     if (currentTab >= 3 && currentSubTab > 0) {
       currentSubTab = 0;
       selectedIndex = 0;
@@ -1017,6 +1017,7 @@
       updateTabUI(currentTab, true); // Re-render the same tab to apply subtab reset
     } else {
       updateTabUI(0, true); // Return to main tab group
+      menuVisible = false;  // Fully close the menu if we're at the top level
     }
   }
 
