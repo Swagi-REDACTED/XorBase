@@ -217,7 +217,8 @@
       background: #8f04a7;
       border-radius: 3px;
       filter: url(#electric-glow);
-      transition: width 0.2s ease, box-shadow 0.35s ease;
+      transition: width 0.2s ease, box-shadow 0.35s ease, filter 0.35s ease;
+      pointer-events: none; /* ensure no weird hover */
     }
 
     .menu-footer {
@@ -238,19 +239,24 @@
 <body>
   <svg style="display: none;">
     <filter id="electric-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+      <!-- Light Gaussian blur -->
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur" />
+      
+      <!-- Color matrix tuned for deep purple -->
       <feColorMatrix
         in="blur"
-        mode="matrix"
-        values="1 0 0 0 0  
-                0 0 1 0 0  
-                0 0 1 0 0  
-                0 0 0 18 -7"
-        result="glow"
+        type="matrix"
+        values="1 0 0 0 0
+                0 0.2 1 0 0
+                0.8 0 1 0 0
+                0 0 0 1 0"
+        result="purple-glow"
       />
-      <feBlend in="SourceGraphic" in2="glow" mode="screen" />
+      
+      <!-- Blend blurred glow back onto source -->
+      <feBlend in="SourceGraphic" in2="purple-glow" mode="screen" />
     </filter>
-  </svg>
+  </svg>  
   <div class="menu-wrapper">
     <div class="scrollbar-container">
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
