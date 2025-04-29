@@ -290,6 +290,10 @@
         <div class="menu-tab" id="scripts-Built-tab">Built-in</div>
         <div class="menu-tab" id="scripts-misc-tab">Misc</div>
       </div>
+      <!-- scripts tabs -->
+      <div class="menu-tabs" id="Force-tabs" style="display: none;">
+        <div class="menu-tab selected" id="Force-main-tab">Force Emote</div>
+      </div>
       <!-- vehicle tabs -->
       <div class="menu-tabs" id="vehicle-tabs" style="display: none;">
         <div class="menu-tab selected" id="vehicle-main-tab">Vehicle</div>
@@ -350,7 +354,7 @@
         <!-- Scripts -->
         <div class="menu-items" id="scripts-items" style="display: none;">
           <div class="menu-item" id="scripts-options-toggle">Scripts</div>
-          <div class="menu-item">Force Emote</div>
+          <div class="menu-item" id="Force-options-toggle">Force Emote</div>
         </div>
   
         <!-- Settings -->
@@ -375,7 +379,15 @@
             <div class="menu-item">Block logs</div>
           </div>
         </div>
-        
+
+        <div class="menu-items" id="Force-options-items" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="Force-main-items">
+            <div class="menu-item">force 1</div>
+            <div class="menu-item">force 1</div>
+            <!-- etc… -->
+          </div>
+        </div>
 
         <div class="menu-items" id="misc-options-items" style="display: none;">
           <!-- Main panel -->
@@ -579,6 +591,7 @@ const modelTabs       = document.querySelectorAll('#model-tabs .menu-tab');
 const outfitsTabs     = document.querySelectorAll('#outfits-tabs .menu-tab');
 const worldTabs       = document.querySelectorAll('#world-tabs .menu-tab');
 const serverTabs      = document.querySelectorAll('#server-tabs .menu-tab');
+const forceTabs       = document.querySelectorAll('#Force-tabs .menu-tab');
 
 const containers      = [
   document.getElementById('main-items'),
@@ -594,7 +607,8 @@ const containers      = [
   document.getElementById('model-options-items'),
   document.getElementById('outfits-options-items'),
   document.getElementById('world-options-items'),
-  document.getElementById('server-options-items')
+  document.getElementById('server-options-items'),
+  document.getElementById('Force-options-items')
 ];
 
 const subContainers = [
@@ -621,7 +635,8 @@ const subContainers = [
   document.getElementById('world-main-items'),
   document.getElementById('world-atmosphere-items'),
   document.getElementById('server-main-items'),
-  document.getElementById('server-destroyer-items')
+  document.getElementById('server-destroyer-items'),
+  document.getElementById('Force-main-items')
 ];
 
 const mainTabsEl      = document.getElementById('menu-tabs');
@@ -636,6 +651,7 @@ const modelTabsEl     = document.getElementById('model-tabs');
 const outfitsTabsEl   = document.getElementById('outfits-tabs');
 const worldTabsEl     = document.getElementById('world-tabs');
 const serverTabsEl    = document.getElementById('server-tabs');
+const forceTabsEl     = document.getElementById('Force-tabs');
 
 const scrollbarContainer = document.querySelector('.scrollbar-container');
 const scrollbarThumb     = document.getElementById('scrollbar-thumb');
@@ -651,6 +667,7 @@ const modelToggle        = document.getElementById('model-options-toggle');
 const outfitsToggle      = document.getElementById('outfits-options-toggle');
 const worldToggle        = document.getElementById('world-options-toggle');
 const serverToggle       = document.getElementById('server-options-toggle');
+const forceToggle        = document.getElementById('Force-options-toggle');
 
 function getMenuItems() {
   if (currentTab <= 2) {
@@ -698,12 +715,19 @@ function updateTabUI(tabIdx, reset = true) {
     document.getElementById('model-tabs'),
     document.getElementById('outfits-tabs'),
     document.getElementById('world-tabs'),
-    document.getElementById('server-tabs')
+    document.getElementById('server-tabs'),
+    document.getElementById('Force-tabs') // <-- Add this line
   ];
   groups.forEach(g => g.style.display = 'none');
 
   // show current header
-  const displayMap = {0:0,1:0,2:0,3:1,4:2,5:3,6:4,7:5,8:6,9:7,10:8,11:9,12:10,13:11};
+  const displayMap = {
+  0: 0, 1: 0, 2: 0,
+  3: 1, 4: 2, 5: 3,
+  6: 4, 7: 5, 8: 6,
+  9: 7, 10: 8, 11: 9,
+  12: 10, 13: 11,
+  14: 12 };
   groups[displayMap[tabIdx]].style.display = 'flex';
 
   // highlight tabs
@@ -716,8 +740,18 @@ function updateTabUI(tabIdx, reset = true) {
   updateMenuSelection(0);
   // show subs
   subContainers.forEach(c=>c.style.display='none');
-  const countMap = {3:2,4:2,5:3,6:2,7:2,8:2,9:3,10:1,11:3,12:2,13:2};
-  const startMap = {3:0,4:2,5:4,6:7,7:9,8:11,9:13,10:16,11:17,12:20,13:22};
+  const countMap = {
+  3: 2, 4: 2, 5: 3,
+  6: 2, 7: 2, 8: 2,
+  9: 3, 10: 1, 11: 3,
+  12: 2, 13: 2,
+  14: 1 };
+  const startMap = {
+  3: 0, 4: 2, 5: 4,
+  6: 7, 7: 9, 8: 11,
+  9: 13, 10: 16, 11: 17,
+  12: 20, 13: 22,
+  14: 24 };
   const cCount = countMap[tabIdx]||1;
   for(let i=0;i<cCount;i++){
     subContainers[startMap[tabIdx]+i].style.display = i===currentSubTab?'block':'none';
@@ -730,7 +764,7 @@ function updateTabUI(tabIdx, reset = true) {
 function updateTabSelection(dir){
   selectedIndex=0; // reset always
   if(currentTab>=3&&currentTab<=13){
-    const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs];
+    const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs];
     const arr=arrs[currentTab-3];
     currentSubTab=(currentSubTab+dir+arr.length)%arr.length;
   } else {
