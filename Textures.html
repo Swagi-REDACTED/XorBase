@@ -677,7 +677,11 @@ function getMenuItems() {
     return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
       .filter(i => i.offsetParent !== null);
   }
-  const subIndexMap = {3:0,4:2,5:4,6:7,7:9,8:11,9:13,10:16,11:17,12:20,13:22};
+  const subIndexMap = {
+  3: 0, 4: 2, 5: 4, 6: 7, 7: 9, 8: 11,
+  9: 13, 10: 16, 11: 17, 12: 20, 13: 22,
+  14: 24 // <-- Add this!
+  };
   const start = subIndexMap[currentTab] || 0;
   return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
     .filter(i => i.offsetParent !== null);
