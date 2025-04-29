@@ -789,14 +789,20 @@ function updateTabUI(tabIdx, reset = true) {
 
 function updateTabSelection(dir) {
   if (currentTab >= 3 && currentTab <= 14) {
-    const arrs = [playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs, weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs];
+    const arrs = [
+      playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
+      weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs
+    ];
     const arr = arrs[currentTab - 3];
     currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
   } else {
     currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
   }
+
+  // Update the selectedIndex and the menu selection after changing the tab
+  selectedIndex = 0;
   updateTabUI(currentTab, true);
-  updateMenuSelection(0);
+  updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
 }
 
 // toggle buttons
@@ -861,7 +867,7 @@ window.addEventListener('message', ({ data }) => {
       updateTabUI(currentTab, false);
       break;
     case 'navigate': updateMenuSelection(msg.data.direction === 'up' ? -1 : 1); break;
-    case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); selectedIndex=0; break;
+    case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); break;
     case 'slide':    updateslidervalue(msg.data.direction === 'left' ? -1 : 1); break;
     case 'select':   getMenuItems()[selectedIndex]?.click(); break;
     case 'back':     goBack(); break;
