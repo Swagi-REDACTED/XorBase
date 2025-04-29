@@ -817,7 +817,8 @@ function updateslidervalue(dir) {
 }
 
 function goBack() {
-  if (currentTab >= 2 && currentSubTab > 0) {
+  if (currentTab > 0 && currentSubTab > 0) {
+    currentTab = 0
     currentSubTab = 0;
     selectedIndex = 0;
     updateTabUI(currentTab, true);
