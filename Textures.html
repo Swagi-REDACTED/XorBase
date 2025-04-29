@@ -1014,9 +1014,9 @@
       currentSubTab = 0;
       selectedIndex = 0;
       clearSelection();
-      updateMenuSelection(0);
+      updateTabUI(currentTab, true); // Re-render the same tab to apply subtab reset
     } else {
-      updateTabUI(0); // Back to Main menu if already at subtab 0
+      updateTabUI(0, true); // Return to main tab group
     }
   }
 
