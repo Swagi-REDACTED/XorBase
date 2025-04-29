@@ -656,38 +656,34 @@
   const worldToggle    = document.getElementById('world-options-toggle');
   const serverToggle    = document.getElementById('server-options-toggle');
 
-  // Collect only visible menu items
+  // collect only visible items for whatever tab/sub-tab you're on
   function getMenuItems() {
-      if (currentTab <= 2) {
-          return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
-                      .filter(i => i.offsetParent !== null);
-      }
+    // top-level (Main, ScriptsList, Settings)
+    if (currentTab <= 2) {
+      return Array.from(containers[currentTab]
+        .querySelectorAll('.menu-item'))
+        .filter(i => i.offsetParent !== null);
+    }
 
-      // For submenus: tab 3 & 4 each have 2 subtabs, tab 5 has 3 subtabs, etc.
-      let startIndex = 0;
-      let subTabCounts = [2, 2, 3, 2, 2, 2, 3, 1, 3, 2, 2]; // Number of subtabs per major tab
+    // mapping of major tab → starting index in subContainers
+    const subIndexMap = {
+      3:  0,  // Player
+      4:  2,  // Misc
+      5:  4,  // Scripts
+      6:  7,  // Vehicle
+      7:  9,  // ESP
+      8: 11,  // Teleport
+      9: 13,  // Weapons
+      10:16,  // Model
+      11:17,  // Outfits
+      12:20,  // World
+      13:22   // Server
+    };
 
-      const tabMapping = {
-          3: 0, // Player tabs start from subContainers[0]
-          4: 2, // Misc tabs start from subContainers[2]
-          5: 4, // Scripts tabs start from subContainers[4]
-          6: 7, // Vehicle tabs start from subContainers[7]
-          7: 9, // ESP tabs start from subContainers[9]
-          8: 11, // Teleport tabs start from subContainers[11]
-          9: 13, // Weapons tabs start from subContainers[13]
-          10: 16, // Model tab starts at subContainers[16]
-          11: 17, // Outfits tab starts at subContainers[17]
-          12: 20, // World tab starts at subContainers[20]
-          13: 22, // Server tab starts at subContainers[22]
-      };
-
-      startIndex = tabMapping[currentTab] || 0;
-
-      const count = subTabCounts[currentTab - 3] || 1;
-      const relevantSubContainers = subContainers.slice(startIndex, startIndex + count);
-
-      return Array.from(relevantSubContainers[currentSubTab].querySelectorAll('.menu-item'))
-                  .filter(i => i.offsetParent !== null);
+    const start = subIndexMap[currentTab] ?? 0;
+    const list  = subContainers[start + currentSubTab];
+    return Array.from(list.querySelectorAll('.menu-item'))
+      .filter(i => i.offsetParent !== null);
   }
 
   function updateMenuSelection(dir) {
@@ -1009,15 +1005,17 @@
     });
   });
 
-  function goBack() { 
+  // Back/navigation helper
+  function goBack() {
     if (currentTab >= 3 && currentSubTab > 0) {
-      currentSubTab = 0;
+      // drop back into that tab’s main sub-panel
+      currentSubTab  = 0;
       selectedIndex = 0;
-      clearSelection();
-      updateTabUI(currentTab, true); // Re-render the same tab to apply subtab reset
+      updateTabUI(currentTab, true);
     } else {
-      updateTabUI(0, true); // Return to main tab group
-      menuVisible = false;  // Fully close the menu if we're at the top level
+      // at top-level: close menu entirely
+      menuVisible = false;
+      menuWrapper.style.display = 'none';
     }
   }
 
