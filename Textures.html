@@ -118,6 +118,69 @@
         0 0 6px rgba(78, 0, 151, 0.4); /* soft outer halo */
         transition: background-color 0.5s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
     }
+    /* make sure we include borders in width calculations */
+    .menu-item.checkbox .toggle-track,
+    .menu-item.checkbox .toggle-thumb {
+      box-sizing: border-box;
+    }
+
+    /* container flex setup */
+    .menu-item.checkbox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* the track */
+    .menu-item.checkbox .toggle-track { 
+      width: 50px;
+      height: 21px;
+      background: #62626277;
+      border: 2px solid #000;
+      border-radius: 12px;
+      position: relative;
+      transition: 
+        background 0.3s ease, 
+        box-shadow 0.3s ease;
+    }
+
+    /* the thumb */
+    .menu-item.checkbox .toggle-thumb  { 
+      width: 16px;
+      height: 15px;
+      background: #d8a5ff;
+      border: 2px solid #000;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      /* stretch + slide */
+      transition: 
+        left 0.3s cubic-bezier(0.68,-0.55,0.265,1.55),
+        transform 0.2s ease;
+    }
+
+    /* when sliding, briefly stretch */
+    .menu-item.checkbox .toggle-thumb.stretch {
+      transform: scaleX(1.2);
+    }
+    @keyframes neon-glow {
+      from { box-shadow: 0 0 2px #9e00ff, 0 0 5px #9e00ff; }
+      to   { box-shadow: 0 0 6px #9e00ff, 0 0 10px #9e00ff; }
+    }
+
+    /* toggled state: initial flicker then steady glow */
+    .menu-item.checkbox.toggled .toggle-track {
+      background: #8f04a7;
+      animation:
+        neon-glow   1.5s ease-in-out -0.6s infinite alternate;
+    }
+
+    /* thumb final position, with 2px breathing room each side */
+    .menu-item.checkbox.toggled .toggle-thumb {
+      left: calc(100% - 16px - 2px); /* track width - thumb width - border */
+    }
+
     .menu-footer {
       background: rgba(0, 0, 0, 0.8);
       color: white;
@@ -187,7 +250,7 @@
       </div>
       <!-- model tabs -->
       <div class="menu-tabs" id="model-tabs" style="display: none;">
-        <div class="menu-tab selected" id="model-main-tab">Scripts</div>
+        <div class="menu-tab selected" id="model-main-tab">Model</div>
       </div>
       <!-- outfits tabs -->
       <div class="menu-tabs" id="outfits-tabs" style="display: none;">
@@ -275,11 +338,12 @@
           </div>
           <!-- Movement panel -->
           <div class="menu-items" id="player-movement-items" style="display: none;">
-            <div class="menu-item">No Clip</div>
-            <div class="menu-item">Run Speed</div>
+            <div class="menu-item checkbox">No Clip</div>
+            <div class="menu-item checkbox">Run Speed</div>
+            <div class="menu-item">Run Speed Modifier</div>
           </div>
         </div>
-        <div class="menu-items" id="vehicle-options-toggle" style="display: none;">
+        <div class="menu-items" id="vehicle-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="vehicle-main-items">
             <div class="menu-item">Boost</div>
@@ -292,7 +356,7 @@
             <div class="menu-item">Spawner</div>
           </div>
         </div>
-        <div class="menu-items" id="esp-options-toggle" style="display: none;">
+        <div class="menu-items" id="esp-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="esp-main-items">
             <div class="menu-item">enable esp</div>
@@ -310,7 +374,7 @@
             <div class="menu-item">Infobar</div> <!-- for later -->
           </div>
         </div>
-        <div class="menu-items" id="teleport-options-toggle" style="display: none;">
+        <div class="menu-items" id="teleport-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="teleport-main-items">
             <div class="menu-item">Tp to waypoint</div>
@@ -323,7 +387,7 @@
             <div class="menu-item">tp to player by name</div>
           </div>
         </div>
-        <div class="menu-items" id="weapons-options-toggle" style="display: none;">
+        <div class="menu-items" id="weapons-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="weapons-main-items">
             <div class="menu-item">damage</div>
@@ -345,7 +409,7 @@
             <div class="menu-item">set ammo to reserve</div>
           </div>
         </div>
-        <div class="menu-items" id="model-options-toggle" style="display: none;">
+        <div class="menu-items" id="model-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="model-main-items">
             <div class="menu-item">Changer</div>
@@ -354,7 +418,7 @@
             <!-- etc… -->
           </div>
         </div>
-        <div class="menu-items" id="outfits-options-toggle" style="display: none;">
+        <div class="menu-items" id="outfits-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="outfits-main-items">
             <div class="menu-item">save outfit</div>
@@ -375,7 +439,7 @@
             <div class="menu-item">Shoes</div>
           </div>
         </div>
-        <div class="menu-items" id="world-options-toggle" style="display: none;">
+        <div class="menu-items" id="world-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="world-main-items">
             <div class="menu-item">aggressive npcs</div>
@@ -389,7 +453,7 @@
             <div class="menu-item">weather</div>
           </div>
         </div>
-        <div class="menu-items" id="server-options-toggle" style="display: none;">
+        <div class="menu-items" id="server-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="server-main-items">
             <div class="menu-item">God Mode All</div>
@@ -397,7 +461,7 @@
             <!-- etc… -->
           </div>
           <!-- destroyer panel -->
-          <div class="menu-items" id="server-destoryer-items" style="display: none;">
+          <div class="menu-items" id="server-destroyer-items" style="display: none;">
             <div class="menu-item">Cage All</div>
             <div class="menu-item">Cage Nearest</div>
             <div class="menu-item">Nuke All</div>
@@ -458,51 +522,51 @@
     document.getElementById('player-options-items'),// 3
     document.getElementById('misc-options-items'), // 4
     document.getElementById('scripts-options-items'), // 5
-    document.getElementById('vehicle-options-toggle'), // 6
-    document.getElementById('esp-options-toggle'),    // 7
-    document.getElementById('teleport-options-toggle'),// 8
-    document.getElementById('weapons-options-toggle'),// 9
-    document.getElementById('model-options-toggle'),  // 10
-    document.getElementById('outfits-options-toggle'),// 11
-    document.getElementById('world-options-toggle'),  //12
-    document.getElementById('server-options-toggle')  //13
+    document.getElementById('vehicle-options-items'), // 6 ← fixed!
+    document.getElementById('esp-options-items'),     // 7 ← fixed!
+    document.getElementById('teleport-options-items'),// 8 ← fixed!
+    document.getElementById('weapons-options-items'), // 9 ← fixed!
+    document.getElementById('model-options-items'),   // 10← fixed!
+    document.getElementById('outfits-options-items'), // 11← fixed!
+    document.getElementById('world-options-items'),   // 12← fixed!
+    document.getElementById('server-options-items')   // 13← fixed!
   ];
-  const subContainers   = [
-    // PlayerOptions
-    document.getElementById('player-main-items'),
-    document.getElementById('player-movement-items'),
-    // Misc
-    document.getElementById('misc-main-items'),
-    document.getElementById('misc-extra-items'),
-    // ScriptsOpts
-    document.getElementById('scripts-main-items'),
-    document.getElementById('misc-Built-items'),
-    document.getElementById('scripts-misc-items'),
-    // VehicleOptions
-    document.getElementById('vehicle-main-items'),
-    document.getElementById('vehicle-spawner-items'),
-    // ESPOptions
-    document.getElementById('esp-main-items'),
-    document.getElementById('esp-toggle-items'),
-    // TeleportOptions
-    document.getElementById('teleport-main-items'),
-    document.getElementById('teleport-player-items'),
-    // WeaponsOptions
-    document.getElementById('weapons-main-items'),
-    document.getElementById('weapons-aimbot-items'),
-    document.getElementById('weapons-spawner-items'),
-    // ModelOptions
-    document.getElementById('model-main-items'),
-    // OutfitsOptions
-    document.getElementById('outfits-main-items'),
-    document.getElementById('outfits-upper-items'),
-    document.getElementById('outfits-lower-items'),
-    // WorldOptions
-    document.getElementById('world-main-items'),
-    document.getElementById('world-atmosphere-items'),
-    // ServerOptions
-    document.getElementById('server-main-items'),
-    document.getElementById('server-destoryer-items')
+  const subContainers = [
+  //  0 Player: main, movement
+  document.getElementById('player-main-items'),
+  document.getElementById('player-movement-items'),
+  //  2 Misc: main, extra
+  document.getElementById('misc-main-items'),
+  document.getElementById('misc-extra-items'),
+  //  4 Scripts: main, built-in, misc
+  document.getElementById('scripts-main-items'),
+  document.getElementById('misc-Built-items'),
+  document.getElementById('scripts-misc-items'),
+  //  7 Vehicle: main, spawner
+  document.getElementById('vehicle-main-items'),
+  document.getElementById('vehicle-spawner-items'),
+  //  9 ESP: main, toggles
+  document.getElementById('esp-main-items'),
+  document.getElementById('esp-toggle-items'),
+  // 11 Teleport: main, player
+  document.getElementById('teleport-main-items'),
+  document.getElementById('teleport-player-items'),
+  // 13 Weapons: main, aimbot, spawner
+  document.getElementById('weapons-main-items'),
+  document.getElementById('weapons-aimbot-items'),
+  document.getElementById('weapons-spawner-items'),
+  // 16 Model: main
+  document.getElementById('model-main-items'),
+  // 17 Outfits: main, upper, lower
+  document.getElementById('outfits-main-items'),
+  document.getElementById('outfits-upper-items'),
+  document.getElementById('outfits-lower-items'),
+  // 20 World: main, atmosphere
+  document.getElementById('world-main-items'),
+  document.getElementById('world-atmosphere-items'),
+  // 22 Server: main, destroyer  ← make sure HTML id is "server-destroyer-items"
+  document.getElementById('server-main-items'),
+  document.getElementById('server-destroyer-items')
   ];
   const mainTabsEl      = document.getElementById('menu-tabs');
   const playerTabsEl    = document.getElementById('player-tabs');
@@ -531,21 +595,53 @@
   const worldToggle    = document.getElementById('world-options-toggle');
   const serverToggle    = document.getElementById('server-options-toggle');
 
-  // collect only visible items
   function getMenuItems() {
-    if (currentTab <= 2) {
+    if (currentTab === 0 || currentTab === 1 || currentTab === 2) {
+      // Main tabs (like Main, ScriptsList, Settings) - no sub-tabs needed
       return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
                   .filter(i => i.offsetParent !== null);
     }
-    // for submenus: tab 3 & 4 each have 2 subtabs, tab 5 has 3 subtabs
-    let start, count;
-    if (currentTab === 3) { start = 0; count = 2; }
-    else if (currentTab === 4) { start = 2; count = 2; }
-    else /* currentTab===5 */ { start = 4; count = 3; }
-    return Array.from(subContainers.slice(start, start + count)[currentSubTab]
-      .querySelectorAll('.menu-item'))
-      .filter(i => i.offsetParent !== null);
+
+    // For tabs with sub-tabs (Player Options, Misc, etc.)
+    switch (currentTab) {
+      case 3: // Player Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 4: // Misc Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 5: // Scripts Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 6: // Vehicle Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 7: // ESP Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 8: // Teleport Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 9: // Weapons Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 10: // Model Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 11: // Outfits Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 12: // World Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      case 13: // Server Options
+        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
+                    .filter(i => i.offsetParent !== null);
+      default:
+        return [];
+    }
   }
+
 
   function updateMenuSelection(dir) {
     const items = getMenuItems();
@@ -566,74 +662,99 @@
   }
 
   function updateTabUI(tabIdx, reset = true) {
-    currentTab = tabIdx;
-    clearSelection();
+      currentTab = tabIdx;
+      clearSelection();
 
-    // Hide all tabs by default
-    mainTabsEl.style.display = 'none';
-    playerTabsEl.style.display = 'none';
-    miscTabsEl.style.display = 'none';
-    scriptsTabsEl.style.display = 'none';
-    vehicleTabsEl.style.display = 'none';
-    espTabsEl.style.display = 'none';
-    teleportTabsEl.style.display = 'none';
-    weaponsTabsEl.style.display = 'none';
-    modelTabsEl.style.display = 'none';
-    outfitsTabsEl.style.display = 'none';
-    worldTabsEl.style.display = 'none';
-    serverTabsEl.style.display = 'none';
+      // Hide all tabs by default
+      mainTabsEl.style.display = 'none';
+      playerTabsEl.style.display = 'none';
+      miscTabsEl.style.display = 'none';
+      scriptsTabsEl.style.display = 'none';
+      vehicleTabsEl.style.display = 'none';
+      espTabsEl.style.display = 'none';
+      teleportTabsEl.style.display = 'none';
+      weaponsTabsEl.style.display = 'none';
+      modelTabsEl.style.display = 'none';
+      outfitsTabsEl.style.display = 'none';
+      worldTabsEl.style.display = 'none';
+      serverTabsEl.style.display = 'none';
 
-    // Show relevant tab bar
-    if (tabIdx <= 2) mainTabsEl.style.display = 'flex';
-    else if (tabIdx === 3) playerTabsEl.style.display = 'flex';
-    else if (tabIdx === 4) miscTabsEl.style.display = 'flex';
-    else if (tabIdx === 5) scriptsTabsEl.style.display = 'flex';
-    else if (tabIdx === 6) vehicleTabsEl.style.display = 'flex';
-    else if (tabIdx === 7) espTabsEl.style.display = 'flex';
-    else if (tabIdx === 8) teleportTabsEl.style.display = 'flex';
-    else if (tabIdx === 9) weaponsTabsEl.style.display = 'flex';
-    else if (tabIdx === 10) modelTabsEl.style.display = 'flex';
-    else if (tabIdx === 11) outfitsTabsEl.style.display = 'flex';
-    else if (tabIdx === 12) worldTabsEl.style.display = 'flex';
-    else if (tabIdx === 13) serverTabsEl.style.display = 'flex';
+      // Show relevant tab bar
+      if (tabIdx <= 2) mainTabsEl.style.display = 'flex';
+      else if (tabIdx === 3) playerTabsEl.style.display = 'flex';
+      else if (tabIdx === 4) miscTabsEl.style.display = 'flex';
+      else if (tabIdx === 5) scriptsTabsEl.style.display = 'flex';
+      else if (tabIdx === 6) vehicleTabsEl.style.display = 'flex';
+      else if (tabIdx === 7) espTabsEl.style.display = 'flex';
+      else if (tabIdx === 8) teleportTabsEl.style.display = 'flex';
+      else if (tabIdx === 9) weaponsTabsEl.style.display = 'flex';
+      else if (tabIdx === 10) modelTabsEl.style.display = 'flex';
+      else if (tabIdx === 11) outfitsTabsEl.style.display = 'flex';
+      else if (tabIdx === 12) worldTabsEl.style.display = 'flex';
+      else if (tabIdx === 13) serverTabsEl.style.display = 'flex';
 
-    // Highlight active tab
-    mainTabs.forEach((t, i) => t.classList.toggle('selected', i === tabIdx));
-    playerTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 3 && i === currentSubTab));
-    miscTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 4 && i === currentSubTab));
-    scriptsTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 5 && i === currentSubTab));
-    vehicleTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 6 && i === currentSubTab));
-    espTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 7 && i === currentSubTab));
-    teleportTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 8 && i === currentSubTab));
-    weaponsTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 9 && i === currentSubTab));
-    modelTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 10 && i === currentSubTab));
-    outfitsTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 11 && i === currentSubTab));
-    worldTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 12 && i === currentSubTab));
-    serverTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 13 && i === currentSubTab));
+      // Highlight active tab
+      mainTabs.forEach((t, i) => t.classList.toggle('selected', currentTab <= 2 && i === currentTab));
+      playerTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 3 && i === currentSubTab));
+      miscTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 4 && i === currentSubTab));
+      scriptsTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 5 && i === currentSubTab));
+      vehicleTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 6 && i === currentSubTab));
+      espTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 7 && i === currentSubTab));
+      teleportTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 8 && i === currentSubTab));
+      weaponsTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 9 && i === currentSubTab));
+      modelTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 10 && i === currentSubTab));
+      outfitsTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 11 && i === currentSubTab));
+      worldTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 12 && i === currentSubTab));
+      serverTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 13 && i === currentSubTab));
 
-    // Show correct container
-    containers.forEach((c, i) => c.style.display = (i === tabIdx ? 'block' : 'none'));
+      // Show correct container
+      containers.forEach((c, i) => c.style.display = (i === tabIdx ? 'block' : 'none'));
 
-    // Subcontainers (only Player, Misc, Scripts need special logic)
-    subContainers.forEach(c => c.style.display = 'none');
-    if (tabIdx === 3) {
-      subContainers[0].style.display = currentSubTab === 0 ? 'block' : 'none';
-      subContainers[1].style.display = currentSubTab === 1 ? 'block' : 'none';
-    } else if (tabIdx === 4) {
-      subContainers[2].style.display = currentSubTab === 0 ? 'block' : 'none';
-      subContainers[3].style.display = currentSubTab === 1 ? 'block' : 'none';
-    } else if (tabIdx === 5) {
-      subContainers[4].style.display = currentSubTab === 0 ? 'block' : 'none';
-      subContainers[5].style.display = currentSubTab === 1 ? 'block' : 'none';
-      subContainers[6].style.display = currentSubTab === 2 ? 'block' : 'none';
-    }
+      // Subcontainers
+      subContainers.forEach(c => c.style.display = 'none');
+      if (tabIdx === 3) {
+          subContainers[0].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[1].style.display = currentSubTab === 1 ? 'block' : 'none';
+      } else if (tabIdx === 4) {
+          subContainers[2].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[3].style.display = currentSubTab === 1 ? 'block' : 'none';
+      } else if (tabIdx === 5) {
+          subContainers[4].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[5].style.display = currentSubTab === 1 ? 'block' : 'none';
+          subContainers[6].style.display = currentSubTab === 2 ? 'block' : 'none';
+      } else if (tabIdx === 6) {
+          subContainers[7].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[8].style.display = currentSubTab === 1 ? 'block' : 'none';
+      } else if (tabIdx === 7) {
+          subContainers[9].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[10].style.display = currentSubTab === 1 ? 'block' : 'none';
+      } else if (tabIdx === 8) {
+          subContainers[11].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[12].style.display = currentSubTab === 1 ? 'block' : 'none';
+      } else if (tabIdx === 9) {
+          subContainers[13].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[14].style.display = currentSubTab === 1 ? 'block' : 'none';
+          subContainers[15].style.display = currentSubTab === 2 ? 'block' : 'none';
+      } else if (tabIdx === 10) {
+          subContainers[16].style.display = currentSubTab === 0 ? 'block' : 'none';
+      } else if (tabIdx === 11) {
+          subContainers[17].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[18].style.display = currentSubTab === 1 ? 'block' : 'none';
+          subContainers[19].style.display = currentSubTab === 2 ? 'block' : 'none';
+      } else if (tabIdx === 12) {
+          subContainers[20].style.display = currentSubTab === 1 ? 'block' : 'none';
+          subContainers[21].style.display = currentSubTab === 1 ? 'block' : 'none';
+      } else if (tabIdx === 13) {
+          subContainers[22].style.display = currentSubTab === 0 ? 'block' : 'none';
+          subContainers[23].style.display = currentSubTab === 1 ? 'block' : 'none';
+      }
 
-    if (reset) {
-      selectedIndex = 0;
-      updateMenuSelection(0);
-    } else {
-      updateMenuSelection(0);
-    }
+      if (reset) {
+          selectedIndex = 0;
+          updateMenuSelection(0);
+      } else {
+          updateMenuSelection(0);
+      }
   }
 
   function updateTabSelection(dir) {
@@ -676,22 +797,97 @@
     }
   }
 
-  // clicks
-  mainTabs   .forEach((t,i)=>t.addEventListener('click',()=>updateTabUI(i)));
-  playerTabs .forEach((t,i)=>t.addEventListener('click',()=>{
-    currentSubTab=i; updateTabUI(3);
+  // Click events for each tab
+  mainTabs.forEach((t, i) => t.addEventListener('click', () => updateTabUI(i)));
+  playerTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(3);
   }));
-  miscTabs   .forEach((t,i)=>t.addEventListener('click',()=>{
-    currentSubTab=i; updateTabUI(4);
+  miscTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(4);
   }));
-  scriptsTabs.forEach((t,i)=>t.addEventListener('click',()=>{
-    currentSubTab=i; updateTabUI(5);
+  scriptsTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(5);
+  }));
+  vehicleTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(6);
+  }));
+  espTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(7);
+  }));
+  teleportTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(8);
+  }));
+  weaponsTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(9);
+  }));
+  modelTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(10);
+  }));
+  outfitsTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(11);
+  }));
+  worldTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(12);
+  }));
+  serverTabs.forEach((t, i) => t.addEventListener('click', () => {
+      currentSubTab = i; 
+      updateTabUI(13);
   }));
 
-  // submenu toggles
-  playerToggle.addEventListener('click', ()=>{ currentSubTab=0; updateTabUI(3); });
-  miscToggle  .addEventListener('click', ()=>{ currentSubTab=0; updateTabUI(4); });
-  scriptsToggle.addEventListener('click', ()=>{ currentSubTab=0; updateTabUI(5); });
+  // Submenu Toggles
+  playerToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(3); });
+  miscToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(4); });
+  scriptsToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(5); });
+  vehicleToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(6); });
+  espToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(7); });
+  teleportToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(8); });
+  weaponsToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(9); });
+  modelToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(10); });
+  outfitsToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(11); });
+  worldToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(12); });
+  serverToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(13); });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+      // grab & clear the text
+      const text = item.textContent.trim();
+      item.textContent = '';
+
+      // create label
+      const label = document.createElement('span');
+      label.textContent = text;
+
+      // build track + thumb
+      const track = document.createElement('div');
+      track.classList.add('toggle-track');
+      const thumb = document.createElement('div');
+      thumb.classList.add('toggle-thumb');
+      track.appendChild(thumb);
+
+      // assemble
+      item.appendChild(label);
+      item.appendChild(track);
+
+      // click handler
+      item.addEventListener('click', () => {
+        // flip on/off
+        item.classList.toggle('toggled');
+        // add stretch, then remove after animation
+        thumb.classList.add('stretch');
+        setTimeout(() => thumb.classList.remove('stretch'), 200);
+      });
+    });
+  });
 
   // gamepad messages
   window.addEventListener('message',({data})=>{
