@@ -825,6 +825,13 @@ function goBack() {
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
   } else {
+    // Always reset to main tab 0 before closing
+    currentTab = 0;
+    currentSubTab = 0; // Ensure sub-tab is reset
+    selectedIndex = 0; // Reset the selection index
+    updateTabUI(currentTab, true); // Update UI with the reset state
+
+    // Close the menu only after reset
     menuVisible = false;
     menuWrapper.style.display = 'none';
   }
