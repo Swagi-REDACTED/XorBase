@@ -556,454 +556,261 @@
     }
   </style>
 <script>
-  // State
-  let selectedIndex   = 0;
-  let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
-  let currentSubTab   = 0;
-  let menuVisible     = true;
+// State
+let selectedIndex   = 0;
+let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
+let currentSubTab   = 0;
+let menuVisible     = true;
 
-  // DOM refs
-  const menuWrapper     = document.querySelector('.menu-wrapper');
-  const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
-  const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
-  const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
-  const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
-  const vehicleTabs = document.querySelectorAll('#vehicle-tabs .menu-tab');
-  const espTabs = document.querySelectorAll('#esp-tabs .menu-tab');
-  const teleportTabs = document.querySelectorAll('#teleport-tabs .menu-tab');
-  const weaponsTabs = document.querySelectorAll('#weapons-tabs .menu-tab');
-  const modelTabs = document.querySelectorAll('#model-tabs .menu-tab');
-  const outfitsTabs = document.querySelectorAll('#outfits-tabs .menu-tab');
-  const worldTabs = document.querySelectorAll('#world-tabs .menu-tab');
-  const serverTabs = document.querySelectorAll('#server-tabs .menu-tab');
-  const containers      = [
-    document.getElementById('main-items'),         // 0
-    document.getElementById('scripts-items'),      // 1
-    document.getElementById('settings-items'),     // 2
-    document.getElementById('player-options-items'),// 3
-    document.getElementById('misc-options-items'), // 4
-    document.getElementById('scripts-options-items'), // 5
-    document.getElementById('vehicle-options-items'), // 6 ← fixed!
-    document.getElementById('esp-options-items'),     // 7 ← fixed!
-    document.getElementById('teleport-options-items'),// 8 ← fixed!
-    document.getElementById('weapons-options-items'), // 9 ← fixed!
-    document.getElementById('model-options-items'),   // 10← fixed!
-    document.getElementById('outfits-options-items'), // 11← fixed!
-    document.getElementById('world-options-items'),   // 12← fixed!
-    document.getElementById('server-options-items')   // 13← fixed!
-  ];
-  const subContainers = [
-  //  0 Player: main, movement
+// DOM refs
+const menuWrapper     = document.querySelector('.menu-wrapper');
+const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
+const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
+const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
+const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
+const vehicleTabs     = document.querySelectorAll('#vehicle-tabs .menu-tab');
+const espTabs         = document.querySelectorAll('#esp-tabs .menu-tab');
+const teleportTabs    = document.querySelectorAll('#teleport-tabs .menu-tab');
+const weaponsTabs     = document.querySelectorAll('#weapons-tabs .menu-tab');
+const modelTabs       = document.querySelectorAll('#model-tabs .menu-tab');
+const outfitsTabs     = document.querySelectorAll('#outfits-tabs .menu-tab');
+const worldTabs       = document.querySelectorAll('#world-tabs .menu-tab');
+const serverTabs      = document.querySelectorAll('#server-tabs .menu-tab');
+
+const containers      = [
+  document.getElementById('main-items'),
+  document.getElementById('scripts-items'),
+  document.getElementById('settings-items'),
+  document.getElementById('player-options-items'),
+  document.getElementById('misc-options-items'),
+  document.getElementById('scripts-options-items'),
+  document.getElementById('vehicle-options-items'),
+  document.getElementById('esp-options-items'),
+  document.getElementById('teleport-options-items'),
+  document.getElementById('weapons-options-items'),
+  document.getElementById('model-options-items'),
+  document.getElementById('outfits-options-items'),
+  document.getElementById('world-options-items'),
+  document.getElementById('server-options-items')
+];
+
+const subContainers = [
   document.getElementById('player-main-items'),
   document.getElementById('player-movement-items'),
-  //  2 Misc: main, extra
   document.getElementById('misc-main-items'),
   document.getElementById('misc-extra-items'),
-  //  4 Scripts: main, built-in, misc
   document.getElementById('scripts-main-items'),
   document.getElementById('misc-Built-items'),
   document.getElementById('scripts-misc-items'),
-  //  7 Vehicle: main, spawner
   document.getElementById('vehicle-main-items'),
   document.getElementById('vehicle-spawner-items'),
-  //  9 ESP: main, toggles
   document.getElementById('esp-main-items'),
   document.getElementById('esp-toggle-items'),
-  // 11 Teleport: main, player
   document.getElementById('teleport-main-items'),
   document.getElementById('teleport-player-items'),
-  // 13 Weapons: main, aimbot, spawner
   document.getElementById('weapons-main-items'),
   document.getElementById('weapons-aimbot-items'),
   document.getElementById('weapons-spawner-items'),
-  // 16 Model: main
   document.getElementById('model-main-items'),
-  // 17 Outfits: main, upper, lower
   document.getElementById('outfits-main-items'),
   document.getElementById('outfits-upper-items'),
   document.getElementById('outfits-lower-items'),
-  // 20 World: main, atmosphere
   document.getElementById('world-main-items'),
   document.getElementById('world-atmosphere-items'),
-  // 22 Server: main, destroyer  ← make sure HTML id is "server-destroyer-items"
   document.getElementById('server-main-items'),
   document.getElementById('server-destroyer-items')
-  ];
-  const mainTabsEl      = document.getElementById('menu-tabs');
-  const playerTabsEl    = document.getElementById('player-tabs');
-  const miscTabsEl      = document.getElementById('misc-tabs');
-  const scriptsTabsEl   = document.getElementById('scripts-tabs');
-  const vehicleTabsEl    = document.getElementById('vehicle-tabs');
-  const espTabsEl    = document.getElementById('esp-tabs');
-  const teleportTabsEl    = document.getElementById('teleport-tabs');
-  const weaponsTabsEl    = document.getElementById('weapons-tabs');
-  const modelTabsEl    = document.getElementById('model-tabs');
-  const outfitsTabsEl    = document.getElementById('outfits-tabs');
-  const worldTabsEl    = document.getElementById('world-tabs');
-  const serverTabsEl    = document.getElementById('server-tabs');
-  const scrollbarContainer = document.querySelector('.scrollbar-container');
-  const scrollbarThumb  = document.getElementById('scrollbar-thumb');
-  const menuCounter     = document.getElementById('menu-counter');
-  const playerToggle    = document.getElementById('player-options-toggle');
-  const miscToggle      = document.getElementById('misc-options-toggle');
-  const scriptsToggle   = document.getElementById('scripts-options-toggle');
-  const vehicleToggle    = document.getElementById('vehicle-options-toggle');
-  const espToggle    = document.getElementById('esp-options-toggle');
-  const teleportToggle    = document.getElementById('teleport-options-toggle');
-  const weaponsToggle    = document.getElementById('weapons-options-toggle');
-  const modelToggle    = document.getElementById('model-options-toggle');
-  const outfitsToggle    = document.getElementById('outfits-options-toggle');
-  const worldToggle    = document.getElementById('world-options-toggle');
-  const serverToggle    = document.getElementById('server-options-toggle');
+];
 
-    // collect only visible items for whatever tab/sub-tab you're on
-    function getMenuItems() {
-      // top-level (Main, ScriptsList, Settings)
-      if (currentTab <= 2) {
-        return Array.from(containers[currentTab]
-          .querySelectorAll('.menu-item'))
-          .filter(i => i.offsetParent !== null);
-      }
+const mainTabsEl      = document.getElementById('menu-tabs');
+const playerTabsEl    = document.getElementById('player-tabs');
+const miscTabsEl      = document.getElementById('misc-tabs');
+const scriptsTabsEl   = document.getElementById('scripts-tabs');
+const vehicleTabsEl   = document.getElementById('vehicle-tabs');
+const espTabsEl       = document.getElementById('esp-tabs');
+const teleportTabsEl  = document.getElementById('teleport-tabs');
+const weaponsTabsEl   = document.getElementById('weapons-tabs');
+const modelTabsEl     = document.getElementById('model-tabs');
+const outfitsTabsEl   = document.getElementById('outfits-tabs');
+const worldTabsEl     = document.getElementById('world-tabs');
+const serverTabsEl    = document.getElementById('server-tabs');
 
-      // mapping of major tab → starting index in subContainers
-      const subIndexMap = {
-        3:  0,  // Player
-        4:  2,  // Misc
-        5:  4,  // Scripts
-        6:  7,  // Vehicle
-        7:  9,  // ESP
-        8: 11,  // Teleport
-        9: 13,  // Weapons
-        10:16,  // Model
-        11:17,  // Outfits
-        12:20,  // World
-        13:22   // Server
-      };
+const scrollbarContainer = document.querySelector('.scrollbar-container');
+const scrollbarThumb     = document.getElementById('scrollbar-thumb');
+const menuCounter        = document.getElementById('menu-counter');
+const playerToggle       = document.getElementById('player-options-toggle');
+const miscToggle         = document.getElementById('misc-options-toggle');
+const scriptsToggle      = document.getElementById('scripts-options-toggle');
+const vehicleToggle      = document.getElementById('vehicle-options-toggle');
+const espToggle          = document.getElementById('esp-options-toggle');
+const teleportToggle     = document.getElementById('teleport-options-toggle');
+const weaponsToggle      = document.getElementById('weapons-options-toggle');
+const modelToggle        = document.getElementById('model-options-toggle');
+const outfitsToggle      = document.getElementById('outfits-options-toggle');
+const worldToggle        = document.getElementById('world-options-toggle');
+const serverToggle       = document.getElementById('server-options-toggle');
 
-      const start = subIndexMap[currentTab] ?? 0;
-      const list  = subContainers[start + currentSubTab];
-      return Array.from(list.querySelectorAll('.menu-item'))
-        .filter(i => i.offsetParent !== null);
-    }
 
-  function updateMenuSelection(dir) {
-      const items = getMenuItems();
-      if (!items.length) return;
+function getMenuItems() {
+  if (currentTab <= 2) {
+    return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+      .filter(i => i.offsetParent !== null);
+  }
+  const subIndexMap = {3:0,4:2,5:4,6:7,7:9,8:11,9:13,10:16,11:17,12:20,13:22};
+  const start = subIndexMap[currentTab] || 0;
+  return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
+    .filter(i => i.offsetParent !== null);
+}
 
-      items[selectedIndex]?.classList.remove('selected');
+function updateMenuSelection(dir) {
+  const items = getMenuItems(); if (!items.length) return;
+  items[selectedIndex]?.classList.remove('selected');
+  selectedIndex = (selectedIndex + dir + items.length) % items.length;
+  items[selectedIndex].classList.add('selected');
+  items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      selectedIndex = (selectedIndex + dir + items.length) % items.length;
+  const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
+  const step = items.length>1 ? max/(items.length-1) : 0;
+  scrollbarThumb.style.top = `${selectedIndex*step}px`;
+  menuCounter.textContent = `${selectedIndex+1}/${items.length}`;
+}
 
-      items[selectedIndex].classList.add('selected');
-      items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function clearSelection() {
+  document.querySelectorAll('.menu-item.selected').forEach(el=> el.classList.remove('selected'));
+}
 
-      const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
-      const step = items.length > 1 ? max / (items.length - 1) : 0;
-      scrollbarThumb.style.top = `${selectedIndex * step}px`;
+function updateTabUI(tabIdx, reset=true) {
+  currentTab = tabIdx;
+  clearSelection();
+  updateMenuSelection(0);
 
-      menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
+  // hide all and show only active tab group
+  [mainTabsEl,playerTabsEl,miscTabsEl,scriptsTabsEl,vehicleTabsEl,
+   espTabsEl,teleportTabsEl,weaponsTabsEl,modelTabsEl,outfitsTabsEl,
+   worldTabsEl,serverTabsEl].forEach(g=>g.style.display='none');
+  const tabDisplays = {0:mainTabsEl,1:mainTabsEl,2:mainTabsEl,3:playerTabsEl,
+                       4:miscTabsEl,5:scriptsTabsEl,6:vehicleTabsEl,7:espTabsEl,
+                       8:teleportTabsEl,9:weaponsTabsEl,10:modelTabsEl,
+                       11:outfitsTabsEl,12:worldTabsEl,13:serverTabsEl};
+  tabDisplays[tabIdx].style.display='flex';
+
+  // highlight header tabs
+  const tabGroups = [mainTabs,playerTabs,miscTabs,scriptsTabs,
+                     vehicleTabs,espTabs,teleportTabs,weaponsTabs,
+                     modelTabs,outfitsTabs,worldTabs,serverTabs];
+  tabGroups.forEach((group,idx)=>{
+    group.forEach((t,i)=>{
+      const isMain = (tabIdx<=2 && idx===0 && i===tabIdx);
+      const isSub  = (tabIdx===idx+2 && i===currentSubTab);
+      t.classList.toggle('selected', isMain||isSub);
+    });
+  });
+
+  // show/hide containers
+  containers.forEach((c,i)=>c.style.display = (i===tabIdx?'block':'none'));
+
+  // subcontainers
+  subContainers.forEach(c=>c.style.display='none');
+  const subMap = {3:0,4:2,5:4,6:7,7:9,8:11,9:13,10:16,11:17,12:20,13:22};
+  const count = {3:2,4:2,5:3,6:2,7:2,8:2,9:3,10:1,11:3,12:2,13:2}[tabIdx]||1;
+  for(let i=0;i<count;i++){
+    subContainers[subMap[tabIdx]+i].style.display = (i===currentSubTab?'block':'none');
   }
 
-  function clearSelection() {
-      document.querySelectorAll('.menu-item.selected')
-              .forEach(el => el.classList.remove('selected'));
+  if(reset) selectedIndex=0;
+  updateMenuSelection(0);
+}
+
+function updateTabSelection(dir) {
+  if(currentTab>=3&&currentTab<=13) {
+    const tabsArray = [playerTabs,miscTabs,scriptsTabs,vehicleTabs,
+                       espTabs,teleportTabs,weaponsTabs,modelTabs,
+                       outfitsTabs,worldTabs,serverTabs][currentTab-3];
+    currentSubTab = (currentSubTab+dir+tabsArray.length)%tabsArray.length;
+    updateTabUI(currentTab);
+  } else {
+    currentTab = (currentTab+dir+mainTabs.length)%mainTabs.length;
+    updateTabUI(currentTab);
   }
+}
 
-  function updateTabUI(tabIdx, reset = true) {
-      currentTab = tabIdx;
+// event listeners for toggles
+[playerToggle,miscToggle,scriptsToggle,vehicleToggle,espToggle,
+ teleportToggle,weaponsToggle,modelToggle,outfitsToggle,worldToggle,serverToggle]
+.forEach((el,i)=>el.addEventListener('click',()=>{currentSubTab=0;updateTabUI(i+3);}));
 
-      clearSelection();
-      updateMenuSelection(0); // Highlight the first item
-
-      // Hide all tab groups
-      const allTabGroups = [
-          mainTabsEl, playerTabsEl, miscTabsEl, scriptsTabsEl, vehicleTabsEl,
-          espTabsEl, teleportTabsEl, weaponsTabsEl, modelTabsEl,
-          outfitsTabsEl, worldTabsEl, serverTabsEl
-      ];
-
-      allTabGroups.forEach(group => group.style.display = 'none');
-
-      // Show the active tab group
-      const tabDisplays = {
-          0: mainTabsEl,
-          1: mainTabsEl,
-          2: mainTabsEl,
-          3: playerTabsEl,
-          4: miscTabsEl,
-          5: scriptsTabsEl,
-          6: vehicleTabsEl,
-          7: espTabsEl,
-          8: teleportTabsEl,
-          9: weaponsTabsEl,
-          10: modelTabsEl,
-          11: outfitsTabsEl,
-          12: worldTabsEl,
-          13: serverTabsEl
-      };
-
-      const activeTabGroup = tabDisplays[tabIdx];
-      if (activeTabGroup) activeTabGroup.style.display = 'flex';
-
-      // Highlight correct tab inside each group
-      const tabGroups = [
-          mainTabs, playerTabs, miscTabs, scriptsTabs,
-          vehicleTabs, espTabs, teleportTabs, weaponsTabs,
-          modelTabs, outfitsTabs, worldTabs, serverTabs
-      ];
-
-      tabGroups.forEach((group, idx) => {
-          const groupTabIdx = idx <= 2 ? tabIdx : currentSubTab;
-          group.forEach((t, i) => {
-              const isSelected = (tabIdx <= 2 && idx === 0 && i === tabIdx) || (tabIdx === idx + 2 && i === currentSubTab);
-              t.classList.toggle('selected', isSelected);
-          });
-      });
-
-      // Handle container visibility
-      containers.forEach((c, i) => {
-          c.style.display = (i === tabIdx ? 'block' : 'none');
-      });
-
-      // Hide all subcontainers first
-      subContainers.forEach(c => c.style.display = 'none');
-
-      // Show only relevant subcontainer(s)
-      const subTabStartMapping = {
-          3: 0,
-          4: 2,
-          5: 4,
-          6: 7,
-          7: 9,
-          8: 11,
-          9: 13,
-          10: 16,
-          11: 17,
-          12: 20,
-          13: 22
-      };
-
-      const subStart = subTabStartMapping[tabIdx];
-      if (subStart !== undefined) {
-          const subCount = {
-              3: 2, 4: 2, 5: 3, 6: 2, 7: 2, 8: 2,
-              9: 3, 10: 1, 11: 3, 12: 2, 13: 2
-          }[tabIdx] || 1;
-
-          for (let i = 0; i < subCount; i++) {
-              subContainers[subStart + i].style.display = (i === currentSubTab ? 'block' : 'none');
-          }
-      }
-
-      if (reset) {
-          selectedIndex = 0;
-      }
-      updateMenuSelection(0);
-  }
-
-  function updateTabSelection(dir) {
-    if (currentTab === 3) {
-      currentSubTab = (currentSubTab + dir + playerTabs.length) % playerTabs.length;
-      updateTabUI(3);
-    } else if (currentTab === 4) {
-      currentSubTab = (currentSubTab + dir + miscTabs.length) % miscTabs.length;
-      updateTabUI(4);
-    } else if (currentTab === 5) {
-      currentSubTab = (currentSubTab + dir + scriptsTabs.length) % scriptsTabs.length;
-      updateTabUI(5);
-    } else if (currentTab === 6) {
-      currentSubTab = (currentSubTab + dir + vehicleTabs.length) % vehicleTabs.length;
-      updateTabUI(6);
-    } else if (currentTab === 7) {
-      currentSubTab = (currentSubTab + dir + espTabs.length) % espTabs.length;
-      updateTabUI(7);
-    } else if (currentTab === 8) {
-      currentSubTab = (currentSubTab + dir + teleportTabs.length) % teleportTabs.length;
-      updateTabUI(8);
-    } else if (currentTab === 9) {
-      currentSubTab = (currentSubTab + dir + weaponsTabs.length) % weaponsTabs.length;
-      updateTabUI(9);
-    } else if (currentTab === 10) {
-      currentSubTab = (currentSubTab + dir + modelTabs.length) % modelTabs.length;
-      updateTabUI(10);
-    } else if (currentTab === 11) {
-      currentSubTab = (currentSubTab + dir + outfitsTabs.length) % outfitsTabs.length;
-      updateTabUI(11);
-    } else if (currentTab === 12) {
-      currentSubTab = (currentSubTab + dir + worldTabs.length) % worldTabs.length;
-      updateTabUI(12);
-    } else if (currentTab === 13) {
-      currentSubTab = (currentSubTab + dir + serverTabs.length) % serverTabs.length;
-      updateTabUI(13);
-    } else {
-      currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
-      updateTabUI(currentTab);
-    }
-  }
-
-
-  // Submenu Toggles
-  playerToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(3); });
-  miscToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(4); });
-  scriptsToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(5); });
-  vehicleToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(6); });
-  espToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(7); });
-  teleportToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(8); });
-  weaponsToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(9); });
-  modelToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(10); });
-  outfitsToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(11); });
-  worldToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(12); });
-  serverToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(13); });
-
-  // call this from your gamepad 'slide' case
-  function updateslidervalue(dir) {
-  const items = getMenuItems();
-  const item  = items[selectedIndex];
-  if (!item || !item.classList.contains('slider')) return;
-
+function updateslidervalue(dir) {
+  const items = getMenuItems(); const item = items[selectedIndex];
+  if(!item||!item.classList.contains('slider')) return;
   const s = item._slider;
-  s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
-
-  const pct = (s.value - s.min) / (s.max - s.min);
-  s.fill.style.width = (pct * 100) + '%';
+  s.value = Math.min(s.max,Math.max(s.min,s.value + dir * s.step));
+  const pct = (s.value - s.min)/(s.max - s.min);
+  s.fill.style.width = (pct*100)+'%';
   s.valueSpan.textContent = s.value;
+  const px1 = 2 + pct*3, px2 = 5 + pct*5, px3 = 9 + pct*9;
+  s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff,0 0 ${px2}px #9e00ff,0 0 ${px3}px #9e00ff`;
+}
 
-  // calculate dynamic glow
-  const glowStrength = pct; // 0.0 → 1.0
+function goBack(){
+  if(currentTab>=3&&currentSubTab>0){currentSubTab=0;selectedIndex=0;updateTabUI(currentTab,true);} 
+  else if(currentTab>0){updateTabUI(0,true);} 
+  else {menuVisible=false;menuWrapper.style.display='none';}
+}
 
-  // scale between min and max glow intensity
-  const px1 = 2 + glowStrength * 3;   // 2 → 6
-  const px2 = 5 + glowStrength * 5;   // 5 → 10
-  const px3 = 9 + glowStrength * 9;   // 9 → 18
-
-  s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+window.addEventListener('message',({data})=>{
+  let msg = typeof data==='string'?JSON.parse(data):data;
+  switch(msg.type){
+    case 'toggleMenu':
+      menuVisible=!!msg.data.visible;
+      menuWrapper.style.display= menuVisible?'flex':'none';
+      if(menuVisible) updateTabUI(currentTab,false);
+      break;
+    case 'navigate': updateMenuSelection(msg.data.direction==='up'? -1:1); break;
+    case 'tab':      updateTabSelection(msg.data.direction==='left'? -1:1); break;
+    case 'slide':    updateslidervalue(msg.data.direction==='left'? -1:1); break;
+    case 'select':   getMenuItems()[selectedIndex]?.click(); break;
+    case 'back':     goBack(); break;
   }
+});
 
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      // grab & clear the text
-      const text = item.textContent.trim();
-      item.textContent = '';
-
-      // create label
-      const label = document.createElement('span');
-      label.textContent = text;
-
-      // build track + thumb
-      const track = document.createElement('div');
-      track.classList.add('toggle-track');
-      const thumb = document.createElement('div');
-      thumb.classList.add('toggle-thumb');
-      track.appendChild(thumb);
-
-      // assemble
-      item.appendChild(label);
-      item.appendChild(track);
-
-      // click handler
-      item.addEventListener('click', () => {
-        // flip on/off
-        item.classList.toggle('toggled');
-        // add stretch, then remove after animation
-        thumb.classList.add('stretch');
-        setTimeout(() => thumb.classList.remove('stretch'), 200);
-      });
-    });
-    document.querySelectorAll('.menu-item.slider').forEach(item => {
-      // pull config
-      const min   = +item.dataset.min;
-      const max   = +item.dataset.max;
-      const step  = +item.dataset.step;
-      let   value = +item.dataset.value;
-
-      // clear text & build UI
-      const labelText = item.textContent.trim();
-      item.textContent = '';
-
-      // label + numeric value
-      const labelSpan = document.createElement('span');
-      labelSpan.textContent = labelText;
-
-      const valueSpan = document.createElement('span');
-      valueSpan.classList.add('value');
-      valueSpan.textContent = value;
-
-      // track + fill (no thumb)
-      const track = document.createElement('div');
-      track.classList.add('slider-track');
-      const fill  = document.createElement('div');
-      fill.classList.add('slider-fill');
-      track.append(fill);
-
-      // assemble
-      item.append(labelSpan, valueSpan, track);
-
-      // store state
-      item._slider = { min, max, step, value, valueSpan, fill };
-
-      // render helper
-      const render = () => {
-        const pct = (item._slider.value - min) / (max - min);
-        fill.style.width = (pct * 100) + '%';
-        valueSpan.textContent = item._slider.value;
-
-        // same glow logic as updateslidervalue
-        const glowStrength = pct;
-        const px1 = 2 + glowStrength * 3;
-        const px2 = 5 + glowStrength * 5;
-        const px3 = 9 + glowStrength * 9;
-        fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-      };
-      render();
-      updateTabUI(0);
+// DOMContentLoaded: setup checkboxes/sliders then init UI once
+ document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+    const text = item.textContent.trim(); item.textContent = '';
+    const label = document.createElement('span'); label.textContent = text;
+    const track = document.createElement('div'); track.classList.add('toggle-track');
+    const thumb = document.createElement('div'); thumb.classList.add('toggle-thumb');
+    track.appendChild(thumb);
+    item.appendChild(label); item.appendChild(track);
+    item.addEventListener('click', () => {
+      item.classList.toggle('toggled');
+      thumb.classList.add('stretch');
+      setTimeout(() => thumb.classList.remove('stretch'), 200);
     });
   });
 
-    // Back/navigation helper
-  function goBack() {
-    if (currentTab >= 3 && currentSubTab > 0) {
-      // If you’re in a sub-tab >0, step back to its “main” panel
-      currentSubTab  = 0;
-      selectedIndex = 0;
-      updateTabUI(currentTab, true);
-    } else if (currentTab > 0) {
-      // If you’re anywhere else in the menu (but not a sub-panel),
-      // jump back to the top-level Main tab
-      updateTabUI(0, true);
-    } else {
-      // Already at Main, so hide the menu
-      menuVisible = false;
-      menuWrapper.style.display = 'none';
-    }
-  }
-
-  // gamepad messages
-  window.addEventListener('message',({data})=>{
-    let msg = typeof data==='string'? JSON.parse(data):data;
-    switch(msg.type){
-      case 'toggleMenu':
-        menuVisible=!!msg.data.visible;
-        menuWrapper.style.display= menuVisible?'flex':'none';
-        if(menuVisible) updateTabUI(currentTab,false);
-        break;
-      case 'navigate':
-        updateMenuSelection(msg.data.direction==='up'?-1:1);
-        break;
-      case 'tab':
-        updateTabSelection(msg.data.direction==='left'?-1:1);
-        break;
-      case 'slide':
-        updateslidervalue(msg.data.direction==='left' ? -1 : 1);
-        break;
-      case 'select':
-        getMenuItems()[selectedIndex]?.click();
-        break;
-      case 'back':
-        goBack()
-        break;
-    }
+  document.querySelectorAll('.menu-item.slider').forEach(item => {
+    const min = +item.dataset.min, max = +item.dataset.max, step = +item.dataset.step;
+    let value = +item.dataset.value;
+    const labelText = item.textContent.trim(); item.textContent = '';
+    const labelSpan = document.createElement('span'); labelSpan.textContent = labelText;
+    const valueSpan = document.createElement('span'); valueSpan.classList.add('value'); valueSpan.textContent = value;
+    const track = document.createElement('div'); track.classList.add('slider-track');
+    const fill = document.createElement('div'); fill.classList.add('slider-fill'); track.append(fill);
+    item.append(labelSpan, valueSpan, track);
+    item._slider = { min, max, step, value, valueSpan: valueSpan, fill: fill };
+    const render = () => {
+      const pct = (item._slider.value - min)/(max - min);
+      fill.style.width = (pct*100) + '%';
+      valueSpan.textContent = item._slider.value;
+      const px1 = 2 + pct*3, px2 = 5 + pct*5, px3 = 9 + pct*9;
+      fill.style.boxShadow = `0 0 ${px1}px #9e00ff,0 0 ${px2}px #9e00ff,0 0 ${px3}px #9e00ff`;
+    };
+    render();
   });
+
+  // initialize UI once
+  updateTabUI(0);
+});
 </script>
 </body>
 </html>
