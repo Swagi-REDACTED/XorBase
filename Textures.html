@@ -762,7 +762,6 @@ function updateTabUI(tabIdx, reset = true) {
 }
 
 function updateTabSelection(dir){
-  selectedIndex=0; // reset always
   if(currentTab>=3&&currentTab<=13){
     const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs];
     const arr=arrs[currentTab-3];
@@ -775,7 +774,7 @@ function updateTabSelection(dir){
 
 // toggle buttons
 [playerToggle, miscToggle, scriptsToggle, vehicleToggle, espToggle,
- teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle]
+ teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle, forceToggle]
 .forEach((el, i) => el.addEventListener('click', () => { currentSubTab = 0; updateTabUI(i + 3); }));
 
 function updateslidervalue(dir) {
