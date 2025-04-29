@@ -656,166 +656,153 @@
   const worldToggle    = document.getElementById('world-options-toggle');
   const serverToggle    = document.getElementById('server-options-toggle');
 
+  // Collect only visible menu items
   function getMenuItems() {
-    if (currentTab === 0 || currentTab === 1 || currentTab === 2) {
-      // Main tabs (like Main, ScriptsList, Settings) - no sub-tabs needed
-      return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
-                  .filter(i => i.offsetParent !== null);
-    }
+      if (currentTab <= 2) {
+          return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+                      .filter(i => i.offsetParent !== null);
+      }
 
-    // For tabs with sub-tabs (Player Options, Misc, etc.)
-    switch (currentTab) {
-      case 3: // Player Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 4: // Misc Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 5: // Scripts Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 6: // Vehicle Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 7: // ESP Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 8: // Teleport Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 9: // Weapons Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 10: // Model Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 11: // Outfits Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 12: // World Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      case 13: // Server Options
-        return Array.from(subContainers[currentSubTab].querySelectorAll('.menu-item'))
-                    .filter(i => i.offsetParent !== null);
-      default:
-        return [];
-    }
+      // For submenus: tab 3 & 4 each have 2 subtabs, tab 5 has 3 subtabs, etc.
+      let startIndex = 0;
+      let subTabCounts = [2, 2, 3, 2, 2, 2, 3, 1, 3, 2, 2]; // Number of subtabs per major tab
+
+      const tabMapping = {
+          3: 0, // Player tabs start from subContainers[0]
+          4: 2, // Misc tabs start from subContainers[2]
+          5: 4, // Scripts tabs start from subContainers[4]
+          6: 7, // Vehicle tabs start from subContainers[7]
+          7: 9, // ESP tabs start from subContainers[9]
+          8: 11, // Teleport tabs start from subContainers[11]
+          9: 13, // Weapons tabs start from subContainers[13]
+          10: 16, // Model tab starts at subContainers[16]
+          11: 17, // Outfits tab starts at subContainers[17]
+          12: 20, // World tab starts at subContainers[20]
+          13: 22, // Server tab starts at subContainers[22]
+      };
+
+      startIndex = tabMapping[currentTab] || 0;
+
+      const count = subTabCounts[currentTab - 3] || 1;
+      const relevantSubContainers = subContainers.slice(startIndex, startIndex + count);
+
+      return Array.from(relevantSubContainers[currentSubTab].querySelectorAll('.menu-item'))
+                  .filter(i => i.offsetParent !== null);
   }
 
-
   function updateMenuSelection(dir) {
-    const items = getMenuItems();
-    if (!items.length) return;
-    items[selectedIndex]?.classList.remove('selected');
-    selectedIndex = (selectedIndex + dir + items.length) % items.length;
-    items[selectedIndex].classList.add('selected');
-    items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
-    const step = items.length>1 ? max/(items.length-1) : 0;
-    scrollbarThumb.style.top = `${selectedIndex*step}px`;
-    menuCounter.textContent = `${selectedIndex+1}/${items.length}`;
+      const items = getMenuItems();
+      if (!items.length) return;
+
+      items[selectedIndex]?.classList.remove('selected');
+
+      selectedIndex = (selectedIndex + dir + items.length) % items.length;
+
+      items[selectedIndex].classList.add('selected');
+      items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
+      const step = items.length > 1 ? max / (items.length - 1) : 0;
+      scrollbarThumb.style.top = `${selectedIndex * step}px`;
+
+      menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
   }
 
   function clearSelection() {
-    document.querySelectorAll('.menu-item.selected')
-            .forEach(el=>el.classList.remove('selected'));
+      document.querySelectorAll('.menu-item.selected')
+              .forEach(el => el.classList.remove('selected'));
   }
 
   function updateTabUI(tabIdx, reset = true) {
       currentTab = tabIdx;
+
       clearSelection();
+      updateMenuSelection(0); // Highlight the first item
 
-      // Hide all tabs by default
-      mainTabsEl.style.display = 'none';
-      playerTabsEl.style.display = 'none';
-      miscTabsEl.style.display = 'none';
-      scriptsTabsEl.style.display = 'none';
-      vehicleTabsEl.style.display = 'none';
-      espTabsEl.style.display = 'none';
-      teleportTabsEl.style.display = 'none';
-      weaponsTabsEl.style.display = 'none';
-      modelTabsEl.style.display = 'none';
-      outfitsTabsEl.style.display = 'none';
-      worldTabsEl.style.display = 'none';
-      serverTabsEl.style.display = 'none';
+      // Hide all tab groups
+      const allTabGroups = [
+          mainTabsEl, playerTabsEl, miscTabsEl, scriptsTabsEl, vehicleTabsEl,
+          espTabsEl, teleportTabsEl, weaponsTabsEl, modelTabsEl,
+          outfitsTabsEl, worldTabsEl, serverTabsEl
+      ];
 
-      // Show relevant tab bar
-      if (tabIdx <= 2) mainTabsEl.style.display = 'flex';
-      else if (tabIdx === 3) playerTabsEl.style.display = 'flex';
-      else if (tabIdx === 4) miscTabsEl.style.display = 'flex';
-      else if (tabIdx === 5) scriptsTabsEl.style.display = 'flex';
-      else if (tabIdx === 6) vehicleTabsEl.style.display = 'flex';
-      else if (tabIdx === 7) espTabsEl.style.display = 'flex';
-      else if (tabIdx === 8) teleportTabsEl.style.display = 'flex';
-      else if (tabIdx === 9) weaponsTabsEl.style.display = 'flex';
-      else if (tabIdx === 10) modelTabsEl.style.display = 'flex';
-      else if (tabIdx === 11) outfitsTabsEl.style.display = 'flex';
-      else if (tabIdx === 12) worldTabsEl.style.display = 'flex';
-      else if (tabIdx === 13) serverTabsEl.style.display = 'flex';
+      allTabGroups.forEach(group => group.style.display = 'none');
 
-      // Highlight active tab
-      mainTabs.forEach((t, i) => t.classList.toggle('selected', currentTab <= 2 && i === currentTab));
-      playerTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 3 && i === currentSubTab));
-      miscTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 4 && i === currentSubTab));
-      scriptsTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 5 && i === currentSubTab));
-      vehicleTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 6 && i === currentSubTab));
-      espTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 7 && i === currentSubTab));
-      teleportTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 8 && i === currentSubTab));
-      weaponsTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 9 && i === currentSubTab));
-      modelTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 10 && i === currentSubTab));
-      outfitsTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 11 && i === currentSubTab));
-      worldTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 12 && i === currentSubTab));
-      serverTabs.forEach((t, i) => t.classList.toggle('selected', currentTab === 13 && i === currentSubTab));
+      // Show the active tab group
+      const tabDisplays = {
+          0: mainTabsEl,
+          1: mainTabsEl,
+          2: mainTabsEl,
+          3: playerTabsEl,
+          4: miscTabsEl,
+          5: scriptsTabsEl,
+          6: vehicleTabsEl,
+          7: espTabsEl,
+          8: teleportTabsEl,
+          9: weaponsTabsEl,
+          10: modelTabsEl,
+          11: outfitsTabsEl,
+          12: worldTabsEl,
+          13: serverTabsEl
+      };
 
-      // Show correct container
-      containers.forEach((c, i) => c.style.display = (i === tabIdx ? 'block' : 'none'));
+      const activeTabGroup = tabDisplays[tabIdx];
+      if (activeTabGroup) activeTabGroup.style.display = 'flex';
 
-      // Subcontainers
+      // Highlight correct tab inside each group
+      const tabGroups = [
+          mainTabs, playerTabs, miscTabs, scriptsTabs,
+          vehicleTabs, espTabs, teleportTabs, weaponsTabs,
+          modelTabs, outfitsTabs, worldTabs, serverTabs
+      ];
+
+      tabGroups.forEach((group, idx) => {
+          const groupTabIdx = idx <= 2 ? tabIdx : currentSubTab;
+          group.forEach((t, i) => {
+              const isSelected = (tabIdx <= 2 && idx === 0 && i === tabIdx) || (tabIdx === idx + 2 && i === currentSubTab);
+              t.classList.toggle('selected', isSelected);
+          });
+      });
+
+      // Handle container visibility
+      containers.forEach((c, i) => {
+          c.style.display = (i === tabIdx ? 'block' : 'none');
+      });
+
+      // Hide all subcontainers first
       subContainers.forEach(c => c.style.display = 'none');
-      if (tabIdx === 3) {
-          subContainers[0].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[1].style.display = currentSubTab === 1 ? 'block' : 'none';
-      } else if (tabIdx === 4) {
-          subContainers[2].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[3].style.display = currentSubTab === 1 ? 'block' : 'none';
-      } else if (tabIdx === 5) {
-          subContainers[4].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[5].style.display = currentSubTab === 1 ? 'block' : 'none';
-          subContainers[6].style.display = currentSubTab === 2 ? 'block' : 'none';
-      } else if (tabIdx === 6) {
-          subContainers[7].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[8].style.display = currentSubTab === 1 ? 'block' : 'none';
-      } else if (tabIdx === 7) {
-          subContainers[9].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[10].style.display = currentSubTab === 1 ? 'block' : 'none';
-      } else if (tabIdx === 8) {
-          subContainers[11].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[12].style.display = currentSubTab === 1 ? 'block' : 'none';
-      } else if (tabIdx === 9) {
-          subContainers[13].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[14].style.display = currentSubTab === 1 ? 'block' : 'none';
-          subContainers[15].style.display = currentSubTab === 2 ? 'block' : 'none';
-      } else if (tabIdx === 10) {
-          subContainers[16].style.display = currentSubTab === 0 ? 'block' : 'none';
-      } else if (tabIdx === 11) {
-          subContainers[17].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[18].style.display = currentSubTab === 1 ? 'block' : 'none';
-          subContainers[19].style.display = currentSubTab === 2 ? 'block' : 'none';
-      } else if (tabIdx === 12) {
-          subContainers[20].style.display = currentSubTab === 1 ? 'block' : 'none';
-          subContainers[21].style.display = currentSubTab === 1 ? 'block' : 'none';
-      } else if (tabIdx === 13) {
-          subContainers[22].style.display = currentSubTab === 0 ? 'block' : 'none';
-          subContainers[23].style.display = currentSubTab === 1 ? 'block' : 'none';
+
+      // Show only relevant subcontainer(s)
+      const subTabStartMapping = {
+          3: 0,
+          4: 2,
+          5: 4,
+          6: 7,
+          7: 9,
+          8: 11,
+          9: 13,
+          10: 16,
+          11: 17,
+          12: 20,
+          13: 22
+      };
+
+      const subStart = subTabStartMapping[tabIdx];
+      if (subStart !== undefined) {
+          const subCount = {
+              3: 2, 4: 2, 5: 3, 6: 2, 7: 2, 8: 2,
+              9: 3, 10: 1, 11: 3, 12: 2, 13: 2
+          }[tabIdx] || 1;
+
+          for (let i = 0; i < subCount; i++) {
+              subContainers[subStart + i].style.display = (i === currentSubTab ? 'block' : 'none');
+          }
       }
 
       if (reset) {
           selectedIndex = 0;
-          updateMenuSelection(0);
-      } else {
-          updateMenuSelection(0);
       }
+      updateMenuSelection(0);
   }
 
   function updateTabSelection(dir) {
@@ -1022,6 +1009,17 @@
     });
   });
 
+  function goBack() {
+    if (currentTab >= 3 && currentSubTab > 0) {
+      currentSubTab = 0;
+      selectedIndex = 0;
+      clearSelection();
+      updateMenuSelection(0);
+    } else {
+      updateTabUI(0); // Back to Main menu if already at subtab 0
+    }
+  }
+
   // gamepad messages
   window.addEventListener('message',({data})=>{
     let msg = typeof data==='string'? JSON.parse(data):data;
@@ -1043,26 +1041,8 @@
       case 'select':
         getMenuItems()[selectedIndex]?.click();
         break;
-        case 'back':
-          if (currentSubTab > 0) {
-          // Step back in subtabs first
-          currentSubTab--;
-          updateTabUI(currentTab);
-          } else {
-          // No subtabs left, handle backing out to previous tabs
-          if (currentTab === 3) {
-            updateTabUI(0);
-          } else if (currentTab === 4) {
-            updateTabUI(2);
-          } else if (currentTab === 5) {
-            updateTabUI(1);
-          } else if (currentTab > 0) {
-            updateTabSelection(-1);
-          } else {
-            menuVisible = false;
-            menuWrapper.style.display = 'none';
-          }
-        }
+      case 'back':
+        goBack()
         break;
     }
   });
