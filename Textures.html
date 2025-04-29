@@ -90,7 +90,9 @@
       0 0 6px rgba(180, 180, 180, 0.944);            /* soft outer halo */
     }
     .menu-items-container {
-      height: 500px;
+      max-height: 400px; /* Set the maximum height to 400px */
+      height: auto; /* Allow the height to adjust based on the content */
+      overflow-y: auto; /* Add scrolling if the items exceed the max height */
     }
     .menu-items {
       display: flex;
