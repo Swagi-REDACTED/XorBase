@@ -200,7 +200,7 @@
     /* the track */
     .menu-item.slider .slider-track {
       position: relative;
-      width: 140px;    /* adjust as you like */
+      width: 140px;
       height: 10px;
       background: #62626277;
       border: 1.5px solid #000;
@@ -208,15 +208,16 @@
       overflow: hidden;
     }
 
-    /* the filled portion */
+    /* the filled portion (upgraded) */
     .menu-item.slider .slider-fill {
       position: absolute;
-      left: 0; top: 0;
+      left: 0;
+      top: 0;
       height: 100%;
       width: 0%;
       background: #8f04a7;
       border-radius: 6px;
-      box-shadow: 0 0 2px #9e00ff, 0 0 5px #9e00ff;
+      filter: url(#electric-glow);
       transition: width 0.2s ease;
     }
 
@@ -236,6 +237,21 @@
   </style>
 </head>
 <body>
+  <svg style="display: none;">
+    <filter id="electric-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+      <feColorMatrix
+        in="blur"
+        mode="matrix"
+        values="1 0 0 0 0  
+                0 0 1 0 0  
+                0 0 1 0 0  
+                0 0 0 18 -7"
+        result="glow"
+      />
+      <feBlend in="SourceGraphic" in2="glow" mode="screen" />
+    </filter>
+  </svg>
   <div class="menu-wrapper">
     <div class="scrollbar-container">
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
