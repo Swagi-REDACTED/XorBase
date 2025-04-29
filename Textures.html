@@ -208,23 +208,15 @@
       overflow: visible;
     }
 
-    @keyframes neon-glow {
-      0%   { box-shadow: 0 0 3px #9e00ff, 0 0 6px #9e00ff, 0 0 9px #9e00ff; }
-      50%  { box-shadow: 0 0 6px #9e00ff, 0 0 12px #9e00ff, 0 0 18px #9e00ff; }
-      100% { box-shadow: 0 0 3px #9e00ff, 0 0 6px #9e00ff, 0 0 9px #9e00ff; }
-    }
-
-    /* the filled portion with glow */
     .menu-item.slider .slider-fill {
       position: absolute;
       left: 0;
-      top: 2px; /* slight top margin */
-      height: 6px; /* smaller height than track */
+      top: 2px;
+      height: 6px;
       width: 0%;
       background: #8f04a7;
       border-radius: 3px;
-      animation: neon-glow 1.5s ease-in-out infinite;
-      transition: width 0.2s ease;
+      transition: width 0.2s ease, box-shadow 0.2s ease;
     }
 
     .menu-footer {
@@ -922,17 +914,28 @@
 
   // call this from your gamepad 'slide' case
   function updateslidervalue(dir) {
-    const items = getMenuItems();
-    const item  = items[selectedIndex];
-    if (!item || !item.classList.contains('slider')) return;
+  const items = getMenuItems();
+  const item  = items[selectedIndex];
+  if (!item || !item.classList.contains('slider')) return;
 
-    const s = item._slider;
-    s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
-    // re-render fill + value
-    const pct = (s.value - s.min) / (s.max - s.min);
-    s.fill.style.width = (pct * 100) + '%';
-    s.valueSpan.textContent = s.value;
+  const s = item._slider;
+  s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
+
+  const pct = (s.value - s.min) / (s.max - s.min);
+  s.fill.style.width = (pct * 100) + '%';
+  s.valueSpan.textContent = s.value;
+
+  // calculate dynamic glow
+  const glowStrength = pct; // 0.0 → 1.0
+
+  // scale between min and max glow intensity
+  const px1 = 3 + glowStrength * 3;   // 3 → 6
+  const px2 = 6 + glowStrength * 6;   // 6 → 12
+  const px3 = 9 + glowStrength * 9;   // 9 → 18
+
+  s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
   }
+
   
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.menu-item.checkbox').forEach(item => {
@@ -1001,6 +1004,13 @@
         const pct = (item._slider.value - min) / (max - min);
         fill.style.width = (pct * 100) + '%';
         valueSpan.textContent = item._slider.value;
+
+        // same glow logic as updateslidervalue
+        const glowStrength = pct;
+        const px1 = 3 + glowStrength * 3;
+        const px2 = 6 + glowStrength * 6;
+        const px3 = 9 + glowStrength * 9;
+        fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
       };
       render();
     });
