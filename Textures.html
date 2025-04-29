@@ -710,7 +710,6 @@ function updateTabUI(tabIdx, reset = true) {
     previousSubTab = currentSubTab;
   }
   currentTab = tabIdx;
-  if (tabIdx === 14) currentSubTab = 0;
   clearSelection();
   if (reset) {
     if (tabIdx === previousTab) {
@@ -784,7 +783,7 @@ function updateTabUI(tabIdx, reset = true) {
 }
 
 function updateTabSelection(dir){
-  if(currentTab>=3&&currentTab<=13){
+  if(currentTab>=3&&currentTab<=14){
     const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs];
     const arr=arrs[currentTab-3];
     currentSubTab=(currentSubTab+dir+arr.length)%arr.length;
