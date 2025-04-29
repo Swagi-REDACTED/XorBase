@@ -656,35 +656,35 @@
   const worldToggle    = document.getElementById('world-options-toggle');
   const serverToggle    = document.getElementById('server-options-toggle');
 
-  // collect only visible items for whatever tab/sub-tab you're on
-  function getMenuItems() {
-    // top-level (Main, ScriptsList, Settings)
-    if (currentTab <= 2) {
-      return Array.from(containers[currentTab]
-        .querySelectorAll('.menu-item'))
+    // collect only visible items for whatever tab/sub-tab you're on
+    function getMenuItems() {
+      // top-level (Main, ScriptsList, Settings)
+      if (currentTab <= 2) {
+        return Array.from(containers[currentTab]
+          .querySelectorAll('.menu-item'))
+          .filter(i => i.offsetParent !== null);
+      }
+
+      // mapping of major tab → starting index in subContainers
+      const subIndexMap = {
+        3:  0,  // Player
+        4:  2,  // Misc
+        5:  4,  // Scripts
+        6:  7,  // Vehicle
+        7:  9,  // ESP
+        8: 11,  // Teleport
+        9: 13,  // Weapons
+        10:16,  // Model
+        11:17,  // Outfits
+        12:20,  // World
+        13:22   // Server
+      };
+
+      const start = subIndexMap[currentTab] ?? 0;
+      const list  = subContainers[start + currentSubTab];
+      return Array.from(list.querySelectorAll('.menu-item'))
         .filter(i => i.offsetParent !== null);
     }
-
-    // mapping of major tab → starting index in subContainers
-    const subIndexMap = {
-      3:  0,  // Player
-      4:  2,  // Misc
-      5:  4,  // Scripts
-      6:  7,  // Vehicle
-      7:  9,  // ESP
-      8: 11,  // Teleport
-      9: 13,  // Weapons
-      10:16,  // Model
-      11:17,  // Outfits
-      12:20,  // World
-      13:22   // Server
-    };
-
-    const start = subIndexMap[currentTab] ?? 0;
-    const list  = subContainers[start + currentSubTab];
-    return Array.from(list.querySelectorAll('.menu-item'))
-      .filter(i => i.offsetParent !== null);
-  }
 
   function updateMenuSelection(dir) {
       const items = getMenuItems();
@@ -1005,15 +1005,19 @@
     });
   });
 
-  // Back/navigation helper
+    // Back/navigation helper
   function goBack() {
     if (currentTab >= 3 && currentSubTab > 0) {
-      // drop back into that tab’s main sub-panel
+      // If you’re in a sub-tab >0, step back to its “main” panel
       currentSubTab  = 0;
       selectedIndex = 0;
       updateTabUI(currentTab, true);
+    } else if (currentTab > 0) {
+      // If you’re anywhere else in the menu (but not a sub-panel),
+      // jump back to the top-level Main tab
+      updateTabUI(0, true);
     } else {
-      // at top-level: close menu entirely
+      // Already at Main, so hide the menu
       menuVisible = false;
       menuWrapper.style.display = 'none';
     }
