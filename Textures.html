@@ -680,68 +680,60 @@ function clearSelection() {
 function updateTabUI(tabIdx, reset = true) {
   currentTab = tabIdx;
   clearSelection();
-  updateMenuSelection(0);
+  if (reset) selectedIndex = 0;
 
-  // hide all tab groups
-  [mainTabsEl, playerTabsEl, miscTabsEl, scriptsTabsEl, vehicleTabsEl,
-   espTabsEl, teleportTabsEl, weaponsTabsEl, modelTabsEl, outfitsTabsEl,
-   worldTabsEl, serverTabsEl].forEach(g => g.style.display = 'none');
+  // hide all headers
+  const groups = [
+    document.getElementById('menu-tabs'),
+    document.getElementById('player-tabs'),
+    document.getElementById('misc-tabs'),
+    document.getElementById('scripts-tabs'),
+    document.getElementById('vehicle-tabs'),
+    document.getElementById('esp-tabs'),
+    document.getElementById('teleport-tabs'),
+    document.getElementById('weapons-tabs'),
+    document.getElementById('model-tabs'),
+    document.getElementById('outfits-tabs'),
+    document.getElementById('world-tabs'),
+    document.getElementById('server-tabs')
+  ];
+  groups.forEach(g => g.style.display = 'none');
 
-  // show active tab group
-  const tabDisplays = {0:mainTabsEl,1:mainTabsEl,2:mainTabsEl,3:playerTabsEl,
-                       4:miscTabsEl,5:scriptsTabsEl,6:vehicleTabsEl,7:espTabsEl,
-                       8:teleportTabsEl,9:weaponsTabsEl,10:modelTabsEl,
-                       11:outfitsTabsEl,12:worldTabsEl,13:serverTabsEl};
-  tabDisplays[tabIdx].style.display = 'flex';
+  // show current header
+  const displayMap = {0:0,1:0,2:0,3:1,4:2,5:3,6:4,7:5,8:6,9:7,10:8,11:9,12:10,13:11};
+  groups[displayMap[tabIdx]].style.display = 'flex';
 
-  // highlight header/sub-tabs
-  const tabGroups = [mainTabs, playerTabs, miscTabs, scriptsTabs,
-                     vehicleTabs, espTabs, teleportTabs, weaponsTabs,
-                     modelTabs, outfitsTabs, worldTabs, serverTabs];
-  tabGroups.forEach((group, idx) => {
-    group.forEach((t, i) => {
-      let isSelected = false;
-      if (idx === 0) {
-        // main header
-        isSelected = (tabIdx <= 2 && i === tabIdx);
-      } else {
-        // sub-tabs only for their parent
-        isSelected = (tabIdx === idx + 2 && i === currentSubTab);
-      }
-      t.classList.toggle('selected', isSelected);
-    });
-  });
+  // highlight tabs
+  mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
+  [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs]
+    .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
 
-  // show/hide containers
-  containers.forEach((c, i) => c.style.display = (i === tabIdx ? 'block' : 'none'));
+  // show containers
+  containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
 
-  // handle sub-containers
-  subContainers.forEach(c => c.style.display = 'none');
-  const subMap = {3:0,4:2,5:4,6:7,7:9,8:11,9:13,10:16,11:17,12:20,13:22};
-  const counts = {3:2,4:2,5:3,6:2,7:2,8:2,9:3,10:1,11:3,12:2,13:2};
-  const subCount = counts[tabIdx] || 1;
-  for (let i = 0; i < subCount; i++) {
-    subContainers[subMap[tabIdx] + i].style.display = (i === currentSubTab ? 'block' : 'none');
+  // show subs
+  subContainers.forEach(c=>c.style.display='none');
+  const countMap = {3:2,4:2,5:3,6:2,7:2,8:2,9:3,10:1,11:3,12:2,13:2};
+  const startMap = {3:0,4:2,5:4,6:7,7:9,8:11,9:13,10:16,11:17,12:20,13:22};
+  const cCount = countMap[tabIdx]||1;
+  for(let i=0;i<cCount;i++){
+    subContainers[startMap[tabIdx]+i].style.display = i===currentSubTab?'block':'none';
   }
 
-  if (reset) selectedIndex = 0;
+  // highlight first item
   updateMenuSelection(0);
 }
 
 function updateTabSelection(dir) {
-  if (currentTab >= 3 && currentTab <= 13) {
-    const tabsArrays = [playerTabs, miscTabs, scriptsTabs, vehicleTabs,
-                        espTabs, teleportTabs, weaponsTabs, modelTabs,
-                        outfitsTabs, worldTabs, serverTabs];
-    const arr = tabsArrays[currentTab - 3];
-    currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
-    updateTabUI(currentTab);
-    updateMenuSelection(0);
+  selectedIndex = 0;                  // immediate reset
+  if (currentTab>=3 && currentTab<=13) {
+    const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs];
+    const arr=arrs[currentTab-3];
+    currentSubTab=(currentSubTab+dir+arr.length)%arr.length;
   } else {
-    currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
-    updateTabUI(currentTab);
-    updateMenuSelection(0);
+    currentTab=(currentTab+dir+mainTabs.length)%mainTabs.length;
   }
+  updateTabUI(currentTab, true);
 }
 
 // toggle buttons
@@ -781,7 +773,7 @@ window.addEventListener('message', ({ data }) => {
       if (menuVisible) updateTabUI(currentTab, false);
       break;
     case 'navigate': updateMenuSelection(msg.data.direction === 'up' ? -1 : 1); break;
-    case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); break;
+    case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); selectedIndex=0; break;
     case 'slide':    updateslidervalue(msg.data.direction === 'left' ? -1 : 1); break;
     case 'select':   getMenuItems()[selectedIndex]?.click(); break;
     case 'back':     goBack(); break;
