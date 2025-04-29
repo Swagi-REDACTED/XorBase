@@ -812,26 +812,30 @@ function updateslidervalue(dir) {
 }
 
 function goBack() {
+  // Always reset to the main tab (tab 0) before closing
   if (currentTab >= 3 && currentSubTab > 0) {
     currentSubTab = 0;
     selectedIndex = 0;
     updateTabUI(currentTab, true);
+  } else if (currentTab !== 0) {
+    // Always reset to main tab (tab 0) before closing
+    currentTab = 0;  // Force reset to the main tab
+    previousTab = 0; // Ensure previous tab is also reset
+    previousSubTab = 0; // Reset previous sub-tab
+    selectedIndex = 0; // Reset selection
+    updateTabUI(currentTab, true);
   } else if (currentSubTab !== previousSubTab) {
+    // Only go back to previous sub-tab if we're not at main tab 0
     currentSubTab = previousSubTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
   } else if (currentTab !== previousTab) {
+    // Go back to the previous tab and reset
     currentTab = previousTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
   } else {
-    // Always reset to main tab 0 before closing
-    currentTab = 0;
-    currentSubTab = 0; // Ensure sub-tab is reset
-    selectedIndex = 0; // Reset the selection index
-    updateTabUI(currentTab, true); // Update UI with the reset state
-
-    // Close the menu only after reset
+    // Close the menu if we're at the root state (main tab 0)
     menuVisible = false;
     menuWrapper.style.display = 'none';
   }
