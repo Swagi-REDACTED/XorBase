@@ -1044,13 +1044,11 @@ window.addEventListener('message', ({ data }) => {
       break;
 
     case 'select':
-      if (bindMenuVisible) {
-        // If the bind menu is visible, lock the key binding
-        lockKeyBinding(inputBox);
-      } else {
-        // Otherwise, click the currently selected menu item
-        getMenuItems()[selectedIndex]?.click();
-      }
+      getMenuItems()[selectedIndex]?.click();
+      break;
+
+    case 'selectbind':
+      lockKeyBinding(inputBox);
       break;
 
     case 'back':
