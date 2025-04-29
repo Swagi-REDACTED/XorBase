@@ -681,7 +681,6 @@
     currentTab = tabIdx;
     clearSelection();
     if (reset) selectedIndex = 0;
-    updateMenuSelection(0);
   
     // hide all tab groups
     [mainTabsEl, playerTabsEl, miscTabsEl, scriptsTabsEl, vehicleTabsEl,
@@ -722,6 +721,9 @@
     for (let i = 0; i < subCount; i++) {
       subContainers[subMap[tabIdx] + i].style.display = (i === currentSubTab ? 'block' : 'none');
     }
+  
+    // finally highlight first item
+    updateMenuSelection(0);
   }
   
   function updateTabSelection(dir) {
