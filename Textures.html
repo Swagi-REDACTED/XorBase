@@ -761,6 +761,7 @@ function updateTabUI(tabIdx, reset = true) {
   // show containers
   containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
   updateMenuSelection(0);
+  updateScrollbarHeight();
 
   // show subs
   subContainers.forEach(c => c.style.display = 'none');
@@ -787,6 +788,7 @@ function updateTabUI(tabIdx, reset = true) {
 
   // highlight first item
   updateMenuSelection(0);
+  updateScrollbarHeight();
 }
 
 function updateTabSelection(dir) {
@@ -805,6 +807,7 @@ function updateTabSelection(dir) {
   selectedIndex = 0;
   updateTabUI(currentTab, true);
   updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
+  updateScrollbarHeight();
 }
 
 // toggle buttons
