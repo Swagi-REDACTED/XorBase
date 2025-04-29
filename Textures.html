@@ -710,6 +710,7 @@ function updateTabUI(tabIdx, reset = true) {
     previousSubTab = currentSubTab;
   }
   currentTab = tabIdx;
+  if (tabIdx === 14) currentSubTab = 0;
   clearSelection();
   if (reset) {
     if (tabIdx === previousTab) {
