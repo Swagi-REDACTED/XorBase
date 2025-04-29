@@ -575,6 +575,7 @@
 let selectedIndex   = 0;
 let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
 let currentSubTab   = 0;
+let previousTab = 0; // track the tab/subtab user entered from
 let menuVisible     = true;
 
 // DOM refs
@@ -698,6 +699,10 @@ function clearSelection() {
 }
 
 function updateTabUI(tabIdx, reset = true) {
+  if (tabIdx !== currentTab) {
+    previousTab = currentTab;
+    previousSubTab = currentSubTab;
+  }
   currentTab = tabIdx;
   clearSelection();
   if (reset) selectedIndex = 0;
@@ -792,11 +797,16 @@ function updateslidervalue(dir) {
 
 function goBack() {
   if (currentTab >= 3 && currentSubTab > 0) {
-    currentSubTab = 0; selectedIndex = 0; updateTabUI(currentTab, true);
-  } else if (currentTab > 0) {
-    updateTabUI(0, true);
+    currentSubTab = 0;
+    selectedIndex = 0;
+    updateTabUI(currentTab, true);
+  } else if (currentTab !== previousTab) {
+    currentTab = previousTab;
+    selectedIndex = 0;
+    updateTabUI(currentTab, true);
   } else {
-    menuVisible = false; menuWrapper.style.display = 'none';
+    menuVisible = false;
+    menuWrapper.style.display = 'none';
   }
 }
 
