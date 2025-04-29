@@ -710,7 +710,7 @@ function updateTabUI(tabIdx, reset = true) {
 
   // show containers
   containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
-
+  updateMenuSelection(0);
   // show subs
   subContainers.forEach(c=>c.style.display='none');
   const countMap = {3:2,4:2,5:3,6:2,7:2,8:2,9:3,10:1,11:3,12:2,13:2};
@@ -724,16 +724,16 @@ function updateTabUI(tabIdx, reset = true) {
   updateMenuSelection(0);
 }
 
-function updateTabSelection(dir) {
-  selectedIndex = 0;                  // immediate reset
-  if (currentTab>=3 && currentTab<=13) {
+function updateTabSelection(dir){
+  selectedIndex=0; // reset always
+  if(currentTab>=3&&currentTab<=13){
     const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs];
     const arr=arrs[currentTab-3];
     currentSubTab=(currentSubTab+dir+arr.length)%arr.length;
   } else {
     currentTab=(currentTab+dir+mainTabs.length)%mainTabs.length;
   }
-  updateTabUI(currentTab, true);
+  updateTabUI(currentTab,true);
 }
 
 // toggle buttons
