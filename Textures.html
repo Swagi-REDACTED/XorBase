@@ -181,6 +181,42 @@
       left: calc(100% - 16px - 2px); /* track width - thumb width - border */
     }
 
+    /* container flex setup */
+    .menu-item.slider {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* label + value */
+    .menu-item.slider > span.value {
+      width: 2em;
+      text-align: right;
+      margin-right: 8px;
+      font-family: Verdana, sans-serif;
+      color: #fff;
+    }
+
+    /* the track */
+    .menu-item.slider .slider-track {
+      position: relative;
+      width: 150px;    /* adjust as you like */
+      height: 8px;
+      background: #444;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* the filled portion */
+    .menu-item.slider .slider-fill {
+      position: absolute;
+      left: 0; top: 0;
+      height: 100%;
+      width: 0%;
+      background: #8f04a7;
+      transition: width 0.2s ease;
+    }
+
     .menu-footer {
       background: rgba(0, 0, 0, 0.8);
       color: white;
@@ -340,7 +376,9 @@
           <div class="menu-items" id="player-movement-items" style="display: none;">
             <div class="menu-item checkbox">No Clip</div>
             <div class="menu-item checkbox">Run Speed</div>
-            <div class="menu-item">Run Speed Modifier</div>
+            <div class="menu-item slider" data-min="1" data-max="10" data-step="1" data-value="1">
+              Run Speed Modifier
+            </div>            
           </div>
         </div>
         <div class="menu-items" id="vehicle-options-items" style="display: none;">
@@ -857,6 +895,20 @@
   worldToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(12); });
   serverToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(13); });
 
+  // call this from your gamepad 'slide' case
+  function updateslidervalue(dir) {
+    const items = getMenuItems();
+    const item  = items[selectedIndex];
+    if (!item || !item.classList.contains('slider')) return;
+
+    const s = item._slider;
+    s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
+    // re-render fill + value
+    const pct = (s.value - s.min) / (s.max - s.min);
+    s.fill.style.width = (pct * 100) + '%';
+    s.valueSpan.textContent = s.value;
+  }
+  
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.menu-item.checkbox').forEach(item => {
       // grab & clear the text
@@ -887,6 +939,51 @@
         setTimeout(() => thumb.classList.remove('stretch'), 200);
       });
     });
+    document.querySelectorAll('.menu-item.slider').forEach(item => {
+      // pull config
+      const min   = +item.dataset.min;
+      const max   = +item.dataset.max;
+      const step  = +item.dataset.step;
+      let   value = +item.dataset.value;
+
+      // clear text & build UI
+      const labelText = item.textContent.trim();
+      item.textContent = '';
+
+      // label + numeric value
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = labelText;
+
+      const valueSpan = document.createElement('span');
+      valueSpan.classList.add('value');
+      valueSpan.textContent = value;
+
+      // track + fill (no thumb)
+      const track = document.createElement('div');
+      track.classList.add('slider-track');
+      const fill  = document.createElement('div');
+      fill.classList.add('slider-fill');
+      track.append(fill);
+
+      // assemble
+      item.append(labelSpan, valueSpan, track);
+
+      // store state
+      item._slider = { min, max, step, value, valueSpan, fill };
+
+      // render helper
+      const render = () => {
+        const pct = (item._slider.value - min) / (max - min);
+        fill.style.width = (pct * 100) + '%';
+        valueSpan.textContent = item._slider.value;
+      };
+      render();
+
+      // click-to-increment
+      item.addEventListener('click', () => {
+        updateslidervalue(1);
+      });
+    });
   });
 
   // gamepad messages
@@ -903,6 +1000,9 @@
         break;
       case 'tab':
         updateTabSelection(msg.data.direction==='left'?-1:1);
+        break;
+      case 'slide':
+        updateslidervalue(msg.data.direction==='left' ? -1 : 1);
         break;
       case 'select':
         getMenuItems()[selectedIndex]?.click();
