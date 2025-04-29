@@ -841,43 +841,6 @@
     }
   }
 
-  // Highlight active header tab
-  mainTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab <= 3 && i === currentTab)
-  );
-  playerTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 3 && i === currentSubTab)
-  );
-  miscTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 4 && i === currentSubTab)
-  );
-  scriptsTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 5 && i === currentSubTab)
-  );
-  vehicleTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 6 && i === currentSubTab)
-  );
-  espTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 7 && i === currentSubTab)
-  );
-  teleportTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 8 && i === currentSubTab)
-  );
-  weaponsTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 9 && i === currentSubTab)
-  );
-  modelTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 10 && i === currentSubTab)
-  );
-  outfitsTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 11 && i === currentSubTab)
-  );
-  worldTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 12 && i === currentSubTab)
-  );
-  serverTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab === 13 && i === currentSubTab)
-  );
 
   // Submenu Toggles
   playerToggle.addEventListener('click', () => { currentSubTab = 0; updateTabUI(3); });
@@ -993,6 +956,7 @@
         fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
       };
       render();
+      updateTabUI(0);
     });
   });
 
