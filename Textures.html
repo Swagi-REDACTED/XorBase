@@ -829,15 +829,15 @@ function goBack() {
     currentTab = previousTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
+  } else if (currentTab === previousTab && currentTab === 0) { // Close the menu if both tabs are 0 (main tab)
+    menuVisible = false;
+    menuWrapper.style.display = 'none';
   } else if (currentTab === previousTab) { // Reset both to zero if on the same tab
     currentTab = 0;
     previousTab = 0;
     currentSubTab = 0; // Reset the sub-tab as well
     selectedIndex = 0; // Reset selected index
     updateTabUI(currentTab, true);
-  } else if (currentTab === 0) { // Close the menu only if the current tab is 0 (main tab)
-    menuVisible = false;
-    menuWrapper.style.display = 'none';
   }
 }
 
