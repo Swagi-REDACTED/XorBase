@@ -812,24 +812,23 @@ function updateslidervalue(dir) {
 }
 
 function goBack() {
-  if (currentTab !== previousTab) {
-    // If the current tab is different from the previous tab, revert to the previous tab
-    currentTab = previousTab;
-    selectedIndex = previousIndex; // Set the selected index to the previous one
-    currentSubTab = 0; // Reset the sub-tab to 0
-    updateTabUI(currentTab, true); // Update the UI to reflect the previous tab
+  if (currentTab >= 2 && currentSubTab > 0) {
+    currentSubTab = 0;
+    selectedIndex = 0;
+    updateTabUI(currentTab, true);
   } else if (currentSubTab !== previousSubTab) {
-    // If the current sub-tab is different from the previous sub-tab, revert to the previous sub-tab
     currentSubTab = previousSubTab;
-    selectedIndex = previousIndex; // Set the selected index to the previous one
-    updateTabUI(currentTab, true); // Update the UI to reflect the sub-tab change
+    selectedIndex = previousIndex;
+    updateTabUI(currentTab, true);
+  } else if (currentTab !== previousTab) {
+    currentTab = previousTab;
+    selectedIndex = previousIndex;
+    updateTabUI(currentTab, true);
   } else {
-    // If the tab and sub-tab are the same as the previous, close the menu
     menuVisible = false;
     menuWrapper.style.display = 'none';
   }
 }
-
 
 window.addEventListener('message', ({ data }) => {
   let msg = typeof data === 'string' ? JSON.parse(data) : data;
