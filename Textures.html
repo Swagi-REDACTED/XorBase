@@ -208,18 +208,27 @@
       overflow: hidden;
     }
 
-    /* the filled portion (upgraded) */
+    /* the filled portion (fixed) */
     .menu-item.slider .slider-fill {
       position: absolute;
       left: 0;
       top: 0;
       height: 100%;
       width: 0%;
-      background: #51005f;
+      background: #8f04a7;
       border-radius: 6px;
-      box-shadow: 0 0 2px #9e00ff, 0 0 5px #9e00ff;
-      filter: url(#electric-glow);
-      transition: width 0.2s ease;
+      box-shadow: 0 0 5px #9e00ff, 0 0 10px #9e00ff, 0 0 15px #9e00ff;
+      animation: fillAnimation 1.2s forwards ease-out;
+    }
+
+    /* keyframes for smooth fill */
+    @keyframes fillAnimation {
+      0% {
+        width: 0%;
+      }
+      100% {
+        width: var(--target-width, 100%);
+      }
     }
 
     .menu-footer {
