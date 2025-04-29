@@ -829,6 +829,8 @@ function goBack() {
     currentTab = previousTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
+  } else if (previousTab !== currentTab) {
+    currentTab = 0;
   } else if (currentTab === 0) { // Close the menu only if the current tab is 0 (main tab)
     menuVisible = false;
     menuWrapper.style.display = 'none';
