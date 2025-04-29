@@ -836,9 +836,10 @@ function goBack() {
     currentTab = 0;
     previousTab = 0;
     currentSubTab = 0; // Reset the sub-tab as well
+    previousIndex = 0  // Reset selected index
     selectedIndex = 0; // Reset selected index
-    updateMenuSelection(selectedIndex)
     updateTabUI(currentTab, true);
+    updateMenuSelection(0);
   }
 }
 
