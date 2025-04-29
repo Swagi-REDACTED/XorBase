@@ -705,12 +705,15 @@ function clearSelection() {
 }
 
 function updateTabUI(tabIdx, reset = true) {
+  // Ensure previousTab and previousSubTab are updated when the tab changes
   if (tabIdx !== currentTab) {
     previousTab = currentTab;
     previousSubTab = currentSubTab;
   }
+
   currentTab = tabIdx;
   clearSelection();
+
   if (reset) {
     if (tabIdx === previousTab) {
       selectedIndex = previousIndex;
@@ -740,12 +743,12 @@ function updateTabUI(tabIdx, reset = true) {
 
   // show current header
   const displayMap = {
-  0: 0, 1: 0, 2: 0,
-  3: 1, 4: 2, 5: 3,
-  6: 4, 7: 5, 8: 6,
-  9: 7, 10: 8, 11: 9,
-  12: 10, 13: 11,
-  14: 12 };
+    0: 0, 1: 0, 2: 0,
+    3: 1, 4: 2, 5: 3,
+    6: 4, 7: 5, 8: 6,
+    9: 7, 10: 8, 11: 9,
+    12: 10, 13: 11,
+    14: 12 };
   groups[displayMap[tabIdx]].style.display = 'flex';
 
   // highlight tabs
@@ -756,8 +759,9 @@ function updateTabUI(tabIdx, reset = true) {
   // show containers
   containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
   updateMenuSelection(0);
+
   // show subs
-  subContainers.forEach(c=>c.style.display='none');
+  subContainers.forEach(c => c.style.display = 'none');
   const countMap = {
     3: 2, 4: 2, 5: 3,
     6: 2, 7: 2, 8: 2,
@@ -773,24 +777,25 @@ function updateTabUI(tabIdx, reset = true) {
     12: 20, 13: 22,
     14: 24 // Force-main-items is at subContainers[24]
   };
-  const cCount = countMap[tabIdx]||1;
-  for(let i=0;i<cCount;i++){
-    subContainers[startMap[tabIdx]+i].style.display = i===currentSubTab?'block':'none';
+
+  const cCount = countMap[tabIdx] || 1;
+  for (let i = 0; i < cCount; i++) {
+    subContainers[startMap[tabIdx] + i].style.display = i === currentSubTab ? 'block' : 'none';
   }
 
   // highlight first item
   updateMenuSelection(0);
 }
 
-function updateTabSelection(dir){
-  if(currentTab>=3&&currentTab<=14){
-    const arrs=[playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs];
-    const arr=arrs[currentTab-3];
-    currentSubTab=(currentSubTab+dir+arr.length)%arr.length;
+function updateTabSelection(dir) {
+  if (currentTab >= 3 && currentTab <= 14) {
+    const arrs = [playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs, weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs];
+    const arr = arrs[currentTab - 3];
+    currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
   } else {
-    currentTab=(currentTab+dir+mainTabs.length)%mainTabs.length;
+    currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
   }
-  updateTabUI(currentTab,true);
+  updateTabUI(currentTab, true);
 }
 
 // toggle buttons
@@ -824,8 +829,6 @@ function goBack() {
     currentTab = previousTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
-  } else if (currentTab > 0) {
-    updateTabUI(0, true);
   } else {
     menuVisible = false;
     menuWrapper.style.display = 'none';
