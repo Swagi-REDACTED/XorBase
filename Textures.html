@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insight</title>
+  <title>insight</title>
   <style>
     body {
       margin: 0;
@@ -153,31 +153,72 @@
         <div class="menu-tab selected" id="player-main-tab">Player</div>
         <div class="menu-tab" id="player-movement-tab">Movement</div>
       </div>
-
+      <!-- misc settings tabs -->
       <div class="menu-tabs" id="misc-tabs" style="display: none;">
         <div class="menu-tab selected" id="misc-main-tab">Misc</div>
         <div class="menu-tab" id="misc-settings-tab">Extra Options</div>
       </div>
-
+      <!-- scripts tabs -->
       <div class="menu-tabs" id="scripts-tabs" style="display: none;">
         <div class="menu-tab selected" id="scripts-main-tab">Scripts</div>
         <div class="menu-tab" id="scripts-Built-tab">Built-in</div>
         <div class="menu-tab" id="scripts-misc-tab">Misc</div>
+      </div>
+      <!-- vehicle tabs -->
+      <div class="menu-tabs" id="vehicle-tabs" style="display: none;">
+        <div class="menu-tab selected" id="vehicle-main-tab">Vehicle</div>
+        <div class="menu-tab" id="vehicle-spawner-tab">Spawner</div>
+      </div>
+      <!-- esp tabs -->
+      <div class="menu-tabs" id="esp-tabs" style="display: none;">
+        <div class="menu-tab selected" id="esp-main-tab">Esp</div>
+        <div class="menu-tab" id="esp-toggle-tab">Toggles</div>
+      </div>
+      <!-- teleport tabs -->
+      <div class="menu-tabs" id="teleport-tabs" style="display: none;">
+        <div class="menu-tab selected" id="teleport-main-tab">Teleport</div>
+        <div class="menu-tab" id="teleport-player-tab">Player</div>
+      </div>
+      <!-- weapons tabs -->
+      <div class="menu-tabs" id="weapons-tabs" style="display: none;">
+        <div class="menu-tab selected" id="weapons-main-tab">Weapon</div>
+        <div class="menu-tab" id="weapons-aimbot-tab">Aimbot</div>
+        <div class="menu-tab" id="weapons-spawner-tab">Spawner</div>
+      </div>
+      <!-- model tabs -->
+      <div class="menu-tabs" id="model-tabs" style="display: none;">
+        <div class="menu-tab selected" id="model-main-tab">Scripts</div>
+      </div>
+      <!-- outfits tabs -->
+      <div class="menu-tabs" id="outfits-tabs" style="display: none;">
+        <div class="menu-tab selected" id="outfits-main-tab">Outfits</div>
+        <div class="menu-tab" id="outfits-upper-tab">Upper</div>
+        <div class="menu-tab" id="outfits-lower-tab">Lower</div>
+      </div>
+      <!-- world tabs -->
+      <div class="menu-tabs" id="world-tabs" style="display: none;">
+        <div class="menu-tab selected" id="world-main-tab">World</div>
+        <div class="menu-tab" id="world-atmosphere-tab">Atmosphere</div>
+      </div>
+      <!-- server tabs -->
+      <div class="menu-tabs" id="server-tabs" style="display: none;">
+        <div class="menu-tab selected" id="server-main-tab">Server</div>
+        <div class="menu-tab" id="server-destoryer-tab">Destroyer</div>
       </div>
   
       <!-- Menu items -->
       <div class="menu-items-container" id="menu-items-container">
         <!-- Main -->
         <div class="menu-items" id="main-items">
-          <div class="menu-item" id="player-options-toggle">Player Options</div>
-          <div class="menu-item">Vehicle</div>
-          <div class="menu-item">Esp</div>
-          <div class="menu-item">Teleport</div>
-          <div class="menu-item">Aimbot</div>
-          <div class="menu-item">Weapons</div>
-          <div class="menu-item">Model Changer</div>
-          <div class="menu-item">Outfits</div>
-          <div class="menu-item">World</div>
+          <div class="menu-item" id="player-options-toggle">Player</div>
+          <div class="menu-item" id="vehicle-options-toggle">Vehicle</div>
+          <div class="menu-item" id="esp-options-toggle">Esp</div>
+          <div class="menu-item" id="teleport-options-toggle">Teleport</div>
+          <div class="menu-item" id="weapons-options-toggle">Weapons</div>
+          <div class="menu-item" id="model-options-toggle">Model Changer</div>
+          <div class="menu-item" id="outfits-options-toggle">Outfits</div>
+          <div class="menu-item" id="world-options-toggle">World</div>
+          <div class="menu-item" id="server-options-toggle">Server</div>
         </div>
   
         <!-- Scripts -->
@@ -223,6 +264,7 @@
           </div>
         </div>
   
+        <!-- Main Options -->
         <!-- Player Options full screen -->
         <div class="menu-items" id="player-options-items" style="display: none;">
           <!-- Main panel -->
@@ -237,7 +279,133 @@
             <div class="menu-item">Run Speed</div>
           </div>
         </div>
+        <div class="menu-items" id="vehicle-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="vehicle-main-items">
+            <div class="menu-item">Boost</div>
+            <div class="menu-item">God mode</div>
+            <!-- etc… -->
+          </div>
+          <!-- spawner panel -->
+          <div class="menu-items" id="vehicle-spawner-items" style="display: none;">
+            <div class="menu-item">Spawn From Hash</div>
+            <div class="menu-item">Spawner</div>
+          </div>
+        </div>
+        <div class="menu-items" id="esp-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="esp-main-items">
+            <div class="menu-item">enable esp</div>
+            <div class="menu-item">esp color</div>
+            <!-- etc… -->
+          </div>
+          <!-- Toggles panel -->
+          <div class="menu-items" id="esp-toggle-items" style="display: none;">
+            <div class="menu-item">Glow</div>
+            <div class="menu-item">Bones</div>
+            <div class="menu-item">Boxes</div>
+            <div class="menu-item">Tracers</div>
+            <div class="menu-item">Name</div>
+            <div class="menu-item">Distance</div>
+            <div class="menu-item">Infobar</div> <!-- for later -->
+          </div>
+        </div>
+        <div class="menu-items" id="teleport-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="teleport-main-items">
+            <div class="menu-item">Tp to waypoint</div>
+            <div class="menu-item">Tp to coords</div>
+            <!-- etc… -->
+          </div>
+          <!-- player panel -->
+          <div class="menu-items" id="teleport-player-items" style="display: none;">
+            <div class="menu-item">tp to player by id</div>
+            <div class="menu-item">tp to player by name</div>
+          </div>
+        </div>
+        <div class="menu-items" id="weapons-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="weapons-main-items">
+            <div class="menu-item">damage</div>
+            <div class="menu-item">Invisible</div>
+            <!-- etc… -->
+          </div>
+          <div class="menu-items" id="weapons-aimbot-items" style="display: none;">
+            <div class="menu-item">aimbot</div>
+            <div class="menu-item">aimbot type</div>
+            <div class="menu-item">aimbot fov</div>
+          </div>
+          <div class="menu-items" id="weapons-spawner-items" style="display: none;">
+            <div class="menu-item">spawn by hash</div>
+            <div class="menu-item">spawner</div>
+            <div class="menu-item">spoof</div>
+            <div class="menu-item">add ammo to clip</div>
+            <div class="menu-item">add ammo to reserve</div>
+            <div class="menu-item">set ammo to clip</div>
+            <div class="menu-item">set ammo to reserve</div>
+          </div>
+        </div>
+        <div class="menu-items" id="model-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="model-main-items">
+            <div class="menu-item">Changer</div>
+            <div class="menu-item">Save Ped</div>
+            <div class="menu-item">Load Ped</div>
+            <!-- etc… -->
+          </div>
+        </div>
+        <div class="menu-items" id="outfits-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="outfits-main-items">
+            <div class="menu-item">save outfit</div>
+            <div class="menu-item">load outfits</div>
+            <div class="menu-item">Skin Color</div>
+            <!-- etc… -->
+          </div>
+          <div class="menu-items" id="outfits-upper-items">
+            <div class="menu-item">Hat</div>
+            <div class="menu-item">Mask</div>
+            <div class="menu-item">Shirt</div>
+            <div class="menu-item">Undershirt</div>
+            <div class="menu-item">Arms</div>
+            <!-- etc… -->
+          </div>
+          <div class="menu-items" id="outfits-lower-items" style="display: none;">
+            <div class="menu-item">legs</div>
+            <div class="menu-item">Shoes</div>
+          </div>
+        </div>
+        <div class="menu-items" id="world-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="world-main-items">
+            <div class="menu-item">aggressive npcs</div>
+            <div class="menu-item">floating cars</div>
+            <div class="menu-item">low gravity</div>
+            <!-- etc… -->
+          </div>
+          <!-- atmosphere panel -->
+          <div class="menu-items" id="world-atmosphere-items" style="display: none;">
+            <div class="menu-item">time</div>
+            <div class="menu-item">weather</div>
+          </div>
+        </div>
+        <div class="menu-items" id="server-options-toggle" style="display: none;">
+          <!-- Main panel -->
+          <div class="menu-items" id="server-main-items">
+            <div class="menu-item">God Mode All</div>
+            <div class="menu-item">Invisible All</div>
+            <!-- etc… -->
+          </div>
+          <!-- destroyer panel -->
+          <div class="menu-items" id="server-destoryer-items" style="display: none;">
+            <div class="menu-item">Cage All</div>
+            <div class="menu-item">Cage Nearest</div>
+            <div class="menu-item">Nuke All</div>
+            <div class="menu-item">Nuke Nearest</div>
+          </div>
+        </div>
       </div>
+      
   
       <div class="menu-footer">
         Version: Beta <span id="time-since-release">Loading...</span>
@@ -275,13 +443,29 @@
   const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
   const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
   const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
+  const vehicleTabs = document.querySelectorAll('#vehicle-tabs .menu-tab');
+  const espTabs = document.querySelectorAll('#esp-tabs .menu-tab');
+  const teleportTabs = document.querySelectorAll('#teleport-tabs .menu-tab');
+  const weaponsTabs = document.querySelectorAll('#weapons-tabs .menu-tab');
+  const modelTabs = document.querySelectorAll('#model-tabs .menu-tab');
+  const outfitsTabs = document.querySelectorAll('#outfits-tabs .menu-tab');
+  const worldTabs = document.querySelectorAll('#world-tabs .menu-tab');
+  const serverTabs = document.querySelectorAll('#server-tabs .menu-tab');
   const containers      = [
     document.getElementById('main-items'),         // 0
     document.getElementById('scripts-items'),      // 1
     document.getElementById('settings-items'),     // 2
     document.getElementById('player-options-items'),// 3
     document.getElementById('misc-options-items'), // 4
-    document.getElementById('scripts-options-items')// 5
+    document.getElementById('scripts-options-items'), // 5
+    document.getElementById('vehicle-options-toggle'), // 6
+    document.getElementById('esp-options-toggle'),    // 7
+    document.getElementById('teleport-options-toggle'),// 8
+    document.getElementById('weapons-options-toggle'),// 9
+    document.getElementById('model-options-toggle'),  // 10
+    document.getElementById('outfits-options-toggle'),// 11
+    document.getElementById('world-options-toggle'),  //12
+    document.getElementById('server-options-toggle')  //13
   ];
   const subContainers   = [
     // PlayerOptions
@@ -294,17 +478,58 @@
     document.getElementById('scripts-main-items'),
     document.getElementById('misc-Built-items'),
     document.getElementById('scripts-misc-items'),
+    // VehicleOptions
+    document.getElementById('vehicle-main-items'),
+    document.getElementById('vehicle-spawner-items'),
+    // ESPOptions
+    document.getElementById('esp-main-items'),
+    document.getElementById('esp-toggle-items'),
+    // TeleportOptions
+    document.getElementById('teleport-main-items'),
+    document.getElementById('teleport-player-items'),
+    // WeaponsOptions
+    document.getElementById('weapons-main-items'),
+    document.getElementById('weapons-aimbot-items'),
+    document.getElementById('weapons-spawner-items'),
+    // ModelOptions
+    document.getElementById('model-main-items'),
+    // OutfitsOptions
+    document.getElementById('outfits-main-items'),
+    document.getElementById('outfits-upper-items'),
+    document.getElementById('outfits-lower-items'),
+    // WorldOptions
+    document.getElementById('world-main-items'),
+    document.getElementById('world-atmosphere-items'),
+    // ServerOptions
+    document.getElementById('server-main-items'),
+    document.getElementById('server-destoryer-items')
   ];
   const mainTabsEl      = document.getElementById('menu-tabs');
   const playerTabsEl    = document.getElementById('player-tabs');
   const miscTabsEl      = document.getElementById('misc-tabs');
   const scriptsTabsEl   = document.getElementById('scripts-tabs');
+  const vehicleTabsEl    = document.getElementById('vehicle-tabs');
+  const espTabsEl    = document.getElementById('esp-tabs');
+  const teleportTabsEl    = document.getElementById('teleport-tabs');
+  const weaponsTabsEl    = document.getElementById('weapons-tabs');
+  const modelTabsEl    = document.getElementById('model-tabs');
+  const outfitsTabsEl    = document.getElementById('outfits-tabs');
+  const worldTabsEl    = document.getElementById('world-tabs');
+  const serverTabsEl    = document.getElementById('server-tabs');
   const scrollbarContainer = document.querySelector('.scrollbar-container');
   const scrollbarThumb  = document.getElementById('scrollbar-thumb');
   const menuCounter     = document.getElementById('menu-counter');
   const playerToggle    = document.getElementById('player-options-toggle');
   const miscToggle      = document.getElementById('misc-options-toggle');
   const scriptsToggle   = document.getElementById('scripts-options-toggle');
+  const vehicleToggle    = document.getElementById('vehicle-options-toggle');
+  const espToggle    = document.getElementById('esp-options-toggle');
+  const teleportToggle    = document.getElementById('teleport-options-toggle');
+  const weaponsToggle    = document.getElementById('weapons-options-toggle');
+  const modelToggle    = document.getElementById('model-options-toggle');
+  const outfitsToggle    = document.getElementById('outfits-options-toggle');
+  const worldToggle    = document.getElementById('world-options-toggle');
+  const serverToggle    = document.getElementById('server-options-toggle');
 
   // collect only visible items
   function getMenuItems() {
@@ -340,38 +565,67 @@
             .forEach(el=>el.classList.remove('selected'));
   }
 
-  function updateTabUI(tabIdx, reset=true) {
+  function updateTabUI(tabIdx, reset = true) {
     currentTab = tabIdx;
     clearSelection();
 
-    // show/hide each tab-bar
-    mainTabsEl  .style.display = (tabIdx<=2) ? 'flex' : 'none';
-    playerTabsEl.style.display = (tabIdx===3)? 'flex':'none';
-    miscTabsEl  .style.display = (tabIdx===4)? 'flex':'none';
-    scriptsTabsEl.style.display= (tabIdx===5)? 'flex':'none';
+    // Hide all tabs by default
+    mainTabsEl.style.display = 'none';
+    playerTabsEl.style.display = 'none';
+    miscTabsEl.style.display = 'none';
+    scriptsTabsEl.style.display = 'none';
+    vehicleTabsEl.style.display = 'none';
+    espTabsEl.style.display = 'none';
+    teleportTabsEl.style.display = 'none';
+    weaponsTabsEl.style.display = 'none';
+    modelTabsEl.style.display = 'none';
+    outfitsTabsEl.style.display = 'none';
+    worldTabsEl.style.display = 'none';
+    serverTabsEl.style.display = 'none';
 
-    // highlight active in each bar
-    mainTabs.forEach((t,i)=>t.classList.toggle('selected', i===tabIdx));
-    playerTabs.forEach((t,i)=>t.classList.toggle('selected', tabIdx===3 && i===currentSubTab));
-    miscTabs.forEach((t,i)=>t.classList.toggle('selected', tabIdx===4 && i===currentSubTab));
-    scriptsTabs.forEach((t,i)=>t.classList.toggle('selected', tabIdx===5 && i===currentSubTab));
+    // Show relevant tab bar
+    if (tabIdx <= 2) mainTabsEl.style.display = 'flex';
+    else if (tabIdx === 3) playerTabsEl.style.display = 'flex';
+    else if (tabIdx === 4) miscTabsEl.style.display = 'flex';
+    else if (tabIdx === 5) scriptsTabsEl.style.display = 'flex';
+    else if (tabIdx === 6) vehicleTabsEl.style.display = 'flex';
+    else if (tabIdx === 7) espTabsEl.style.display = 'flex';
+    else if (tabIdx === 8) teleportTabsEl.style.display = 'flex';
+    else if (tabIdx === 9) weaponsTabsEl.style.display = 'flex';
+    else if (tabIdx === 10) modelTabsEl.style.display = 'flex';
+    else if (tabIdx === 11) outfitsTabsEl.style.display = 'flex';
+    else if (tabIdx === 12) worldTabsEl.style.display = 'flex';
+    else if (tabIdx === 13) serverTabsEl.style.display = 'flex';
 
-    // containers
-    containers.forEach((c,i)=> c.style.display = (i===tabIdx?'block':'none'));
+    // Highlight active tab
+    mainTabs.forEach((t, i) => t.classList.toggle('selected', i === tabIdx));
+    playerTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 3 && i === currentSubTab));
+    miscTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 4 && i === currentSubTab));
+    scriptsTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 5 && i === currentSubTab));
+    vehicleTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 6 && i === currentSubTab));
+    espTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 7 && i === currentSubTab));
+    teleportTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 8 && i === currentSubTab));
+    weaponsTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 9 && i === currentSubTab));
+    modelTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 10 && i === currentSubTab));
+    outfitsTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 11 && i === currentSubTab));
+    worldTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 12 && i === currentSubTab));
+    serverTabs.forEach((t, i) => t.classList.toggle('selected', tabIdx === 13 && i === currentSubTab));
 
-    // subpanels
-    if (tabIdx===3) {
-      subContainers[0].style.display = currentSubTab===0?'block':'none';
-      subContainers[1].style.display = currentSubTab===1?'block':'none';
-    }
-    if (tabIdx===4) {
-      subContainers[2].style.display = currentSubTab===0?'block':'none';
-      subContainers[3].style.display = currentSubTab===1?'block':'none';
-    }
-    if (tabIdx===5) {
-      subContainers[4].style.display = currentSubTab===0?'block':'none';
-      subContainers[5].style.display = currentSubTab===1?'block':'none';
-      subContainers[6].style.display = currentSubTab===2?'block':'none';
+    // Show correct container
+    containers.forEach((c, i) => c.style.display = (i === tabIdx ? 'block' : 'none'));
+
+    // Subcontainers (only Player, Misc, Scripts need special logic)
+    subContainers.forEach(c => c.style.display = 'none');
+    if (tabIdx === 3) {
+      subContainers[0].style.display = currentSubTab === 0 ? 'block' : 'none';
+      subContainers[1].style.display = currentSubTab === 1 ? 'block' : 'none';
+    } else if (tabIdx === 4) {
+      subContainers[2].style.display = currentSubTab === 0 ? 'block' : 'none';
+      subContainers[3].style.display = currentSubTab === 1 ? 'block' : 'none';
+    } else if (tabIdx === 5) {
+      subContainers[4].style.display = currentSubTab === 0 ? 'block' : 'none';
+      subContainers[5].style.display = currentSubTab === 1 ? 'block' : 'none';
+      subContainers[6].style.display = currentSubTab === 2 ? 'block' : 'none';
     }
 
     if (reset) {
@@ -383,17 +637,41 @@
   }
 
   function updateTabSelection(dir) {
-    if (currentTab===3) {
-      currentSubTab = (currentSubTab+dir+playerTabs.length)%playerTabs.length;
+    if (currentTab === 3) {
+      currentSubTab = (currentSubTab + dir + playerTabs.length) % playerTabs.length;
       updateTabUI(3);
-    } else if (currentTab===4) {
-      currentSubTab = (currentSubTab+dir+miscTabs.length)%miscTabs.length;
+    } else if (currentTab === 4) {
+      currentSubTab = (currentSubTab + dir + miscTabs.length) % miscTabs.length;
       updateTabUI(4);
-    } else if (currentTab===5) {
-      currentSubTab = (currentSubTab+dir+scriptsTabs.length)%scriptsTabs.length;
+    } else if (currentTab === 5) {
+      currentSubTab = (currentSubTab + dir + scriptsTabs.length) % scriptsTabs.length;
       updateTabUI(5);
+    } else if (currentTab === 6) {
+      currentSubTab = (currentSubTab + dir + vehicleTabs.length) % vehicleTabs.length;
+      updateTabUI(6);
+    } else if (currentTab === 7) {
+      currentSubTab = (currentSubTab + dir + espTabs.length) % espTabs.length;
+      updateTabUI(7);
+    } else if (currentTab === 8) {
+      currentSubTab = (currentSubTab + dir + teleportTabs.length) % teleportTabs.length;
+      updateTabUI(8);
+    } else if (currentTab === 9) {
+      currentSubTab = (currentSubTab + dir + weaponsTabs.length) % weaponsTabs.length;
+      updateTabUI(9);
+    } else if (currentTab === 10) {
+      currentSubTab = (currentSubTab + dir + modelTabs.length) % modelTabs.length;
+      updateTabUI(10);
+    } else if (currentTab === 11) {
+      currentSubTab = (currentSubTab + dir + outfitsTabs.length) % outfitsTabs.length;
+      updateTabUI(11);
+    } else if (currentTab === 12) {
+      currentSubTab = (currentSubTab + dir + worldTabs.length) % worldTabs.length;
+      updateTabUI(12);
+    } else if (currentTab === 13) {
+      currentSubTab = (currentSubTab + dir + serverTabs.length) % serverTabs.length;
+      updateTabUI(13);
     } else {
-      currentTab = (currentTab + dir + mainTabs.length)%mainTabs.length;
+      currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
       updateTabUI(currentTab);
     }
   }
