@@ -205,7 +205,7 @@
       background: #62626277;
       border: 1.5px solid #000;
       border-radius: 6px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     @keyframes neon-glow {
@@ -1003,11 +1003,6 @@
         valueSpan.textContent = item._slider.value;
       };
       render();
-
-      // click-to-increment
-      item.addEventListener('click', () => {
-        updateslidervalue(1);
-      });
     });
   });
 
