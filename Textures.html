@@ -20,11 +20,11 @@
     }
     .scrollbar-container {
       width: 15px;
-      height: 527px;
       background: #22222270;
       border-radius: 10px;
       position: relative;
       margin-right: 13px;
+      top: 65px;
     }
     .scrollbar-thumb {
       width: 100%;
@@ -875,6 +875,20 @@ window.addEventListener('message', ({ data }) => {
     case 'back':     goBack(); break;
   }
 });
+
+function updateScrollbarHeight() {
+  const menuItemsContainer = document.querySelector('.menu-items-container');
+  const scrollbarContainer = document.querySelector('.scrollbar-container');
+  
+  // Get the height of the menu-items-container and cap it at 400px
+  const containerHeight = Math.min(menuItemsContainer.scrollHeight, 400);
+  
+  // Set the scrollbar height to match the container's height
+  scrollbarContainer.style.height = `${containerHeight}px`;
+}
+
+// Call this function every time the menu items are updated or the height might change
+updateScrollbarHeight();
 
 // DOMContentLoaded: build UI then init once
 document.addEventListener('DOMContentLoaded', () => {
