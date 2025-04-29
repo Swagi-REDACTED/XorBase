@@ -208,7 +208,13 @@
       overflow: hidden;
     }
 
-    /* the filled portion (fixed) */
+    @keyframes neon-glow {
+      0%   { box-shadow: 0 0 2px #9e00ff, 0 0 4px #9e00ff; }
+      50%  { box-shadow: 0 0 6px #9e00ff, 0 0 12px #9e00ff; }
+      100% { box-shadow: 0 0 2px #9e00ff, 0 0 4px #9e00ff; }
+    }
+
+    /* SLIDER FILL GLOW */
     .menu-item.slider .slider-fill {
       position: absolute;
       left: 0;
@@ -217,18 +223,8 @@
       width: 0%;
       background: #8f04a7;
       border-radius: 6px;
-      box-shadow: 0 0 5px #9e00ff, 0 0 10px #9e00ff, 0 0 15px #9e00ff;
-      animation: fillAnimation 1.2s forwards ease-out;
-    }
-
-    /* keyframes for smooth fill */
-    @keyframes fillAnimation {
-      0% {
-        width: 0%;
-      }
-      100% {
-        width: var(--target-width, 100%);
-      }
+      animation: neon-glow 1.5s ease-in-out infinite;
+      transition: width 0.2s ease;
     }
 
     .menu-footer {
