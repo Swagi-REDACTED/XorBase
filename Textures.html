@@ -843,7 +843,7 @@
 
   // Highlight active header tab
   mainTabs.forEach((t, i) =>
-    t.classList.toggle('selected', currentTab <= 1 && i === currentTab)
+    t.classList.toggle('selected', currentTab <= 3 && i === currentTab)
   );
   playerTabs.forEach((t, i) =>
     t.classList.toggle('selected', currentTab === 3 && i === currentSubTab)
