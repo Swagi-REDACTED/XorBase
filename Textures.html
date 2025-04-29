@@ -209,20 +209,20 @@
     }
 
     @keyframes neon-glow {
-      0%   { box-shadow: 0 0 2px #9e00ff, 0 0 4px #9e00ff; }
-      50%  { box-shadow: 0 0 6px #9e00ff, 0 0 12px #9e00ff; }
-      100% { box-shadow: 0 0 2px #9e00ff, 0 0 4px #9e00ff; }
+      0%   { box-shadow: 0 0 3px #9e00ff, 0 0 6px #9e00ff, 0 0 9px #9e00ff; }
+      50%  { box-shadow: 0 0 6px #9e00ff, 0 0 12px #9e00ff, 0 0 18px #9e00ff; }
+      100% { box-shadow: 0 0 3px #9e00ff, 0 0 6px #9e00ff, 0 0 9px #9e00ff; }
     }
 
-    /* SLIDER FILL GLOW */
+    /* the filled portion with glow */
     .menu-item.slider .slider-fill {
       position: absolute;
       left: 0;
-      top: 0;
-      height: 100%;
+      top: 2px; /* slight top margin */
+      height: 6px; /* smaller height than track */
       width: 0%;
       background: #8f04a7;
-      border-radius: 6px;
+      border-radius: 3px;
       animation: neon-glow 1.5s ease-in-out infinite;
       transition: width 0.2s ease;
     }
