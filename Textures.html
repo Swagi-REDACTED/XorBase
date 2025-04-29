@@ -103,7 +103,10 @@
       font-size: 14px;
       cursor: pointer;
       border-left: 4px solid transparent;
-      transition: background-color 0.3s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
+      transition:
+        background-color 0.2s linear,
+        border-color     0.2s linear,
+        box-shadow       0.2s linear;
     }
 
     .menu-item:hover,
@@ -116,7 +119,7 @@
       box-shadow:
         inset 0 0 4px 2px rgba(78, 0, 151, 0.7),  /* dark purple inner glow */
         0 0 6px rgba(78, 0, 151, 0.4); /* soft outer halo */
-        transition: background-color 0.5s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
+        transition: background-color 0.1s, transform 0.1s linear; /* Linear transition for smooth snap between positions */
     }
     /* make sure we include borders in width calculations */
     .menu-item.checkbox .toggle-track,
