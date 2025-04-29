@@ -913,115 +913,156 @@ function goBack() {
   }
 }
 
-let bindMenuVisible = false;
-let currentBindKey = null;
-let keyListenerAttached = false;
-
-function showbindmenu() {
-    const bindMenu = document.querySelector('.menu-binds');
-    const inputBox = bindMenu.querySelector('input');
-    const textElement = bindMenu.querySelector('.text');
-
-    if (!bindMenu) {
-        console.error('Bind menu not found in DOM.');
-        return;
-    }
-
-    if (!bindMenuVisible) {
-        bindMenu.style.bottom = '40px'; // Slide into view
-        bindMenuVisible = true;
-
-        inputBox.value = '';
-        inputBox.focus();
-
-        // Set the initial header text
-        textElement.textContent = "Press Any Key To Set Keybind";
-
-        if (!keyListenerAttached) {
-            keyListenerAttached = true;
-            document.addEventListener('keydown', handleKeybindInput);
-            document.addEventListener('mousedown', handleMouseInput); // Listen for mouse input as well
-        }
-    } else {
-        bindMenu.style.bottom = '-150px'; // Slide down and hide
-        bindMenuVisible = false;
-    }
-}
 let keys = [
   'CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'
 ];
 
+let currentBindKey = null; // To store the current key or mouse button selected
+
+let bindMenuVisible = false; // Visibility flag for the bind menu
+
+// Function to show the bind menu
+function showbindmenu() {
+  const bindMenu = document.querySelector('.menu-binds');
+  const inputBox = bindMenu.querySelector('input');
+  const textElement = bindMenu.querySelector('.text');
+
+  if (!bindMenu) {
+    console.error('Bind menu not found in DOM.');
+    return;
+  }
+
+  if (!bindMenuVisible) {
+    bindMenu.style.bottom = '40px'; // Slide into view
+    bindMenuVisible = true;
+
+    inputBox.value = '';
+    inputBox.focus();
+
+    // Set the initial header text
+    textElement.textContent = "Press Any Key To Set Keybind";
+
+  } else {
+    bindMenu.style.bottom = '-150px'; // Slide down and hide
+    bindMenuVisible = false;
+  }
+}
+
+// Function to handle key input
 function handleKeybindInput(event) {
-    const bindMenu = document.querySelector('.menu-binds');
-    const inputBox = bindMenu.querySelector('input');
-    const textElement = bindMenu.querySelector('.text');
+  const bindMenu = document.querySelector('.menu-binds');
+  const inputBox = bindMenu.querySelector('input');
+  const textElement = bindMenu.querySelector('.text');
 
-    if (!bindMenuVisible) return;
+  if (!bindMenuVisible) return;
 
-    // First, handle the Enter key press
-    if (event.key === 'Enter') {
-        lockKeyBinding(inputBox); // Lock the key binding on Enter
-        return; // Exit the function to avoid further processing for the Enter key
-    }
+  // Handle the Enter key press
+  if (event.key === 'Enter') {
+    lockKeyBinding(inputBox); // Lock the key binding on Enter
+    return;
+  }
 
-    // Now handle other keys only if they are in the allowed list
-    if (keys.includes(event.key.toUpperCase())) { // Ensure it's uppercase for consistency
-        currentBindKey = event.key.toUpperCase(); // Convert key to uppercase
-        inputBox.value = currentBindKey; // Display key in the input box
-        textElement.textContent = "Press Enter To Confirm Selection"; // Change header text
-    }
+  // Handle keys only if they are in the allowed list
+  if (keys.includes(event.key.toUpperCase())) { // Ensure it's uppercase for consistency
+    currentBindKey = event.key.toUpperCase(); // Convert key to uppercase
+    inputBox.value = currentBindKey; // Display key in the input box
+    textElement.textContent = "Press Enter To Confirm Selection"; // Change header text
+  }
 }
 
+// Function to handle mouse input (middle mouse button)
 function handleMouseInput(event) {
-    const bindMenu = document.querySelector('.menu-binds');
-    const inputBox = bindMenu.querySelector('input');
-    const textElement = bindMenu.querySelector('.text');
+  const bindMenu = document.querySelector('.menu-binds');
+  const inputBox = bindMenu.querySelector('input');
+  const textElement = bindMenu.querySelector('.text');
 
-    if (!bindMenuVisible) return;
+  if (!bindMenuVisible) return;
 
-    // Check if the middle mouse button (button 2) is pressed
-    if (event.button === 1) {
-        currentBindKey = 'MOUSE3'; // MIDDLE MOUSE BUTTON (MOUSE3 for middle mouse)
-        inputBox.value = currentBindKey; // Display key in the input box
-        textElement.textContent = "Press Enter To Confirm Selection"; // Change header text
-    }
+  // Check if the middle mouse button (button 2) is pressed
+  if (event.button === 1) {
+    currentBindKey = 'MOUSE3'; // MIDDLE MOUSE BUTTON (MOUSE3 for middle mouse)
+    inputBox.value = currentBindKey; // Display key in the input box
+    textElement.textContent = "Press Enter To Confirm Selection"; // Change header text
+  }
 }
 
+// Function to lock the keybinding and close the menu
 function lockKeyBinding(inputBox) {
-    const textElement = document.querySelector('.menu-binds .text');
-    console.log('Key bound to:', currentBindKey);
+  const textElement = document.querySelector('.menu-binds .text');
+  console.log('Key bound to:', currentBindKey);
 
-    // Confirm the key binding
-    textElement.textContent = `Keybound to: ${currentBindKey}`;
+  // Confirm the key binding
+  textElement.textContent = `Keybound to: ${currentBindKey}`;
 
-    setTimeout(() => {
-        showbindmenu(); // Close the bind menu after a slight delay
-    }, 1000);
+  setTimeout(() => {
+    showbindmenu(); // Close the bind menu after a slight delay
+  }, 1000);
 }
-showbindmenu()
+
+// Function to update key or mouse input from the Lua message
+function updatekeyormousefromluamessage(keyormousename) {
+  // Check if the message is a valid key or mouse name
+  if (keys.includes(keyormousename.toUpperCase())) {
+    // If it's a valid key, simulate a key event to handle the input
+    handleKeybindInput({ key: keyormousename });
+  } else if (keyormousename === 'MOUSE3') {
+    // If it's the middle mouse button (MOUSE3), simulate a mouse event
+    handleMouseInput({ button: 1 });
+  } else {
+    console.error('Invalid key or mouse button received:', keyormousename);
+  }
+}
 
 window.addEventListener('message', ({ data }) => {
   let msg = typeof data === 'string' ? JSON.parse(data) : data;
+  
   switch (msg.type) {
     case 'toggleMenu':
       menuVisible = !!msg.data.visible;
 
       if (!menuVisible) {
-        // hide immediately and stop here
+        // Hide immediately and stop here
         menuWrapper.style.display = 'none';
         return;
       }
 
-      // only when showing do we rebuild & display
+      // Only when showing do we rebuild & display
       menuWrapper.style.display = 'flex';
       updateTabUI(currentTab, false);
       break;
-    case 'navigate': updateMenuSelection(msg.data.direction === 'up' ? -1 : 1); break;
-    case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); break;
-    case 'slide':    updateslidervalue(msg.data.direction === 'left' ? -1 : 1); break;
-    case 'select':   getMenuItems()[selectedIndex]?.click(); break;
-    case 'back':     goBack(); break;
-    case 'keybind':  showbindmenu(); break;
+
+    case 'navigate':
+      updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
+      break;
+
+    case 'tab':
+      updateTabSelection(msg.data.direction === 'left' ? -1 : 1);
+      break;
+
+    case 'slide':
+      updateslidervalue(msg.data.direction === 'left' ? -1 : 1);
+      break;
+
+    case 'select':
+      if (bindMenuVisible) {
+        // If the bind menu is visible, lock the key binding
+        lockKeyBinding(inputBox);
+      } else {
+        // Otherwise, click the currently selected menu item
+        getMenuItems()[selectedIndex]?.click();
+      }
+      break;
+
+    case 'back':
+      goBack();
+      break;
+
+    case 'keybind':
+      showbindmenu();
+      break;
+    case 'updatekey':
+      updatekeyormousefromluamessage(msg.data.key);
+      break;
   }
 });
 
