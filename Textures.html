@@ -769,8 +769,16 @@ window.addEventListener('message', ({ data }) => {
   switch (msg.type) {
     case 'toggleMenu':
       menuVisible = !!msg.data.visible;
-      menuWrapper.style.display = menuVisible ? 'flex' : 'none';
-      if (menuVisible) updateTabUI(currentTab, false);
+
+      if (!menuVisible) {
+        // hide immediately and stop here
+        menuWrapper.style.display = 'none';
+        return;
+      }
+
+      // only when showing do we rebuild & display
+      menuWrapper.style.display = 'flex';
+      updateTabUI(currentTab, false);
       break;
     case 'navigate': updateMenuSelection(msg.data.direction === 'up' ? -1 : 1); break;
     case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); selectedIndex=0; break;
