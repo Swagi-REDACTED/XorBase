@@ -705,12 +705,16 @@ function updateTabUI(tabIdx, reset = true) {
     previousTab = currentTab;
     previousSubTab = currentSubTab;
   }
-  if (tabIdx !== currentTab) {
-    previousIndex = selectedIndex;
-  }
   currentTab = tabIdx;
   clearSelection();
-  if (reset) selectedIndex = 0;
+  if (reset) {
+    if (tabIdx === previousTab) {
+      selectedIndex = previousIndex;
+    } else {
+      previousIndex = selectedIndex;
+      selectedIndex = 0;
+    }
+  }
 
   // hide all headers
   const groups = [
