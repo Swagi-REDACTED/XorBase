@@ -930,9 +930,9 @@
   const glowStrength = pct; // 0.0 → 1.0
 
   // scale between min and max glow intensity
-  const px1 = 3 + glowStrength * 3;   // 3 → 6
-  const px2 = 6 + glowStrength * 6;   // 6 → 12
-  const px3 = 9 + glowStrength * 9;   // 9 → 18
+  const px1 = 2 + glowStrength * 2;   // 2 → 4
+  const px2 = 7 + glowStrength * 7;   // 7 → 14
+  const px3 = 11 + glowStrength * 11;   // 11 → 22
 
   s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
   }
@@ -1008,9 +1008,9 @@
 
         // same glow logic as updateslidervalue
         const glowStrength = pct;
-        const px1 = 3 + glowStrength * 3;
-        const px2 = 6 + glowStrength * 6;
-        const px3 = 9 + glowStrength * 9;
+        const px1 = 2 + glowStrength * 2;
+        const px2 = 7 + glowStrength * 7;
+        const px3 = 11 + glowStrength * 11;
         fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
       };
       render();
