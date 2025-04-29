@@ -148,7 +148,7 @@
     .menu-item.checkbox .toggle-thumb  { 
       width: 16px;
       height: 14px;
-      background: #d8a5ff;
+      background: #ffffff;
       border: 2px solid #000;
       border-radius: 50%;
       position: absolute;
@@ -172,6 +172,7 @@
     /* toggled state: initial flicker then steady glow */
     .menu-item.checkbox.toggled .toggle-track {
       background: #8f04a7;
+      filter: url(#electric-glow);
       animation:
         neon-glow   1.5s ease-in-out -0.6s infinite alternate;
     }
