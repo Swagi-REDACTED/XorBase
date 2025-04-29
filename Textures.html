@@ -860,7 +860,15 @@ window.addEventListener('message', ({ data }) => {
       updateTabUI(currentTab, false);
       break;
     case 'navigate': updateMenuSelection(msg.data.direction === 'up' ? -1 : 1); break;
-    case 'tab':      updateTabSelection(msg.data.direction === 'left' ? -1 : 1); selectedIndex=0; updateMenuSelection(0); break;
+    case 'tab':
+      // Shift tab selection left or right based on input direction
+      const tabShift = msg.data.direction === 'left' ? -1 : 1;
+      updateTabSelection(tabShift);
+
+      // Reset selection index when tab changes
+      selectedIndex = 0;
+      updateMenuSelection(0);
+      break;
     case 'slide':    updateslidervalue(msg.data.direction === 'left' ? -1 : 1); break;
     case 'select':   getMenuItems()[selectedIndex]?.click(); break;
     case 'back':     goBack(); break;
