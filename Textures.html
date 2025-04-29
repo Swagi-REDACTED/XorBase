@@ -755,17 +755,20 @@ function updateTabUI(tabIdx, reset = true) {
   // show subs
   subContainers.forEach(c=>c.style.display='none');
   const countMap = {
-  3: 2, 4: 2, 5: 3,
-  6: 2, 7: 2, 8: 2,
-  9: 3, 10: 1, 11: 3,
-  12: 2, 13: 2,
-  14: 1 };
+    3: 2, 4: 2, 5: 3,
+    6: 2, 7: 2, 8: 2,
+    9: 3, 10: 1, 11: 3,
+    12: 2, 13: 2,
+    14: 1 // Force Emote has 1 subtab: Force-main-items
+  };
+
   const startMap = {
-  3: 0, 4: 2, 5: 4,
-  6: 7, 7: 9, 8: 11,
-  9: 13, 10: 16, 11: 17,
-  12: 20, 13: 22,
-  14: 24 };
+    3: 0, 4: 2, 5: 4,
+    6: 7, 7: 9, 8: 11,
+    9: 13, 10: 16, 11: 17,
+    12: 20, 13: 22,
+    14: 24 // Force-main-items is at subContainers[24]
+  };
   const cCount = countMap[tabIdx]||1;
   for(let i=0;i<cCount;i++){
     subContainers[startMap[tabIdx]+i].style.display = i===currentSubTab?'block':'none';
