@@ -930,6 +930,7 @@ let keys = [
 let currentBindKey     = null;
 let bindMenuVisible    = false;
 let bindingCheckboxIdx = null;
+let firstinit = true;
 
 const bindingMap = {};  // key → checkboxIdx
 const indexMap   = {};  // checkboxIdx → key
@@ -955,11 +956,14 @@ function showbindmenu(selectedIndex) {
   if (bindMenuVisible) {
     inputBox.value = '';
     inputBox.focus(); // Focus on the input to capture keypresses
-    textElem.textContent = "Press Any Key To Set Keybind";
-    currentBindKey = null;
+    if (firstinit) { textElem.textContent = "Press Any Key To Set Open-Key"; }
+    else{
+    textElem.textContent = "Press Any Key To Set Key-bind";
+    currentBindKey = null;}
   }
+  else if (firstinit) { firstinit = false }
 }
-
+showbindmenu(selectedIndex)
 // 2) Core input handlers
 function handleKeybindInput(event) {
   if (!bindMenuVisible) return;
@@ -999,7 +1003,7 @@ function lockKeyBinding() {
     bindingCheckboxIdx == null
   ) return;
 
-  // unbind old
+  if (!firstinit) { 
   const oldKey = indexMap[bindingCheckboxIdx];
   if (oldKey) delete bindingMap[oldKey];
 
@@ -1009,11 +1013,14 @@ function lockKeyBinding() {
 
   // assign new
   bindingMap[currentBindKey]   = bindingCheckboxIdx;
-  indexMap[bindingCheckboxIdx] = currentBindKey;
+  indexMap[bindingCheckboxIdx] = currentBindKey; }
 
   // feedback
   const txt = document.querySelector('.menu-binds .text');
+  if (firstinit) { txt.textContent = `Bound Open-Key → ${currentBindKey}`; }
+  else {
   txt.textContent = `Bound [${bindingCheckboxIdx}] → ${currentBindKey}`;
+  }
 
   // close overlay
   setTimeout(() => showbindmenu(), 800);
