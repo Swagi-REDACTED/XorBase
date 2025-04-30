@@ -924,19 +924,29 @@ let bindingCheckboxIdx = null;
 const bindingMap = {};  // key → checkboxIdx
 const indexMap   = {};  // checkboxIdx → key
 
-// 1) Show/Hide the bind overlay
 function showbindmenu(selectedIndex) {
   bindingCheckboxIdx = selectedIndex;
   const bindMenu = document.querySelector('.menu-binds');
   const inputBox = bindMenu.querySelector('input');
   const textElem = bindMenu.querySelector('.text');
 
-  bindMenu.style.bottom = bindMenuVisible ? '-150px' : '40px';
+  // flip our flag
   bindMenuVisible = !bindMenuVisible;
+
+  // compute where it should go
+  const targetBottom = bindMenuVisible ? '40px' : '-150px';
+
+  // FORCE A REFLOW so the transition always applies
+  // (reading any layout property will do)
+  // eslint-disable-next-line no-unused-vars
+  const _ = bindMenu.getBoundingClientRect();
+
+  // now kick off the smooth transition
+  bindMenu.style.bottom = targetBottom;
 
   if (bindMenuVisible) {
     inputBox.value       = '';
-    inputBox.focus();                      // grab focus so keydown lands here
+    inputBox.focus();    // capture keyboard input
     textElem.textContent = "Press Any Key To Set Keybind";
     currentBindKey       = null;
   }
