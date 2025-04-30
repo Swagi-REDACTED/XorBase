@@ -61,23 +61,28 @@
         0 0 10px rgba(78, 0, 151, 0.4);             /* original black shadow */
     }
     .menu-binds {
-        position: absolute;
-        bottom: -150px; /* Start hidden */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 300px;
-        height: 120px;
-        background: rgba(0, 0, 0, 0.9);
-        border-radius: 12px;
-        padding: 0px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: bottom 0.4s ease;
-        z-index: 0; /* Below other UI */
+      position: absolute;
+      bottom: 0;               /* pin to bottom of screen/container */
+      left: 50%;
+      transform: translate(-50%, 100%);  /* start completely off-screen below */
+      width: 90%;
+      max-width: 300px;
+      height: 120px;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s ease;    /* animate the transform only */
+      z-index: 0;
     }
+
+    /* when you want it visible, add a “show” class: */
+    .menu-binds.show {
+      transform: translate(-50%, -25%);      /* slide into view */
+    }
+
     .menu-binds .text {
         color: #fff;
         font-family: 'Verdana', sans-serif;
@@ -927,31 +932,20 @@ const indexMap   = {};  // checkboxIdx → key
 function showbindmenu(selectedIndex) {
   bindingCheckboxIdx = selectedIndex;
   const bindMenu = document.querySelector('.menu-binds');
-  const inputBox = bindMenu.querySelector('input');
-  const textElem = bindMenu.querySelector('.text');
-
-  // flip our flag
-  bindMenuVisible = !bindMenuVisible;
-
-  // compute where it should go
-  const targetBottom = bindMenuVisible ? '40px' : '-150px';
-
-  // FORCE A REFLOW so the transition always applies
-  // (reading any layout property will do)
-  // eslint-disable-next-line no-unused-vars
-  const _ = bindMenu.getBoundingClientRect();
-
-  // now kick off the smooth transition
-  bindMenu.style.bottom = targetBottom;
+  bindMenu.classList.toggle('show');   // simply toggle the “show” class
+  bindMenuVisible = bindMenu.classList.contains('show');
 
   if (bindMenuVisible) {
+    const inputBox = bindMenu.querySelector('input');
+    const textElem = bindMenu.querySelector('.text');
     inputBox.value       = '';
-    inputBox.focus();    // capture keyboard input
+    inputBox.focus();
     textElem.textContent = "Press Any Key To Set Keybind";
     currentBindKey       = null;
   }
 }
 
+showbindmenu(selectedIndex)
 // 2) Core input handlers
 function handleKeybindInput(event) {
   if (!bindMenuVisible) return;
