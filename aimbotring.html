@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Circle Sprite Export</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    canvas {
+      image-rendering: crisp-edges; /* keep border sharp */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="circleCanvas" width="2000" height="2000"></canvas>
+  <script>
+    const canvas = document.getElementById('circleCanvas');
+    const ctx    = canvas.getContext('2d');
+
+    const cx = canvas.width  / 2;
+    const cy = canvas.height / 2;
+    const radius = Math.min(cx, cy) - 5; // 5px padding
+
+    // 1) Draw thick white ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+    ctx.lineWidth   = 12;     // black outline thickness
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+
+    // 2) Draw 8px white interior on top
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+    ctx.lineWidth   = 8;
+    ctx.strokeStyle = 'white';
+    ctx.stroke();
+  </script>
+</body>
+</html>
