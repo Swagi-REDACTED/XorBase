@@ -1055,6 +1055,30 @@
     setTimeout(() => showbindmenu(), 800);
   }
 
+  // 4) When Lua tells us a key/mouse was pressed
+  function updatekeyormousefromluamessage(keyormousename) {
+    const key = keyormousename.toUpperCase();
+
+    // if overlay up, simulate input so the <input> updates
+    if (bindMenuVisible) {
+      if (key === 'MOUSE3') {
+        handleMouseInput({ button: 1 });
+      } else if (keys.includes(key)) {
+        handleKeybindInput({ key });
+      } else {
+        console.error('Ignoring invalid bind key in overlay:', keyormousename);
+      }
+      return;
+    }
+
+    // otherwise toggle the bound checkbox
+    if (keys.includes(key) || key === 'MOUSE3') {
+      keybindactivationfromlua(key);
+    } else {
+      console.error('Ignoring invalid bind key for activation:', keyormousename);
+    }
+  }
+
   function keybindactivationfromlua(key) {
     const idx = bindingMap[key];
     if (idx === undefined || idx === null) return console.warn(`No binding found for key: ${key}`);
@@ -1073,18 +1097,6 @@
     console.log(`Toggled keybind ${key} at index ${idx} -> ${isOn ? 'ON' : 'OFF'}`);
   }
 
-  function keybindactivationfromlua(key) {
-    const idx = bindingMap[key];
-    if (idx == null) return;
-
-    const items = document.querySelectorAll('.menu-item.checkbox');
-    const item  = items[idx];
-    if (!item) return console.warn(`No checkbox at index ${idx}`);
-
-    const isOn = item.classList.toggle('toggled');
-    const input = item.querySelector('input[type="checkbox"]');
-    if (input) input.checked = isOn;
-  }
 
   // 5) Hook global events once at init
   document.addEventListener('keydown', handleKeybindInput);
@@ -1139,9 +1151,13 @@
       case 'updatekey':
         updatekeyormousefromluamessage(msg.data.key);
         break;
-      case 'togglekey':
-        keybindactivationfromlua(msg.data.key);
+      case 'togglekey': {
+          // Normalize incoming key to uppercase so it matches our bindingMap keys
+        const raw = msg.data.key || '';
+        const key = raw.toUpperCase();
+        keybindactivationfromlua(key);
         break;
+      }
     }
   });
 
