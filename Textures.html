@@ -1023,35 +1023,35 @@ function handleMouseInput(event) {
 
 // 3) Finalize & override any existing binding
 function lockKeyBinding() {
-  if (
-    !currentBindKey ||
-    (
-      !keys.includes(currentBindKey) &&
-      currentBindKey !== 'MOUSE3'
-    ) ||
-    bindingCheckboxIdx == null
+  // sanity check
+  if (!currentBindKey ||
+      (!keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3') ||
+      bindingCheckboxIdx == null
   ) return;
 
-  if (!firstinit) { 
-  const oldKey = indexMap[bindingCheckboxIdx];
-  if (oldKey) delete bindingMap[oldKey];
+  // capture into locals so hide/show call can’t clobber
+  const bindIndex = bindingCheckboxIdx;
+  const key       = currentBindKey;
 
-  // unbind this key from elsewhere
-  const prevIdx = bindingMap[currentBindKey];
-  if (prevIdx != null) delete indexMap[prevIdx];
-
-  // assign new
-  bindingMap[currentBindKey]   = bindingCheckboxIdx;
-  indexMap[bindingCheckboxIdx] = currentBindKey; }
-
-  // feedback
-  const txt = document.querySelector('.menu-binds .text');
-  if (firstinit) { txt.textContent = `Bound Open-Key → ${currentBindKey}`; }
-  else {
-  txt.textContent = `Bound [${bindingCheckboxIdx}] → ${currentBindKey}`;
+  // clear any old binding for this key or this index
+  if (indexMap[bindIndex]) {
+    delete bindingMap[indexMap[bindIndex]];
+    delete indexMap[bindIndex];
+  }
+  if (bindingMap[key] != null) {
+    delete indexMap[bindingMap[key]];
+    delete bindingMap[key];
   }
 
-  // close overlay
+  // store new bindings
+  bindingMap[key]      = bindIndex;
+  indexMap[bindIndex]  = key;
+
+  // give feedback
+  const txt = document.querySelector('.menu-binds .text');
+  txt.textContent = `Bound [${bindIndex}] → ${key}`;
+
+  // then hide
   setTimeout(() => showbindmenu(), 800);
 }
 
@@ -1079,17 +1079,19 @@ function updatekeyormousefromluamessage(keyormousename) {
   }
 }
 
-function keybindactivationfromlua(key) {
+function keybindactivationfromlua(rawKey) {
+  const key = rawKey.toUpperCase();
   const idx = bindingMap[key];
-  if (idx == null) return;
+  if (idx == null) return console.warn(`No binding for ${key}`);
 
   const items = document.querySelectorAll('.menu-item.checkbox');
   const item  = items[idx];
   if (!item) return console.warn(`No checkbox at index ${idx}`);
 
+  // toggle visual state
   const isOn = item.classList.toggle('toggled');
-  const input = item.querySelector('input[type="checkbox"]');
-  if (input) input.checked = isOn;
+  const cb   = item.querySelector('input[type="checkbox"]');
+  if (cb) cb.checked = isOn;
 }
 
 // 5) Hook global events once at init
