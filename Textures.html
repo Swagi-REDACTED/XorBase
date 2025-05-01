@@ -961,8 +961,9 @@
   let bindingCheckboxIdx = null;
   let firstinit = true;
 
-  const bindingMap = {};  // key → checkboxIdx
-  const indexMap   = {};  // checkboxIdx → key
+  // 1) Your existing bindingMap / indexMap setup stays the same
+  const bindingMap = {};  // e.g. { '1': 0, 'MOUSE3': 2, ... }
+  const indexMap   = {};  // e.g. { 0: '1', 2: 'MOUSE3', ... }
 
   function showbindmenu(selectedIndex) {
     bindingCheckboxIdx = selectedIndex;
@@ -1079,24 +1080,31 @@
     }
   }
 
+  // 3) The updated activator function:
   function keybindactivationfromlua(key) {
     const idx = bindingMap[key];
-    if (idx === undefined || idx === null) return console.warn(`No binding found for key: ${key}`);
+    if (idx == null) {
+      console.warn(`No binding found for key "${key}"`);
+      return;
+    }
 
-    const checkboxes = Array.from(document.querySelectorAll('.menu-item.checkbox'));
-    const item = checkboxes[idx];
-    if (!item) return console.warn(`No checkbox found at index ${idx}`);
+    // Convert NodeList to Array for stable indexing:
+    const items = Array.from(document.querySelectorAll('.menu-item.checkbox'));
+    const item  = items[idx];
+    if (!item) {
+      console.warn(`No checkbox found at index ${idx}`);
+      return;
+    }
 
-    // Toggle the checkbox state visually and logically
+    // Toggle the visual and logical state
     const isOn = !item.classList.contains('toggled');
     item.classList.toggle('toggled', isOn);
 
     const input = item.querySelector('input[type="checkbox"]');
     if (input) input.checked = isOn;
 
-    console.log(`Toggled keybind ${key} at index ${idx} -> ${isOn ? 'ON' : 'OFF'}`);
+    console.log(`Lua togglekey -> "${key}" toggled index ${idx} to ${isOn}`);
   }
-
 
   // 5) Hook global events once at init
   document.addEventListener('keydown', handleKeybindInput);
@@ -1152,7 +1160,7 @@
         updatekeyormousefromluamessage(msg.data.key);
         break;
       case 'togglekey': {
-          // Normalize incoming key to uppercase so it matches our bindingMap keys
+        // Normalize incoming key to uppercase so it matches bindingMap
         const raw = msg.data.key || '';
         const key = raw.toUpperCase();
         keybindactivationfromlua(key);
