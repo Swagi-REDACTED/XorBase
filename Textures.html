@@ -1080,16 +1080,14 @@
   }
 
   function keybindactivationfromlua(rawKey) {
-  const key = rawKey.toUpperCase();
-  const item = bindingMap[key];
-  if (!item) return console.warn(`No binding for ${key}`);
-
-  // toggle
-  const on = !item.classList.contains('toggled');
-  item.classList.toggle('toggled', on);
-  const cb = item.querySelector('input[type="checkbox"]');
-  if (cb) cb.checked = on;
-}
+    const key = rawKey.toUpperCase();
+    const item = bindingMap[key];
+    if (!item) return console.warn(`No binding for ${key}`);
+    const on = !item.classList.contains('toggled');
+    item.classList.toggle('toggled', on);
+    const cb = item.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = on;
+  }
 
   // 5) Hook global events once at init
   document.addEventListener('keydown', handleKeybindInput);
@@ -1145,9 +1143,7 @@
         updatekeyormousefromluamessage(msg.data.key);
         break;
       case 'togglekey': {
-        // Normalize incoming key to uppercase so it matches bindingMap
-        const raw = msg.data.key || '';
-        const key = raw.toUpperCase();
+        const key = msg.data.key.toUpperCase();
         keybindactivationfromlua(key);
         break;
       }
