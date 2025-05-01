@@ -1144,9 +1144,13 @@
       case 'updatekey':
         updatekeyormousefromluamessage(msg.data.key);
         break;
-      case 'togglekey':
-        keybindactivationfromlua(msg.data.key);
+      case 'togglekey': {
+        // Normalize incoming key to uppercase so it matches bindingMap
+        const raw = msg.data.key || '';
+        const key = raw.toUpperCase();
+        keybindactivationfromlua(key);
         break;
+      }
     }
   });
 
