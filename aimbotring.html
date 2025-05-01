@@ -28,19 +28,19 @@
 
     const cx = canvas.width  / 2;
     const cy = canvas.height / 2;
-    const radius = Math.min(cx, cy) - 5; // 5px padding
+    const radius = Math.min(cx, cy) - 10; // 5px padding
 
     // 1) Draw thick white ring
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-    ctx.lineWidth   = 12;     // black outline thickness
+    ctx.lineWidth   = 20;     // black outline thickness
     ctx.strokeStyle = 'black';
     ctx.stroke();
 
     // 2) Draw 8px white interior on top
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-    ctx.lineWidth   = 8;
+    ctx.lineWidth   = 12;
     ctx.strokeStyle = 'white';
     ctx.stroke();
   </script>
