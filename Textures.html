@@ -1032,27 +1032,26 @@
       ) ||
       bindingCheckboxIdx == null
     ) return;
+    const key = currentBindKey;
+    const bindIndex = bindingCheckboxIdx;
+    const checkboxes = document.querySelectorAll('.menu-item.checkbox');
+    const el = checkboxes[bindIndex];
+    if (!el) return console.warn('No checkbox to bind at idx', bindIndex);
 
-    if (!firstinit) { 
-    const oldKey = indexMap[bindingCheckboxIdx];
-    if (oldKey) delete bindingMap[oldKey];
-
-    // unbind this key from elsewhere
-    const prevIdx = bindingMap[currentBindKey];
-    if (prevIdx != null) delete indexMap[prevIdx];
-
-    // assign new
-    bindingMap[currentBindKey]   = bindingCheckboxIdx;
-    indexMap[bindingCheckboxIdx] = currentBindKey; }
-
-    // feedback
-    const txt = document.querySelector('.menu-binds .text');
-    if (firstinit) { txt.textContent = `Bound Open-Key → ${currentBindKey}`; }
-    else {
-    txt.textContent = `Bound [${bindingCheckboxIdx}] → ${currentBindKey}`;
+    // 1. Remove any old binding of *this* element
+    for (let k in bindingMap) {
+      if (bindingMap[k] === el) delete bindingMap[k];
     }
 
-    // close overlay
+    // 2. Remove any old bind for *this* key
+    delete bindingMap[key];
+
+    // 3. Assign new
+    bindingMap[key] = el;
+
+    // feedback & close…
+    document.querySelector('.menu-binds .text')
+      .textContent = `Bound [${bindIndex}] → ${key}`;
     setTimeout(() => showbindmenu(), 800);
   }
 
@@ -1080,31 +1079,17 @@
     }
   }
 
-  // 3) The updated activator function:
-  function keybindactivationfromlua(key) {
-    const idx = bindingMap[key];
-    if (idx == null) {
-      console.warn(`No binding found for key "${key}"`);
-      return;
-    }
+  function keybindactivationfromlua(rawKey) {
+  const key = rawKey.toUpperCase();
+  const item = bindingMap[key];
+  if (!item) return console.warn(`No binding for ${key}`);
 
-    // Convert NodeList to Array for stable indexing:
-    const items = Array.from(document.querySelectorAll('.menu-item.checkbox'));
-    const item  = items[idx];
-    if (!item) {
-      console.warn(`No checkbox found at index ${idx}`);
-      return;
-    }
-
-    // Toggle the visual and logical state
-    const isOn = !item.classList.contains('toggled');
-    item.classList.toggle('toggled', isOn);
-
-    const input = item.querySelector('input[type="checkbox"]');
-    if (input) input.checked = isOn;
-
-    console.log(`Lua togglekey -> "${key}" toggled index ${idx} to ${isOn}`);
-  }
+  // toggle
+  const on = !item.classList.contains('toggled');
+  item.classList.toggle('toggled', on);
+  const cb = item.querySelector('input[type="checkbox"]');
+  if (cb) cb.checked = on;
+}
 
   // 5) Hook global events once at init
   document.addEventListener('keydown', handleKeybindInput);
@@ -1159,13 +1144,9 @@
       case 'updatekey':
         updatekeyormousefromluamessage(msg.data.key);
         break;
-      case 'togglekey': {
-        // Normalize incoming key to uppercase so it matches bindingMap
-        const raw = msg.data.key || '';
-        const key = raw.toUpperCase();
-        keybindactivationfromlua(key);
+      case 'togglekey':
+        keybindactivationfromlua(msg.data.key);
         break;
-      }
     }
   });
 
