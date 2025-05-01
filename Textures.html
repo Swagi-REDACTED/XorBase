@@ -1022,34 +1022,20 @@
     }
   }
 
-  // 3) Finalize & override any existing binding
   function lockKeyBinding() {
-    if (
-      !currentBindKey ||
-      (
-        !keys.includes(currentBindKey) &&
-        currentBindKey !== 'MOUSE3'
-      ) ||
-      bindingCheckboxIdx == null
-    ) return;
-    const key = currentBindKey;
-    const bindIndex = bindingCheckboxIdx;
+    // … after you compute `key` and `bindIndex` …
     const checkboxes = document.querySelectorAll('.menu-item.checkbox');
     const el = checkboxes[bindIndex];
     if (!el) return console.warn('No checkbox to bind at idx', bindIndex);
 
-    // 1. Remove any old binding of *this* element
+    // Remove any old binding of this element
     for (let k in bindingMap) {
       if (bindingMap[k] === el) delete bindingMap[k];
     }
 
-    // 2. Remove any old bind for *this* key
-    delete bindingMap[key];
-
-    // 3. Assign new
+    // Assign the element itself
     bindingMap[key] = el;
 
-    // feedback & close…
     document.querySelector('.menu-binds .text')
       .textContent = `Bound [${bindIndex}] → ${key}`;
     setTimeout(() => showbindmenu(), 800);
@@ -1081,11 +1067,15 @@
 
   function keybindactivationfromlua(rawKey) {
     const key = rawKey.toUpperCase();
-    const item = bindingMap[key];
-    if (!item) return console.warn(`No binding for ${key}`);
-    const on = !item.classList.contains('toggled');
-    item.classList.toggle('toggled', on);
-    const cb = item.querySelector('input[type="checkbox"]');
+    const el  = bindingMap[key];
+    if (!el) return console.warn(`No binding for ${key}`);
+
+    // toggle the CSS class
+    const on = !el.classList.contains('toggled');
+    el.classList.toggle('toggled', on);
+
+    // also toggle the real <input>
+    const cb = el.querySelector('input[type="checkbox"]');
     if (cb) cb.checked = on;
   }
 
@@ -1142,11 +1132,9 @@
       case 'updatekey':
         updatekeyormousefromluamessage(msg.data.key);
         break;
-      case 'togglekey': {
-        const key = msg.data.key.toUpperCase();
-        keybindactivationfromlua(key);
+      case 'togglekey': 
+        keybindactivationfromlua(msg.data.key);
         break;
-      }
     }
   });
 
