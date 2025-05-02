@@ -953,16 +953,16 @@
   }
 
 let keys = [
-  'CAPSLOCK','DELETE','1','2','3','4','5','6','7','8','9','-','+'
+  'CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'
 ];
 
-let currentBindKey     = null;
-let bindMenuVisible    = false;
+let currentBindKey = null;
+let bindMenuVisible = false;
 let bindingCheckboxIdx = null;
 let firstinit = true;
 
 const bindingMap = {};  // key → checkboxIdx
-const indexMap   = {};  // checkboxIdx → key
+const indexMap = {};    // checkboxIdx → key
 
 function showbindmenu(selectedIndex) {
   bindingCheckboxIdx = selectedIndex;
@@ -970,30 +970,25 @@ function showbindmenu(selectedIndex) {
   const inputBox = bindMenu.querySelector('input');
   const textElem = bindMenu.querySelector('.text');
 
-  // flip the visibility flag
   bindMenuVisible = !bindMenuVisible;
-
-  // calculate the target bottom position (appear from the bottom of the screen)
   const targetBottom = bindMenuVisible ? '45px' : '-150px';
 
-  // Force a reflow to ensure the transition is applied
-  bindMenu.getBoundingClientRect();
+  bindMenu.getBoundingClientRect(); // Force a reflow for transition
 
-  // Apply the smooth transition to bring the menu up or hide it
   bindMenu.style.bottom = targetBottom;
 
   if (bindMenuVisible) {
     inputBox.value = '';
-    inputBox.focus(); // Focus on the input to capture keypresses
-    if (firstinit) { textElem.textContent = "Press Any Key To Set Open-Key"; }
-    else{
-    textElem.textContent = "Press Any Key To Set Key-bind";
-    currentBindKey = null;}
+    inputBox.focus();
+    textElem.textContent = firstinit ? "Press Any Key To Set Open-Key" : "Press Any Key To Set Key-bind";
+    if (!firstinit) {
+      currentBindKey = null;
+    }
+  } else if (firstinit) { 
+    firstinit = false;
   }
-  else if (firstinit) { firstinit = false }
 }
 showbindmenu(selectedIndex)
-// 2) Core input handlers
 function handleKeybindInput(event) {
   if (!bindMenuVisible) return;
 
@@ -1002,38 +997,31 @@ function handleKeybindInput(event) {
     lockKeyBinding();
     return;
   }
+
   if (keys.includes(k)) {
     currentBindKey = k;
     const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value       = k;
+    bindMenu.querySelector('input').value = k;
     bindMenu.querySelector('.text').textContent = "Press Enter To Confirm Selection";
   }
 }
 
 function handleMouseInput(event) {
   if (!bindMenuVisible) return;
-  // middle‐button is event.button===1
   if (event.button === 1) {
     currentBindKey = 'MOUSE3';
     const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value       = 'MOUSE3';
+    bindMenu.querySelector('input').value = 'MOUSE3';
     bindMenu.querySelector('.text').textContent = "Press Enter To Confirm Selection";
   }
 }
 
-// 3) Finalize & override any existing binding
 function lockKeyBinding() {
-  // sanity check
-  if (!currentBindKey ||
-      (!keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3') ||
-      bindingCheckboxIdx == null
-  ) return;
+  if (!currentBindKey || !keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3' || bindingCheckboxIdx == null) return;
 
-  // capture into locals so hide/show call can’t clobber
   const bindIndex = bindingCheckboxIdx;
-  const key       = currentBindKey;
+  const key = currentBindKey;
 
-  // clear any old binding for this key or this index
   if (indexMap[bindIndex]) {
     delete bindingMap[indexMap[bindIndex]];
     delete indexMap[bindIndex];
@@ -1043,23 +1031,18 @@ function lockKeyBinding() {
     delete bindingMap[key];
   }
 
-  // store new bindings
-  bindingMap[key]      = bindIndex;
-  indexMap[bindIndex]  = key;
+  bindingMap[key] = bindIndex;
+  indexMap[bindIndex] = key;
 
-  // give feedback
   const txt = document.querySelector('.menu-binds .text');
   txt.textContent = `Bound [${bindIndex}] → ${key}`;
 
-  // then hide
   setTimeout(() => showbindmenu(), 800);
 }
 
-// 4) When Lua tells us a key/mouse was pressed
 function updatekeyormousefromluamessage(keyormousename) {
   const key = keyormousename.toUpperCase();
 
-  // if overlay up, simulate input so the <input> updates
   if (bindMenuVisible) {
     if (key === 'MOUSE3') {
       handleMouseInput({ button: 1 });
@@ -1071,7 +1054,6 @@ function updatekeyormousefromluamessage(keyormousename) {
     return;
   }
 
-  // otherwise toggle the bound checkbox
   if (keys.includes(key) || key === 'MOUSE3') {
     keybindactivationfromlua(key);
   } else {
@@ -1085,16 +1067,14 @@ function keybindactivationfromlua(rawKey) {
   if (idx == null) return console.warn(`No binding for ${key}`);
 
   const items = document.querySelectorAll('.menu-item.checkbox');
-  const item  = items[idx];
+  const item = items[idx];
   if (!item) return console.warn(`No checkbox at index ${idx}`);
 
-  // toggle visual state
   const isOn = item.classList.toggle('toggled');
-  const cb   = item.querySelector('input[type="checkbox"]');
+  const cb = item.querySelector('input[type="checkbox"]');
   if (cb) cb.checked = isOn;
 }
 
-// 5) Hook global events once at init
 document.addEventListener('keydown', handleKeybindInput);
 document.addEventListener('mousedown', handleMouseInput);
 
@@ -1105,14 +1085,10 @@ document.addEventListener('mousedown', handleMouseInput);
     switch (msg.type) {
       case 'toggleMenu':
         menuVisible = !!msg.data.visible;
-
         if (!menuVisible) {
-          // Hide immediately and stop here
           menuWrapper.style.display = 'none';
           return;
         }
-
-        // Only when showing do we rebuild & display
         menuWrapper.style.display = 'flex';
         updateTabUI(currentTab, false);
         break;
