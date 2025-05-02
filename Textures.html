@@ -1170,16 +1170,40 @@ document.addEventListener('mousedown', handleMouseInput);
   document.addEventListener('DOMContentLoaded', () => {
     // checkboxes
     document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      const text = item.textContent.trim(); item.textContent = '';
-      const label = document.createElement('span'); label.textContent = text;
-      const track = document.createElement('div'); track.classList.add('toggle-track');
-      const thumb = document.createElement('div'); thumb.classList.add('toggle-thumb');
+      const text = item.textContent.trim();
+      item.textContent = '';
+      const label = document.createElement('span');
+      label.textContent = text;
+
+      // Create the checkbox input and the toggle track/thumb for styling
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none'; // Hide the native checkbox
+
+      const track = document.createElement('div');
+      track.classList.add('toggle-track');
+      const thumb = document.createElement('div');
+      thumb.classList.add('toggle-thumb');
+
       track.appendChild(thumb);
-      item.appendChild(label); item.appendChild(track);
+      item.appendChild(label);
+      item.appendChild(input);
+      item.appendChild(track);
+
       item.addEventListener('click', () => {
         item.classList.toggle('toggled');
         thumb.classList.add('stretch');
         setTimeout(() => thumb.classList.remove('stretch'), 200);
+
+        // Update the checkbox state when clicked
+        const isOn = item.classList.contains('toggled');
+        input.checked = isOn;
+
+        // Optionally trigger any action associated with the checkbox if needed
+        const checkbox = checkboxBindings[item.index];  // Assuming you have some action bound to checkboxes
+        if (checkbox && checkbox.action) {
+          checkbox.action(isOn);  // Execute the action associated with the toggle
+        }
       });
     });
 
