@@ -15,12 +15,6 @@
       background: rgba(0, 0, 0, 0);
       padding-top: 65px; /* optional offset if needed */
     }
-    @font-face {
-      font-family: 'Friz Quadrata';
-      src: url('https://swagi-redacted.github.io/XorBase/friz-quadrata-regular-os-5870333951e7c.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
     .menu-wrapper {
       display: flex;
       align-items: center;
@@ -85,12 +79,7 @@
         z-index: 0; /* Below other UI */
     }
     .menu-binds .text {
-        color: rgb(255, 255, 255); /* bright violet base */
-        text-shadow: 
-          0 0 1px rgb(85, 0, 255),
-          0 0 3px rgb(101, 23, 255),
-          0 0 3px rgb(154, 104, 255),
-          0 0 4px rgba(180, 180, 180, 0.944); /* subtle white outer glow */;
+        color: #fff;
         font-family: 'Verdana', sans-serif;
         font-size: 17px;
         margin-bottom: 10px;
@@ -99,8 +88,8 @@
     @keyframes neon-glow1 {
       from { box-shadow:         inset 0 0 6px 3px  #580053,  /* dark purple inner glow */
         0 0 1px 1px #9e00ff; }
-      to   { box-shadow:         inset 0 0 6px 16px  #580053,  /* dark purple inner glow */
-        0 0 2px 2px #9e00ff; }
+      to   { box-shadow:         inset 0 0 16px 10px  #580053,  /* dark purple inner glow */
+        0 0 3px 3px #9e00ff; }
     }
     .menu-binds .inner-rect {
         width: 84%; /* Inner rectangle width */
@@ -108,7 +97,7 @@
         background: rgba(154, 104, 255, 0.556);
         filter: url(#electric-glow);
         animation:
-        neon-glow1   1.4s ease-in-out -1s infinite alternate;
+        neon-glow1   1.5s ease-in-out -0.6s infinite alternate;
         border-radius: 6px;
         display: flex;
         justify-content: center;
@@ -120,7 +109,7 @@
         background: rgba(53, 3, 58, 0.675);
         border: none;
         border-radius: 4px;
-        color: #f8dcff;
+        color: #fff;
         font-size: 18px;
         text-align: center;
         outline: none;
@@ -145,29 +134,22 @@
     .menu-tab {
       flex: 1;
       padding: 10px;
-      font-family: 'Friz Quadrata', sans-serif;
-      font-size: 21px;
-      font-weight: 575;
-      color: #fff; /* bright violet base */
-      text-shadow: 
-        0 0 2px rgba(128, 20, 229, 0.968),
-        0 0 4px #5e239d,
-        0 0 4px #5e239d,
-        0 0 5px rgba(180, 180, 180, 0.944); /* subtle white outer glow */;
+      font-family: 'Verdana', sans-serif;
+      font-size: 15px;
+      color: white;
       text-align: center;
       cursor: pointer;
       transition: background-color 0.3s, color 0.3s;
     }
-
     .menu-tab.selected {
       background-color: #0d021d;            /* solid black */
-      color: #d2a7ff;                       /* keep text white */
+      color: #fff;                       /* keep text white */
       border: 2px solid rgba(154, 104, 255, 0.85);    /* purple border */
 
       /* inner + outer glow */
       box-shadow:
-      inset 0 0 4px 3px  #5e239d,  /* dark purple inner glow */
-      0 0 3px #7b2cbf;            /* soft outer halo */
+      inset 0 0 4px 2px  rgba(154, 104, 255, 0.85),  /* dark purple inner glow */
+      0 0 6px rgba(180, 180, 180, 0.944);            /* soft outer halo */
     }
     .menu-items-container {
       width: 100%;
@@ -183,12 +165,7 @@
     }
     .menu-item {
       padding: 12px 20px;
-      color: #c8a4eb; /* bright violet base */
-      text-shadow: 
-        0 0 2px #4e0097,
-        0 0 4px rgba(78, 0, 151, 0.575),
-        0 0 4px rgb(193, 69, 255),
-        0 0 6px #ff00ee; /* subtle white outer glow */;
+      color: white;
       font-family: 'Verdana', sans-serif;
       font-size: 14px;
       cursor: pointer;
@@ -280,6 +257,15 @@
       align-items: center;
     }
 
+    /* label + value */
+    .menu-item.slider > span.value {
+      width: 2em;
+      text-align: right;
+      margin-right: 8px;
+      font-family: Verdana, sans-serif;
+      color: #fff;
+    }
+
     /* the track */
     .menu-item.slider .slider-track {
       position: relative;
@@ -289,18 +275,6 @@
       border: 1.5px solid #000;
       border-radius: 6px;
       overflow: visible;
-    }
-
-    .menu-item.slider .slider-track .value {
-      position: absolute;
-      left: -58px;              /* small padding from left edge */
-      top: 54%;
-      transform: translateY(-50%);
-      width: 2em;
-      text-align: right;
-      color: #fff;
-      font-family: Verdana, sans-serif;
-      pointer-events: none;   /* clicks pass through to track */
     }
 
     @keyframes pulse-glow {
@@ -378,7 +352,7 @@
       <!-- scripts tabs -->
       <div class="menu-tabs" id="scripts-tabs" style="display: none;">
         <div class="menu-tab selected" id="scripts-main-tab">Scripts</div>
-        <div class="menu-tab" id="scripts-Built-tab">Built-In</div>
+        <div class="menu-tab" id="scripts-Built-tab">Built-in</div>
         <div class="menu-tab" id="scripts-misc-tab">Misc</div>
       </div>
       <!-- scripts tabs -->
@@ -450,7 +424,7 @@
   
         <!-- Settings -->
         <div class="menu-items" id="settings-items" style="display: none;">
-          <div class="menu-item">Safe Mode</div>
+          <div class="menu-item">Safe mode</div>
           <div class="menu-item">Uninject</div>
           <div class="menu-item" id="misc-options-toggle">Misc</div>
         </div>
@@ -458,9 +432,8 @@
         <div class="menu-items" id="scripts-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="scripts-main-items">
-            <div class="menu-item">Add Item to Inventory</div>
-            <div class="menu-item checkbox">Force Hands up With F6</div>
-            <div class="menu-item checkbox">Auto-Rob Ox(Detected on Reaper)</div>
+            <div class="menu-item">Add item to inventory</div>
+            <div class="menu-item">Force hands up with F6</div>
             <!-- etc… -->
           </div>
           <div class="menu-items" id="misc-Built-items" style="display: none;">
@@ -468,15 +441,15 @@
             <div class="menu-item">Earthquake</div>
           </div>
           <div class="menu-items" id="scripts-misc-items" style="display: none;">
-            <div class="menu-item">Block Logs</div>
+            <div class="menu-item">Block logs</div>
           </div>
         </div>
 
         <div class="menu-items" id="Force-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="Force-main-items">
-            <div class="menu-item">Force 1</div>
-            <div class="menu-item">Force 2</div>
+            <div class="menu-item">force 1</div>
+            <div class="menu-item">force 2</div>
             <!-- etc… -->
           </div>
         </div>
@@ -484,13 +457,13 @@
         <div class="menu-items" id="misc-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="misc-main-items">
-            <div class="menu-item">Menu Size</div>
-            <div class="menu-item">Menu Color</div>
+            <div class="menu-item">Menu size</div>
+            <div class="menu-item">Menu color</div>
             <!-- etc… -->
           </div>
           <div class="menu-items" id="misc-extra-items" style="display: none;">
-            <div class="menu-item">Menu Pos X</div>
-            <div class="menu-item">Menu Pos Y</div>
+            <div class="menu-item">Menu pos x</div>
+            <div class="menu-item">Menu pos y</div>
           </div>
         </div>
   
@@ -499,22 +472,23 @@
         <div class="menu-items" id="player-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="player-main-items">
-            <div class="menu-item checkbox">God Mode</div>
-            <div class="menu-item checkbox">Invisible</div>
+            <div class="menu-item">God Mode</div>
+            <div class="menu-item">Invisible</div>
             <!-- etc… -->
           </div>
           <!-- Movement panel -->
           <div class="menu-items" id="player-movement-items" style="display: none;">
             <div class="menu-item checkbox">No-Clip</div>
             <div class="menu-item slider" data-min="1" data-max="20" data-step="1" data-value="1">No-Clip Speed</div>
+            <div class="menu-item checkbox">Run Speed</div>
+            <div class="menu-item slider" data-min="1" data-max="10" data-step="1" data-value="1">Run Speed Modifier</div>
           </div>
         </div>
         <div class="menu-items" id="vehicle-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="vehicle-main-items">
-            <div class="menu-item checkbox">Boost</div>
-            <div class="menu-item slider" data-min="65" data-max="200" data-step="20" data-value="100">Boost Speed</div>
-            <div class="menu-item checkbox">God Mode</div>
+            <div class="menu-item">Boost</div>
+            <div class="menu-item">God mode</div>
             <!-- etc… -->
           </div>
           <!-- spawner panel -->
@@ -526,57 +500,54 @@
         <div class="menu-items" id="esp-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="esp-main-items">
-            <div class="menu-item checkbox">Enable Esp</div>
-            <div class="menu-item">Esp Color</div>
+            <div class="menu-item">enable esp</div>
+            <div class="menu-item">esp color</div>
             <!-- etc… -->
           </div>
           <!-- Toggles panel -->
           <div class="menu-items" id="esp-toggle-items" style="display: none;">
-            <div class="menu-item checkbox">Glow</div>
-            <div class="menu-item checkbox">Bones</div>
-            <div class="menu-item checkbox">Boxes</div>
-            <div class="menu-item checkbox">Tracers</div>
-            <div class="menu-item checkbox">Name</div>
-            <div class="menu-item checkbox">Distance</div>
-            <div class="menu-item checkbox">Infobar</div> <!-- for later -->
+            <div class="menu-item">Glow</div>
+            <div class="menu-item">Bones</div>
+            <div class="menu-item">Boxes</div>
+            <div class="menu-item">Tracers</div>
+            <div class="menu-item">Name</div>
+            <div class="menu-item">Distance</div>
+            <div class="menu-item">Infobar</div> <!-- for later -->
           </div>
         </div>
         <div class="menu-items" id="teleport-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="teleport-main-items">
-            <div class="menu-item">Tp to Waypoint</div>
-            <div class="menu-item">Tp to Coords</div>
+            <div class="menu-item">Tp to waypoint</div>
+            <div class="menu-item">Tp to coords</div>
             <!-- etc… -->
           </div>
           <!-- player panel -->
           <div class="menu-items" id="teleport-player-items" style="display: none;">
-            <div class="menu-item">Tp to Player by Look</div>
-            <div class="menu-item">Tp to Player by Id</div>
-            <div class="menu-item">Tp to Player by Name</div>
+            <div class="menu-item">tp to player by id</div>
+            <div class="menu-item">tp to player by name</div>
           </div>
         </div>
         <div class="menu-items" id="weapons-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="weapons-main-items">
-            <div class="menu-item checkbox">Alter Damage</div>
-            <div class="menu-item slider" data-min="10" data-max="500" data-step="25" data-value="100">Damage</div>
-            <div class="menu-item">Spread</div>
+            <div class="menu-item">damage</div>
+            <div class="menu-item">spread</div>
             <!-- etc… -->
           </div>
           <div class="menu-items" id="weapons-aimbot-items" style="display: none;">
-            <div class="menu-item checkbox">Aimbot</div>
-            <div class="menu-item">Aimbot Type</div>
-            <div class="menu-item checkbox">show Aimbot Fov</div>
-            <div class="menu-item">Aimbot Fov</div>
+            <div class="menu-item">aimbot</div>
+            <div class="menu-item">aimbot type</div>
+            <div class="menu-item">aimbot fov</div>
           </div>
           <div class="menu-items" id="weapons-spawner-items" style="display: none;">
-            <div class="menu-item">Spawn by Hash</div>
-            <div class="menu-item">Spawner</div>
-            <div class="menu-item">Spoof</div>
-            <div class="menu-item">Add Ammo to Clip</div>
-            <div class="menu-item">Add Ammo to Reserve</div>
-            <div class="menu-item">Set Ammo to Clip</div>
-            <div class="menu-item">Set Ammo to Reserve</div>
+            <div class="menu-item">spawn by hash</div>
+            <div class="menu-item">spawner</div>
+            <div class="menu-item">spoof</div>
+            <div class="menu-item">add ammo to clip</div>
+            <div class="menu-item">add ammo to reserve</div>
+            <div class="menu-item">set ammo to clip</div>
+            <div class="menu-item">set ammo to reserve</div>
           </div>
         </div>
         <div class="menu-items" id="model-options-items" style="display: none;">
@@ -591,8 +562,8 @@
         <div class="menu-items" id="outfits-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="outfits-main-items">
-            <div class="menu-item">Save Outfit</div>
-            <div class="menu-item">Load Outfits</div>
+            <div class="menu-item">save outfit</div>
+            <div class="menu-item">load outfits</div>
             <div class="menu-item">Skin Color</div>
             <!-- etc… -->
           </div>
@@ -605,22 +576,22 @@
             <!-- etc… -->
           </div>
           <div class="menu-items" id="outfits-lower-items" style="display: none;">
-            <div class="menu-item">Legs</div>
+            <div class="menu-item">legs</div>
             <div class="menu-item">Shoes</div>
           </div>
         </div>
         <div class="menu-items" id="world-options-items" style="display: none;">
           <!-- Main panel -->
           <div class="menu-items" id="world-main-items">
-            <div class="menu-item">Aggressive Npcs</div>
-            <div class="menu-item">Floating Cars</div>
-            <div class="menu-item">Low Gravity</div>
+            <div class="menu-item">aggressive npcs</div>
+            <div class="menu-item">floating cars</div>
+            <div class="menu-item">low gravity</div>
             <!-- etc… -->
           </div>
           <!-- atmosphere panel -->
           <div class="menu-items" id="world-atmosphere-items" style="display: none;">
-            <div class="menu-item">Time</div>
-            <div class="menu-item">Weather</div>
+            <div class="menu-item">time</div>
+            <div class="menu-item">weather</div>
           </div>
         </div>
         <div class="menu-items" id="server-options-items" style="display: none;">
@@ -652,317 +623,316 @@
         <span class="right-text" id="menu-counter">1/9</span>
       </div>
   </div>  
-<style>
-  .submenu-items {
-    padding-left: 20px;
-  }
-
-  #menu-items-container {
-    overflow-y: auto;
-    max-height: 410px;
-    scrollbar-width: none; /* hide scrollbar in Firefox */
-  }
-
-  /* hide scrollbar in Chrome, Edge, Safari */
-  #menu-items-container::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-</style>
-  <script>
-  // State
-  let selectedIndex   = 0;
-  let previousIndex  = 0;
-  let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
-  let currentSubTab   = 0;
-  let previousTab = 0; // track the tab/subtab user entered from
-  let previousSubTab = 0; // track the tab/subtab user entered from
-  let menuVisible     = true;
-
-  // DOM refs
-  const menuWrapper     = document.querySelector('.menu-wrapper');
-  const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
-  const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
-  const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
-  const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
-  const vehicleTabs     = document.querySelectorAll('#vehicle-tabs .menu-tab');
-  const espTabs         = document.querySelectorAll('#esp-tabs .menu-tab');
-  const teleportTabs    = document.querySelectorAll('#teleport-tabs .menu-tab');
-  const weaponsTabs     = document.querySelectorAll('#weapons-tabs .menu-tab');
-  const modelTabs       = document.querySelectorAll('#model-tabs .menu-tab');
-  const outfitsTabs     = document.querySelectorAll('#outfits-tabs .menu-tab');
-  const worldTabs       = document.querySelectorAll('#world-tabs .menu-tab');
-  const serverTabs      = document.querySelectorAll('#server-tabs .menu-tab');
-  const forceTabs       = document.querySelectorAll('#Force-tabs .menu-tab');
-
-  const containers      = [
-    document.getElementById('main-items'),
-    document.getElementById('scripts-items'),
-    document.getElementById('settings-items'),
-    document.getElementById('player-options-items'),
-    document.getElementById('misc-options-items'),
-    document.getElementById('scripts-options-items'),
-    document.getElementById('vehicle-options-items'),
-    document.getElementById('esp-options-items'),
-    document.getElementById('teleport-options-items'),
-    document.getElementById('weapons-options-items'),
-    document.getElementById('model-options-items'),
-    document.getElementById('outfits-options-items'),
-    document.getElementById('world-options-items'),
-    document.getElementById('server-options-items'),
-    document.getElementById('Force-options-items')
-  ];
-
-  const subContainers = [
-    document.getElementById('player-main-items'),
-    document.getElementById('player-movement-items'),
-    document.getElementById('misc-main-items'),
-    document.getElementById('misc-extra-items'),
-    document.getElementById('scripts-main-items'),
-    document.getElementById('misc-Built-items'),
-    document.getElementById('scripts-misc-items'),
-    document.getElementById('vehicle-main-items'),
-    document.getElementById('vehicle-spawner-items'),
-    document.getElementById('esp-main-items'),
-    document.getElementById('esp-toggle-items'),
-    document.getElementById('teleport-main-items'),
-    document.getElementById('teleport-player-items'),
-    document.getElementById('weapons-main-items'),
-    document.getElementById('weapons-aimbot-items'),
-    document.getElementById('weapons-spawner-items'),
-    document.getElementById('model-main-items'),
-    document.getElementById('outfits-main-items'),
-    document.getElementById('outfits-upper-items'),
-    document.getElementById('outfits-lower-items'),
-    document.getElementById('world-main-items'),
-    document.getElementById('world-atmosphere-items'),
-    document.getElementById('server-main-items'),
-    document.getElementById('server-destroyer-items'),
-    document.getElementById('Force-main-items')
-  ];
-
-  const mainTabsEl      = document.getElementById('menu-tabs');
-  const playerTabsEl    = document.getElementById('player-tabs');
-  const miscTabsEl      = document.getElementById('misc-tabs');
-  const scriptsTabsEl   = document.getElementById('scripts-tabs');
-  const vehicleTabsEl   = document.getElementById('vehicle-tabs');
-  const espTabsEl       = document.getElementById('esp-tabs');
-  const teleportTabsEl  = document.getElementById('teleport-tabs');
-  const weaponsTabsEl   = document.getElementById('weapons-tabs');
-  const modelTabsEl     = document.getElementById('model-tabs');
-  const outfitsTabsEl   = document.getElementById('outfits-tabs');
-  const worldTabsEl     = document.getElementById('world-tabs');
-  const serverTabsEl    = document.getElementById('server-tabs');
-  const forceTabsEl     = document.getElementById('Force-tabs');
-
-  const scrollbarContainer = document.querySelector('.scrollbar-container');
-  const scrollbarThumb     = document.getElementById('scrollbar-thumb');
-  const menuCounter        = document.getElementById('menu-counter');
-  const playerToggle       = document.getElementById('player-options-toggle');
-  const miscToggle         = document.getElementById('misc-options-toggle');
-  const scriptsToggle      = document.getElementById('scripts-options-toggle');
-  const vehicleToggle      = document.getElementById('vehicle-options-toggle');
-  const espToggle          = document.getElementById('esp-options-toggle');
-  const teleportToggle     = document.getElementById('teleport-options-toggle');
-  const weaponsToggle      = document.getElementById('weapons-options-toggle');
-  const modelToggle        = document.getElementById('model-options-toggle');
-  const outfitsToggle      = document.getElementById('outfits-options-toggle');
-  const worldToggle        = document.getElementById('world-options-toggle');
-  const serverToggle       = document.getElementById('server-options-toggle');
-  const forceToggle        = document.getElementById('Force-options-toggle');
-
-  function getMenuItems() {
-    if (currentTab <= 2) {
-      return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
-        .filter(i => i.offsetParent !== null);
+  <style>
+    .submenu-items {
+      padding-left: 20px;
     }
-    const subIndexMap = {
-    3: 0, 4: 2, 5: 4, 6: 7, 7: 9, 8: 11,
-    9: 13, 10: 16, 11: 17, 12: 20, 13: 22,
-    14: 24 // <-- Add this!
-    };
-    const start = subIndexMap[currentTab] || 0;
-    return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
-      .filter(i => i.offsetParent !== null);
-  }
-
-  function updateMenuSelection(dir) {
-    const items = getMenuItems(); if (!items.length) return;
-    items[selectedIndex]?.classList.remove('selected');
-    selectedIndex = (selectedIndex + dir + items.length) % items.length;
-    items[selectedIndex].classList.add('selected');
-    items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
-    const step = items.length > 1 ? max / (items.length - 1) : 0;
-    scrollbarThumb.style.top = `${selectedIndex * step}px`;
-    menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
-  }
-
-  function clearSelection() {
-    document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
-  }
-
-  function updateTabUI(tabIdx, reset = true) {
-    // Ensure previousTab and previousSubTab are updated when the tab changes
-    if (tabIdx !== currentTab) {
-      previousTab = currentTab;
-      previousSubTab = currentSubTab;
+  
+    #menu-items-container {
+      overflow-y: auto;
+      max-height: 410px;
+      scrollbar-width: none; /* hide scrollbar in Firefox */
     }
-
-    currentTab = tabIdx;
-    clearSelection();
-
-    if (reset) {
-      if (tabIdx === previousTab) {
-        selectedIndex = previousIndex;
-      } else {
-        previousIndex = selectedIndex;
-        selectedIndex = 0;
-      }
+  
+    /* hide scrollbar in Chrome, Edge, Safari */
+    #menu-items-container::-webkit-scrollbar {
+      width: 0;
+      height: 0;
     }
+  </style>
+<script>
+// State
+let selectedIndex   = 0;
+let previousIndex  = 0;
+let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
+let currentSubTab   = 0;
+let previousTab = 0; // track the tab/subtab user entered from
+let previousSubTab = 0; // track the tab/subtab user entered from
+let menuVisible     = true;
 
-    // hide all headers
-    const groups = [
-      document.getElementById('menu-tabs'),
-      document.getElementById('player-tabs'),
-      document.getElementById('misc-tabs'),
-      document.getElementById('scripts-tabs'),
-      document.getElementById('vehicle-tabs'),
-      document.getElementById('esp-tabs'),
-      document.getElementById('teleport-tabs'),
-      document.getElementById('weapons-tabs'),
-      document.getElementById('model-tabs'),
-      document.getElementById('outfits-tabs'),
-      document.getElementById('world-tabs'),
-      document.getElementById('server-tabs'),
-      document.getElementById('Force-tabs') // <-- Add this line
-    ];
-    groups.forEach(g => g.style.display = 'none');
+// DOM refs
+const menuWrapper     = document.querySelector('.menu-wrapper');
+const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
+const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
+const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
+const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
+const vehicleTabs     = document.querySelectorAll('#vehicle-tabs .menu-tab');
+const espTabs         = document.querySelectorAll('#esp-tabs .menu-tab');
+const teleportTabs    = document.querySelectorAll('#teleport-tabs .menu-tab');
+const weaponsTabs     = document.querySelectorAll('#weapons-tabs .menu-tab');
+const modelTabs       = document.querySelectorAll('#model-tabs .menu-tab');
+const outfitsTabs     = document.querySelectorAll('#outfits-tabs .menu-tab');
+const worldTabs       = document.querySelectorAll('#world-tabs .menu-tab');
+const serverTabs      = document.querySelectorAll('#server-tabs .menu-tab');
+const forceTabs       = document.querySelectorAll('#Force-tabs .menu-tab');
 
-    // show current header
-    const displayMap = {
-      0: 0, 1: 0, 2: 0,
-      3: 1, 4: 2, 5: 3,
-      6: 4, 7: 5, 8: 6,
-      9: 7, 10: 8, 11: 9,
-      12: 10, 13: 11,
-      14: 12 };
-    groups[displayMap[tabIdx]].style.display = 'flex';
-
-    // highlight tabs
-    mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
-    [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs]
-      .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
-
-    // show containers
-    containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
-    updateMenuSelection(0);
-    updateScrollbarHeight();
-
-    // show subs
-    subContainers.forEach(c => c.style.display = 'none');
-    const countMap = {
-      3: 2, 4: 2, 5: 3,
-      6: 2, 7: 2, 8: 2,
-      9: 3, 10: 1, 11: 3,
-      12: 2, 13: 2,
-      14: 1 // Force Emote has 1 subtab: Force-main-items
-    };
-
-    const startMap = {
-      3: 0, 4: 2, 5: 4,
-      6: 7, 7: 9, 8: 11,
-      9: 13, 10: 16, 11: 17,
-      12: 20, 13: 22,
-      14: 24 // Force-main-items is at subContainers[24]
-    };
-
-    const cCount = countMap[tabIdx] || 1;
-    for (let i = 0; i < cCount; i++) {
-      subContainers[startMap[tabIdx] + i].style.display = i === currentSubTab ? 'block' : 'none';
-    }
-
-    // highlight first item
-    updateMenuSelection(0);
-    updateScrollbarHeight();
-  }
-
-  function updateTabSelection(dir) {
-    if (currentTab >= 3 && currentTab <= 14) {
-      const arrs = [
-        playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
-        weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs
-      ];
-      const arr = arrs[currentTab - 3];
-      currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
-    } else {
-      currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
-    }
-
-    // Update the selectedIndex and the menu selection after changing the tab
-    selectedIndex = 0;
-    updateTabUI(currentTab, true);
-    updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
-    updateScrollbarHeight();
-  }
-
-  // toggle buttons
-  [playerToggle, miscToggle, scriptsToggle, vehicleToggle, espToggle,
-  teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle, forceToggle]
-  .forEach((el, i) => el.addEventListener('click', () => { currentSubTab = 0; updateTabUI(i + 3); }));
-
-  function updateslidervalue(dir) {
-    const items = getMenuItems();
-    const item = items[selectedIndex];
-    if (!item || !item.classList.contains('slider')) return;
-    const s = item._slider;
-    s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
-    const pct = (s.value - s.min) / (s.max - s.min);
-    s.fill.style.width = (pct * 100) + '%';
-    s.valueSpan.textContent = s.value;
-    const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
-    s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-  }
-
-  function goBack() {
-    if (currentTab >= 3 && currentSubTab > 0) {
-      currentSubTab = 0;
-      selectedIndex = 0;
-      updateTabUI(currentTab, true);
-    } else if (currentSubTab !== previousSubTab) {
-      currentSubTab = previousSubTab;
-      selectedIndex = previousIndex;
-      updateTabUI(currentTab, true);
-    } else if (currentTab !== previousTab) {
-      currentTab = previousTab;
-      selectedIndex = previousIndex;
-      updateTabUI(currentTab, true);
-    } else if (currentTab === previousTab && currentTab === 0) { // Close the menu if both tabs are 0 (main tab)
-      menuVisible = false;
-      menuWrapper.style.display = 'none';
-    } else if (currentTab === previousTab) { // Reset both to zero if on the same tab
-      currentTab = 0;
-      previousTab = 0;
-      currentSubTab = 0; // Reset the sub-tab as well
-      previousIndex = 0  // Reset selected index
-      selectedIndex = 0; // Reset selected index
-      updateTabUI(currentTab, true);
-      updateMenuSelection(0);
-    }
-  }
-
-let keys = [
-  'CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'
+const containers      = [
+  document.getElementById('main-items'),
+  document.getElementById('scripts-items'),
+  document.getElementById('settings-items'),
+  document.getElementById('player-options-items'),
+  document.getElementById('misc-options-items'),
+  document.getElementById('scripts-options-items'),
+  document.getElementById('vehicle-options-items'),
+  document.getElementById('esp-options-items'),
+  document.getElementById('teleport-options-items'),
+  document.getElementById('weapons-options-items'),
+  document.getElementById('model-options-items'),
+  document.getElementById('outfits-options-items'),
+  document.getElementById('world-options-items'),
+  document.getElementById('server-options-items'),
+  document.getElementById('Force-options-items')
 ];
 
-let currentBindKey = null;
-let bindMenuVisible = false;
+const subContainers = [
+  document.getElementById('player-main-items'),
+  document.getElementById('player-movement-items'),
+  document.getElementById('misc-main-items'),
+  document.getElementById('misc-extra-items'),
+  document.getElementById('scripts-main-items'),
+  document.getElementById('misc-Built-items'),
+  document.getElementById('scripts-misc-items'),
+  document.getElementById('vehicle-main-items'),
+  document.getElementById('vehicle-spawner-items'),
+  document.getElementById('esp-main-items'),
+  document.getElementById('esp-toggle-items'),
+  document.getElementById('teleport-main-items'),
+  document.getElementById('teleport-player-items'),
+  document.getElementById('weapons-main-items'),
+  document.getElementById('weapons-aimbot-items'),
+  document.getElementById('weapons-spawner-items'),
+  document.getElementById('model-main-items'),
+  document.getElementById('outfits-main-items'),
+  document.getElementById('outfits-upper-items'),
+  document.getElementById('outfits-lower-items'),
+  document.getElementById('world-main-items'),
+  document.getElementById('world-atmosphere-items'),
+  document.getElementById('server-main-items'),
+  document.getElementById('server-destroyer-items'),
+  document.getElementById('Force-main-items')
+];
+
+const mainTabsEl      = document.getElementById('menu-tabs');
+const playerTabsEl    = document.getElementById('player-tabs');
+const miscTabsEl      = document.getElementById('misc-tabs');
+const scriptsTabsEl   = document.getElementById('scripts-tabs');
+const vehicleTabsEl   = document.getElementById('vehicle-tabs');
+const espTabsEl       = document.getElementById('esp-tabs');
+const teleportTabsEl  = document.getElementById('teleport-tabs');
+const weaponsTabsEl   = document.getElementById('weapons-tabs');
+const modelTabsEl     = document.getElementById('model-tabs');
+const outfitsTabsEl   = document.getElementById('outfits-tabs');
+const worldTabsEl     = document.getElementById('world-tabs');
+const serverTabsEl    = document.getElementById('server-tabs');
+const forceTabsEl     = document.getElementById('Force-tabs');
+
+const scrollbarContainer = document.querySelector('.scrollbar-container');
+const scrollbarThumb     = document.getElementById('scrollbar-thumb');
+const menuCounter        = document.getElementById('menu-counter');
+const playerToggle       = document.getElementById('player-options-toggle');
+const miscToggle         = document.getElementById('misc-options-toggle');
+const scriptsToggle      = document.getElementById('scripts-options-toggle');
+const vehicleToggle      = document.getElementById('vehicle-options-toggle');
+const espToggle          = document.getElementById('esp-options-toggle');
+const teleportToggle     = document.getElementById('teleport-options-toggle');
+const weaponsToggle      = document.getElementById('weapons-options-toggle');
+const modelToggle        = document.getElementById('model-options-toggle');
+const outfitsToggle      = document.getElementById('outfits-options-toggle');
+const worldToggle        = document.getElementById('world-options-toggle');
+const serverToggle       = document.getElementById('server-options-toggle');
+const forceToggle        = document.getElementById('Force-options-toggle');
+
+function getMenuItems() {
+  if (currentTab <= 2) {
+    return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+      .filter(i => i.offsetParent !== null);
+  }
+  const subIndexMap = {
+  3: 0, 4: 2, 5: 4, 6: 7, 7: 9, 8: 11,
+  9: 13, 10: 16, 11: 17, 12: 20, 13: 22,
+  14: 24 // <-- Add this!
+  };
+  const start = subIndexMap[currentTab] || 0;
+  return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
+    .filter(i => i.offsetParent !== null);
+}
+
+function updateMenuSelection(dir) {
+  const items = getMenuItems(); if (!items.length) return;
+  items[selectedIndex]?.classList.remove('selected');
+  selectedIndex = (selectedIndex + dir + items.length) % items.length;
+  items[selectedIndex].classList.add('selected');
+  items[selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
+  const step = items.length > 1 ? max / (items.length - 1) : 0;
+  scrollbarThumb.style.top = `${selectedIndex * step}px`;
+  menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
+}
+
+function clearSelection() {
+  document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
+}
+
+function updateTabUI(tabIdx, reset = true) {
+  // Ensure previousTab and previousSubTab are updated when the tab changes
+  if (tabIdx !== currentTab) {
+    previousTab = currentTab;
+    previousSubTab = currentSubTab;
+  }
+
+  currentTab = tabIdx;
+  clearSelection();
+
+  if (reset) {
+    if (tabIdx === previousTab) {
+      selectedIndex = previousIndex;
+    } else {
+      previousIndex = selectedIndex;
+      selectedIndex = 0;
+    }
+  }
+
+  // hide all headers
+  const groups = [
+    document.getElementById('menu-tabs'),
+    document.getElementById('player-tabs'),
+    document.getElementById('misc-tabs'),
+    document.getElementById('scripts-tabs'),
+    document.getElementById('vehicle-tabs'),
+    document.getElementById('esp-tabs'),
+    document.getElementById('teleport-tabs'),
+    document.getElementById('weapons-tabs'),
+    document.getElementById('model-tabs'),
+    document.getElementById('outfits-tabs'),
+    document.getElementById('world-tabs'),
+    document.getElementById('server-tabs'),
+    document.getElementById('Force-tabs') // <-- Add this line
+  ];
+  groups.forEach(g => g.style.display = 'none');
+
+  // show current header
+  const displayMap = {
+    0: 0, 1: 0, 2: 0,
+    3: 1, 4: 2, 5: 3,
+    6: 4, 7: 5, 8: 6,
+    9: 7, 10: 8, 11: 9,
+    12: 10, 13: 11,
+    14: 12 };
+  groups[displayMap[tabIdx]].style.display = 'flex';
+
+  // highlight tabs
+  mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
+  [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs]
+    .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
+
+  // show containers
+  containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
+  updateMenuSelection(0);
+  updateScrollbarHeight();
+
+  // show subs
+  subContainers.forEach(c => c.style.display = 'none');
+  const countMap = {
+    3: 2, 4: 2, 5: 3,
+    6: 2, 7: 2, 8: 2,
+    9: 3, 10: 1, 11: 3,
+    12: 2, 13: 2,
+    14: 1 // Force Emote has 1 subtab: Force-main-items
+  };
+
+  const startMap = {
+    3: 0, 4: 2, 5: 4,
+    6: 7, 7: 9, 8: 11,
+    9: 13, 10: 16, 11: 17,
+    12: 20, 13: 22,
+    14: 24 // Force-main-items is at subContainers[24]
+  };
+
+  const cCount = countMap[tabIdx] || 1;
+  for (let i = 0; i < cCount; i++) {
+    subContainers[startMap[tabIdx] + i].style.display = i === currentSubTab ? 'block' : 'none';
+  }
+
+  // highlight first item
+  updateMenuSelection(0);
+  updateScrollbarHeight();
+}
+
+function updateTabSelection(dir) {
+  if (currentTab >= 3 && currentTab <= 14) {
+    const arrs = [
+      playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
+      weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs
+    ];
+    const arr = arrs[currentTab - 3];
+    currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
+  } else {
+    currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
+  }
+
+  // Update the selectedIndex and the menu selection after changing the tab
+  selectedIndex = 0;
+  updateTabUI(currentTab, true);
+  updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
+  updateScrollbarHeight();
+}
+
+// toggle buttons
+[playerToggle, miscToggle, scriptsToggle, vehicleToggle, espToggle,
+ teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle, forceToggle]
+.forEach((el, i) => el.addEventListener('click', () => { currentSubTab = 0; updateTabUI(i + 3); }));
+
+function updateslidervalue(dir) {
+  const items = getMenuItems();
+  const item = items[selectedIndex];
+  if (!item || !item.classList.contains('slider')) return;
+  const s = item._slider;
+  s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
+  const pct = (s.value - s.min) / (s.max - s.min);
+  s.fill.style.width = (pct * 100) + '%';
+  s.valueSpan.textContent = s.value;
+  const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
+  s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+}
+
+function goBack() {
+  if (currentTab >= 3 && currentSubTab > 0) {
+    currentSubTab = 0;
+    selectedIndex = 0;
+    updateTabUI(currentTab, true);
+  } else if (currentSubTab !== previousSubTab) {
+    currentSubTab = previousSubTab;
+    selectedIndex = previousIndex;
+    updateTabUI(currentTab, true);
+  } else if (currentTab !== previousTab) {
+    currentTab = previousTab;
+    selectedIndex = previousIndex;
+    updateTabUI(currentTab, true);
+  } else if (currentTab === previousTab && currentTab === 0) { // Close the menu if both tabs are 0 (main tab)
+    menuVisible = false;
+    menuWrapper.style.display = 'none';
+  } else if (currentTab === previousTab) { // Reset both to zero if on the same tab
+    currentTab = 0;
+    previousTab = 0;
+    currentSubTab = 0; // Reset the sub-tab as well
+    previousIndex = 0  // Reset selected index
+    selectedIndex = 0; // Reset selected index
+    updateTabUI(currentTab, true);
+    updateMenuSelection(0);
+  }
+}
+
+let keys = [
+  'CAPSLOCK','DELETE','1','2','3','4','5','6','7','8','9','-','+'
+];
+
+let currentBindKey     = null;
+let bindMenuVisible    = false;
 let bindingCheckboxIdx = null;
-let firstinit = true;
 
 const bindingMap = {};  // key → checkboxIdx
-const indexMap = {};    // checkboxIdx → key
+const indexMap   = {};  // checkboxIdx → key
 
 function showbindmenu(selectedIndex) {
   bindingCheckboxIdx = selectedIndex;
@@ -970,25 +940,27 @@ function showbindmenu(selectedIndex) {
   const inputBox = bindMenu.querySelector('input');
   const textElem = bindMenu.querySelector('.text');
 
+  // flip the visibility flag
   bindMenuVisible = !bindMenuVisible;
+
+  // calculate the target bottom position (appear from the bottom of the screen)
   const targetBottom = bindMenuVisible ? '45px' : '-150px';
 
-  bindMenu.getBoundingClientRect(); // Force a reflow for transition
+  // Force a reflow to ensure the transition is applied
+  bindMenu.getBoundingClientRect();
 
+  // Apply the smooth transition to bring the menu up or hide it
   bindMenu.style.bottom = targetBottom;
 
   if (bindMenuVisible) {
     inputBox.value = '';
-    inputBox.focus();
-    textElem.textContent = firstinit ? "Press Any Key To Set Open-Key" : "Press Any Key To Set Key-bind";
-    if (!firstinit) {
-      currentBindKey = null;
-    }
-  } else if (firstinit) { 
-    firstinit = false;
+    inputBox.focus(); // Focus on the input to capture keypresses
+    textElem.textContent = "Press Any Key To Set Keybind";
+    currentBindKey = null;
   }
 }
-showbindmenu(selectedIndex)
+
+// 2) Core input handlers
 function handleKeybindInput(event) {
   if (!bindMenuVisible) return;
 
@@ -997,52 +969,61 @@ function handleKeybindInput(event) {
     lockKeyBinding();
     return;
   }
-
   if (keys.includes(k)) {
     currentBindKey = k;
     const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = k;
+    bindMenu.querySelector('input').value       = k;
     bindMenu.querySelector('.text').textContent = "Press Enter To Confirm Selection";
   }
 }
 
 function handleMouseInput(event) {
   if (!bindMenuVisible) return;
+  // middle‐button is event.button===1
   if (event.button === 1) {
     currentBindKey = 'MOUSE3';
     const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = 'MOUSE3';
+    bindMenu.querySelector('input').value       = 'MOUSE3';
     bindMenu.querySelector('.text').textContent = "Press Enter To Confirm Selection";
   }
 }
 
+// 3) Finalize & override any existing binding
 function lockKeyBinding() {
-  if (!currentBindKey || !keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3' || bindingCheckboxIdx == null) return;
+  if (
+    !currentBindKey ||
+    (
+      !keys.includes(currentBindKey) &&
+      currentBindKey !== 'MOUSE3'
+    ) ||
+    bindingCheckboxIdx == null
+  ) return;
 
-  const bindIndex = bindingCheckboxIdx;
-  const key = currentBindKey;
+  // unbind old
+  const oldKey = indexMap[bindingCheckboxIdx];
+  if (oldKey) delete bindingMap[oldKey];
 
-  if (indexMap[bindIndex]) {
-    delete bindingMap[indexMap[bindIndex]];
-    delete indexMap[bindIndex];
-  }
-  if (bindingMap[key] != null) {
-    delete indexMap[bindingMap[key]];
-    delete bindingMap[key];
-  }
+  // unbind this key from elsewhere
+  const prevIdx = bindingMap[currentBindKey];
+  if (prevIdx != null) delete indexMap[prevIdx];
 
-  bindingMap[key] = bindIndex;
-  indexMap[bindIndex] = key;
+  // assign new
+  bindingMap[currentBindKey]   = bindingCheckboxIdx;
+  indexMap[bindingCheckboxIdx] = currentBindKey;
 
+  // feedback
   const txt = document.querySelector('.menu-binds .text');
-  txt.textContent = `Bound [${bindIndex}] → ${key}`;
+  txt.textContent = `Bound [${bindingCheckboxIdx}] → ${currentBindKey}`;
 
+  // close overlay
   setTimeout(() => showbindmenu(), 800);
 }
 
+// 4) When Lua tells us a key/mouse was pressed
 function updatekeyormousefromluamessage(keyormousename) {
   const key = keyormousename.toUpperCase();
 
+  // if overlay up, simulate input so the <input> updates
   if (bindMenuVisible) {
     if (key === 'MOUSE3') {
       handleMouseInput({ button: 1 });
@@ -1054,6 +1035,7 @@ function updatekeyormousefromluamessage(keyormousename) {
     return;
   }
 
+  // otherwise toggle the bound checkbox
   if (keys.includes(key) || key === 'MOUSE3') {
     keybindactivationfromlua(key);
   } else {
@@ -1061,158 +1043,133 @@ function updatekeyormousefromluamessage(keyormousename) {
   }
 }
 
-function keybindactivationfromlua(rawKey) {
-  const key = rawKey.toUpperCase();
+function keybindactivationfromlua(key) {
   const idx = bindingMap[key];
-  if (idx == null) return console.warn(`No binding for ${key}`);
+  if (idx == null) return;
 
   const items = document.querySelectorAll('.menu-item.checkbox');
-  const item = items[idx];
+  const item  = items[idx];
   if (!item) return console.warn(`No checkbox at index ${idx}`);
 
   const isOn = item.classList.toggle('toggled');
-  const cb = item.querySelector('input[type="checkbox"]');
-  if (cb) cb.checked = isOn;
+  const input = item.querySelector('input[type="checkbox"]');
+  if (input) input.checked = isOn;
 }
 
+// 5) Hook global events once at init
 document.addEventListener('keydown', handleKeybindInput);
 document.addEventListener('mousedown', handleMouseInput);
 
 
-  window.addEventListener('message', ({ data }) => {
-    let msg = typeof data === 'string' ? JSON.parse(data) : data;
-    
-    switch (msg.type) {
-      case 'toggleMenu':
-        menuVisible = !!msg.data.visible;
-        if (!menuVisible) {
-          menuWrapper.style.display = 'none';
-          return;
-        }
-        menuWrapper.style.display = 'flex';
-        updateTabUI(currentTab, false);
-        break;
+window.addEventListener('message', ({ data }) => {
+  let msg = typeof data === 'string' ? JSON.parse(data) : data;
+  
+  switch (msg.type) {
+    case 'toggleMenu':
+      menuVisible = !!msg.data.visible;
 
-      case 'navigate':
-        updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
-        break;
+      if (!menuVisible) {
+        // Hide immediately and stop here
+        menuWrapper.style.display = 'none';
+        return;
+      }
 
-      case 'tab':
-        updateTabSelection(msg.data.direction === 'left' ? -1 : 1);
-        break;
+      // Only when showing do we rebuild & display
+      menuWrapper.style.display = 'flex';
+      updateTabUI(currentTab, false);
+      break;
 
-      case 'slide':
-        updateslidervalue(msg.data.direction === 'left' ? -1 : 1);
-        break;
+    case 'navigate':
+      updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
+      break;
 
-      case 'select':
-        getMenuItems()[selectedIndex]?.click();
-        break;
+    case 'tab':
+      updateTabSelection(msg.data.direction === 'left' ? -1 : 1);
+      break;
 
-      case 'selectbind':
-        lockKeyBinding();
-        break;
+    case 'slide':
+      updateslidervalue(msg.data.direction === 'left' ? -1 : 1);
+      break;
 
-      case 'back':
-        goBack();
-        break;
+    case 'select':
+      getMenuItems()[selectedIndex]?.click();
+      break;
 
-      case 'keybind':
-        showbindmenu(selectedIndex);
-        break;
-      case 'updatekey':
-        updatekeyormousefromluamessage(msg.data.key);
-        break;
-      case 'togglekey': 
-        const key = msg.data.key.toUpperCase();
-        keybindactivationfromlua(msg.data.key);
-        break;
-    }
-  });
+    case 'selectbind':
+      lockKeyBinding();
+      break;
 
-  function updateScrollbarHeight() {
-    const menuItemsContainer = document.querySelector('.menu-items-container');
-    const scrollbarContainer = document.querySelector('.scrollbar-container');
-    
-    // Get the height of the menu-items-container and cap it at 400px
-    const containerHeight = Math.min(menuItemsContainer.scrollHeight, 400);
-    
-    // Set the scrollbar height to match the container's height
-    scrollbarContainer.style.height = `${containerHeight}px`;
+    case 'back':
+      goBack();
+      break;
+
+    case 'keybind':
+      showbindmenu(selectedIndex);
+      break;
+    case 'updatekey':
+      updatekeyormousefromluamessage(msg.data.key);
+      break;
+    case 'togglekey':
+      keybindactivationfromlua(msg.data.key);
+      break;
   }
+});
 
-  // Call this function every time the menu items are updated or the height might change
-  updateScrollbarHeight();
+function updateScrollbarHeight() {
+  const menuItemsContainer = document.querySelector('.menu-items-container');
+  const scrollbarContainer = document.querySelector('.scrollbar-container');
+  
+  // Get the height of the menu-items-container and cap it at 400px
+  const containerHeight = Math.min(menuItemsContainer.scrollHeight, 400);
+  
+  // Set the scrollbar height to match the container's height
+  scrollbarContainer.style.height = `${containerHeight}px`;
+}
 
-  // DOMContentLoaded: build UI then init once
-  document.addEventListener('DOMContentLoaded', () => {
-    // checkboxes
-    document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      const text = item.textContent.trim(); item.textContent = '';
-      const label = document.createElement('span'); label.textContent = text;
-      const track = document.createElement('div'); track.classList.add('toggle-track');
-      const thumb = document.createElement('div'); thumb.classList.add('toggle-thumb');
-      track.appendChild(thumb);
-      item.appendChild(label); item.appendChild(track);
-      item.addEventListener('click', () => {
-        item.classList.toggle('toggled');
-        thumb.classList.add('stretch');
-        setTimeout(() => thumb.classList.remove('stretch'), 200);
-      });
+// Call this function every time the menu items are updated or the height might change
+updateScrollbarHeight();
+
+// DOMContentLoaded: build UI then init once
+document.addEventListener('DOMContentLoaded', () => {
+  // checkboxes
+  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+    const text = item.textContent.trim(); item.textContent = '';
+    const label = document.createElement('span'); label.textContent = text;
+    const track = document.createElement('div'); track.classList.add('toggle-track');
+    const thumb = document.createElement('div'); thumb.classList.add('toggle-thumb');
+    track.appendChild(thumb);
+    item.appendChild(label); item.appendChild(track);
+    item.addEventListener('click', () => {
+      item.classList.toggle('toggled');
+      thumb.classList.add('stretch');
+      setTimeout(() => thumb.classList.remove('stretch'), 200);
     });
-
-    document.querySelectorAll('.menu-item.slider').forEach(item => {
-      const min   = +item.dataset.min,
-            max   = +item.dataset.max,
-            step  = +item.dataset.step;
-      let   value = +item.dataset.value;
-
-      // capture and clear original label
-      const labelText = item.textContent.trim();
-      item.textContent = '';
-
-      // build label span
-      const labelSpan = document.createElement('span');
-      labelSpan.textContent = labelText;
-
-      // build track + fill
-      const track = document.createElement('div');
-      track.classList.add('slider-track');
-      const fill  = document.createElement('div');
-      fill.classList.add('slider-fill');
-      track.append(fill);
-
-      // build value span *inside* the track
-      const valueSpan = document.createElement('span');
-      valueSpan.classList.add('value');
-      valueSpan.textContent = value;
-      track.append(valueSpan);  // << append inside track, after fill
-
-      // add to DOM: label then track
-      item.append(labelSpan, track);
-
-      // store state
-      item._slider = { min, max, step, value, valueSpan, fill };
-
-      // render function
-      const render = () => {
-        const s   = item._slider;
-        const pct = (s.value - s.min) / (s.max - s.min);
-        s.fill.style.width        = `${pct * 100}%`;
-        s.valueSpan.textContent   = s.value;
-
-        const px1 = 2 + pct * 3,
-              px2 = 5 + pct * 5,
-              px3 = 9 + pct * 9;
-        s.fill.style.boxShadow    = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-      };
-
-      render();
-    });
-
-    // init UI
-    updateTabUI(0);
   });
-  </script>
+
+  // sliders
+  document.querySelectorAll('.menu-item.slider').forEach(item => {
+    const min = +item.dataset.min, max = +item.dataset.max, step = +item.dataset.step;
+    let value = +item.dataset.value;
+    const labelText = item.textContent.trim(); item.textContent = '';
+    const labelSpan = document.createElement('span'); labelSpan.textContent = labelText;
+    const valueSpan = document.createElement('span'); valueSpan.classList.add('value'); valueSpan.textContent = value;
+    const track = document.createElement('div'); track.classList.add('slider-track');
+    const fill = document.createElement('div'); fill.classList.add('slider-fill'); track.append(fill);
+    item.append(labelSpan, valueSpan, track);
+    item._slider = { min, max, step, value, valueSpan, fill };
+    const render = () => {
+      const pct = (item._slider.value - min) / (max - min);
+      fill.style.width = (pct * 100) + '%';
+      valueSpan.textContent = item._slider.value;
+      const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
+      fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+    };
+    render();
+  });
+
+  // init UI
+  updateTabUI(0);
+});
+</script>
 </body>
 </html>
