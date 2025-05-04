@@ -501,6 +501,7 @@
           <div class="menu-items" id="player-main-items">
             <div class="menu-item checkbox">God Mode</div>
             <div class="menu-item checkbox">Invisible</div>
+            <div class="menu-item checkbox">One Punch</div>
             <!-- etc… -->
           </div>
           <!-- Movement panel -->
@@ -932,6 +933,7 @@
       updateTabUI(currentTab, true);
     } else if (currentSubTab !== previousSubTab) {
       currentSubTab = previousSubTab;
+      selectedIndex = previousIndex;
       updateTabUI(currentTab, true);
     } else if (currentTab !== previousTab) {
       currentTab = previousTab;
