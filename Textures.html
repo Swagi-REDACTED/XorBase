@@ -1018,59 +1018,71 @@ function handleMouseInput(event) {
 }
 
 function lockKeyBinding() {
-  if (!currentBindKey || !keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3' || bindingCheckboxIdx == null) return;
+  // Ensure we have a valid key and a selected checkbox index
+  if (
+    !currentBindKey ||
+    (!keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3') ||
+    bindingCheckboxIdx == null
+  ) return;
 
   const bindIndex = bindingCheckboxIdx;
-  const key = currentBindKey;
+  const key = currentBindKey.toUpperCase();
 
-  if (indexMap[bindIndex]) {
-    delete bindingMap[indexMap[bindIndex]];
+  // If that checkbox was already bound to some other key, remove the old mapping
+  if (indexMap[bindIndex] != null) {
+    const oldKey = indexMap[bindIndex];
+    delete bindingMap[oldKey];
     delete indexMap[bindIndex];
   }
+
+  // If this key was already bound to some other checkbox, remove that mapping
   if (bindingMap[key] != null) {
-    delete indexMap[bindingMap[key]];
+    const oldIndex = bindingMap[key];
+    delete indexMap[oldIndex];
     delete bindingMap[key];
   }
 
+  // Create the new binding
   bindingMap[key] = bindIndex;
   indexMap[bindIndex] = key;
 
+  // Update the UI text to show the binding
   const txt = document.querySelector('.menu-binds .text');
   txt.textContent = `Bound [${bindIndex}] → ${key}`;
 
+  // Close the bind menu after a short delay
   setTimeout(() => showbindmenu(), 800);
 }
 
+
 function keybindactivationfromlua(rawKey) {
-  const key = rawKey.toUpperCase();
-  const idx = bindingMap[key];  // Find the index of the checkbox for the given key
+  const key = rawKey.trim().toUpperCase();
+  const idx = bindingMap[key];
 
   if (idx == null) {
-    console.warn(`No binding for ${key}`);
+    console.warn(`No binding found for key "${key}"`);
     return;
   }
 
-  // Find the corresponding checkbox item by its index
   const items = document.querySelectorAll('.menu-item.checkbox');
-  const item  = items[idx];
+  const item = items[idx];
 
   if (!item) {
-    console.warn(`No checkbox at index ${idx}`);
+    console.warn(`No checkbox element at index ${idx}`);
     return;
   }
 
-  // Toggle the visual state of the checkbox
+  // Toggle the visual state
   const isOn = item.classList.toggle('toggled');
-  const cb   = item.querySelector('input[type="checkbox"]');
-
+  const cb = item.querySelector('input[type="checkbox"]');
   if (cb) {
-    cb.checked = isOn;  // Update the checkbox state to reflect the toggle
+    cb.checked = isOn;
   }
 
-  // Optionally trigger any action associated with the checkbox if needed
-  const checkbox = checkboxBindings[idx];  // Assuming you have some action bound to checkboxes
-  if (checkbox && checkbox.action) {
-    checkbox.action(isOn);  // Execute the action associated with the toggle
+  // Trigger any associated action (if defined)
+  const binding = checkboxBindings[idx];
+  if (binding && typeof binding.action === 'function') {
+    binding.action(isOn);
   }
 }
 
