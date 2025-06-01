@@ -1042,35 +1042,44 @@ function lockKeyBinding() {
 }
 
 function keybindactivationfromlua(rawKey) {
-  const key = rawKey.toUpperCase();
-  const idx = bindingMap[key];  // Find the index of the checkbox for the given key
+  // 1) Normalize incoming key name (case‐sensitive)
+  const keyName = rawKey.trim();
 
+  // 2) Look up which checkbox index is bound to this key
+  const idx = bindingMap[keyName];
   if (idx == null) {
-    console.warn(`No binding for ${key}`);
+    console.warn(`No checkbox bound to key "${keyName}"`);
     return;
   }
 
-  // Find the corresponding checkbox item by its index
+  // 3) Grab all checkbox elements and pick the one at that index
   const items = document.querySelectorAll('.menu-item.checkbox');
-  const item  = items[idx];
-
+  const item = items[idx];
   if (!item) {
-    console.warn(`No checkbox at index ${idx}`);
+    console.warn(`No checkbox found at index ${idx} for key "${keyName}"`);
     return;
   }
 
-  // Toggle the visual state of the checkbox
+  // 4) Toggle its visual state
   const isOn = item.classList.toggle('toggled');
-  const cb   = item.querySelector('input[type="checkbox"]');
 
+  // 5) If there’s an <input type="checkbox"> inside, update it as well
+  const cb = item.querySelector('input[type="checkbox"]');
   if (cb) {
-    cb.checked = isOn;  // Update the checkbox state to reflect the toggle
+    cb.checked = isOn;
   }
 
-  // Optionally trigger any action associated with the checkbox if needed
-  const checkbox = checkboxBindings[idx];  // Assuming you have some action bound to checkboxes
-  if (checkbox && checkbox.action) {
-    checkbox.action(isOn);  // Execute the action associated with the toggle
+  // 6) Print the label of that checkbox
+  const labelSpan = item.querySelector('.label');
+  const displayName = labelSpan 
+    ? labelSpan.textContent.trim() 
+    : item.textContent.trim();
+  console.log(`Toggled "${displayName}" via key "${keyName}": now ${isOn ? 'ON' : 'OFF'}`);
+
+  // 7) Call any action bound to this checkbox (by label)
+  const binding = checkboxBindings.find(b => b.name === displayName);
+  if (binding && typeof binding.action === 'function') {
+    binding.action(isOn);
   }
 }
 
@@ -1144,7 +1153,7 @@ document.addEventListener('mousedown', handleMouseInput);
         showbindmenu(selectedIndex);
         break;
       case 'updatekey':
-        updatekeyormousefromluamessage(msg.data.key);
+        updatekeyormousefromluamessage(msg.data.rawName);
         break;
       case 'togglekey': 
         const key = msg.data.key.toUpperCase();
