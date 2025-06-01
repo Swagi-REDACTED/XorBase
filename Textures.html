@@ -931,17 +931,21 @@
       currentSubTab = 0;
       selectedIndex = 0;
       updateTabUI(currentTab, true);
+      updateScrollbarHeight();
     } else if (currentSubTab !== previousSubTab) {
       currentSubTab = previousSubTab;
       selectedIndex = previousIndex;
       updateTabUI(currentTab, true);
+      updateScrollbarHeight();
     } else if (currentTab !== previousTab) {
       currentTab = previousTab;
       selectedIndex = previousIndex;
       updateTabUI(currentTab, true);
+      updateScrollbarHeight();
     } else if (currentTab === previousTab && currentTab === 0) { // Close the menu if both tabs are 0 (main tab)
       menuVisible = false;
       menuWrapper.style.display = 'none';
+      updateScrollbarHeight();
     } else if (currentTab === previousTab) { // Reset both to zero if on the same tab
       currentTab = 0;
       previousTab = 0;
@@ -950,6 +954,7 @@
       selectedIndex = 0; // Reset selected index
       updateTabUI(currentTab, true);
       updateMenuSelection(0);
+      updateScrollbarHeight();
     }
   }
 
