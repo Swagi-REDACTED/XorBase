@@ -1092,9 +1092,19 @@ function keybindactivationfromlua(rawKey) {
 
   // Toggle the visual state
   const isOn = item.classList.toggle('toggled');
-  const cb = item.querySelector('input[type="checkbox"]');
-  if (cb) {
-    cb.checked = isOn;
+
+  // Manually update visual effect if needed (optional, for robustness)
+  const thumb = item.querySelector('.toggle-thumb');
+  const track = item.querySelector('.toggle-track');
+
+  if (thumb && track) {
+    if (isOn) {
+      track.classList.add('toggled');
+      thumb.style.left = 'calc(100% - 16px - 2px)';
+    } else {
+      track.classList.remove('toggled');
+      thumb.style.left = '2px';
+    }
   }
 
   // Trigger any associated action (if defined)
