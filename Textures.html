@@ -1135,11 +1135,6 @@ document.addEventListener('mousedown', handleMouseInput);
 // Call this from your menu item toggle to open bind menu:
 // showbindmenu(selectedIndex);
 
-
-document.addEventListener('keydown', handleKeybindInput);
-document.addEventListener('mousedown', handleMouseInput);
-
-
   window.addEventListener('message', ({ data }) => {
     let msg = typeof data === 'string' ? JSON.parse(data) : data;
     
