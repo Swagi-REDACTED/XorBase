@@ -971,39 +971,42 @@ function goBack() {
   }
 }
 
-let keys = [
-  'CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'
-];
+let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'];
 
 let currentBindKey = null;
 let bindMenuVisible = false;
 let bindingCheckboxIdx = null;
 let firstinit = true;
 
-const bindingMap = {};  // key → checkboxIdx
-const indexMap = {};    // checkboxIdx → key
+const bindingMap = {}; // key → checkboxIdx
+const indexMap = {};   // checkboxIdx → key
 
-function showbindmenu(selectedIndex) {
-  bindingCheckboxIdx = selectedIndex;
+// Map index → action
+const checkboxBindings = {
+  0: { action: (state) => console.log('Action 0:', state) },
+  1: { action: (state) => console.log('Action 1:', state) },
+  // Extend as needed...
+};
+
+function showbindmenu(currentselectedIndex = null) {
+  if (currentselectedIndex !== null) {
+    bindingCheckboxIdx = currentselectedIndex;
+  }
+
   const bindMenu = document.querySelector('.menu-binds');
   const inputBox = bindMenu.querySelector('input');
   const textElem = bindMenu.querySelector('.text');
 
   bindMenuVisible = !bindMenuVisible;
-  const targetBottom = bindMenuVisible ? '45px' : '-150px';
-
-  bindMenu.getBoundingClientRect(); // Force a reflow for transition
-
-  bindMenu.style.bottom = targetBottom;
+  bindMenu.getBoundingClientRect(); // Force reflow
+  bindMenu.style.bottom = bindMenuVisible ? '45px' : '-150px';
 
   if (bindMenuVisible) {
     inputBox.value = '';
     inputBox.focus();
     textElem.textContent = firstinit ? "Press Any Key To Set Open-Key" : "Press Any Key To Set Key-bind";
-    if (!firstinit) {
-      currentBindKey = null;
-    }
-  } else if (firstinit) { 
+    if (!firstinit) currentBindKey = null;
+  } else if (firstinit) {
     firstinit = false;
   }
 }
@@ -1012,6 +1015,7 @@ function handleKeybindInput(event) {
   if (!bindMenuVisible) return;
 
   const k = event.key.toUpperCase();
+
   if (k === 'ENTER' && currentBindKey) {
     lockKeyBinding();
     return;
@@ -1027,6 +1031,7 @@ function handleKeybindInput(event) {
 
 function handleMouseInput(event) {
   if (!bindMenuVisible) return;
+
   if (event.button === 1) {
     currentBindKey = 'MOUSE3';
     const bindMenu = document.querySelector('.menu-binds');
@@ -1036,42 +1041,34 @@ function handleMouseInput(event) {
 }
 
 function lockKeyBinding() {
-  // Ensure we have a valid key and a selected checkbox index
-  if (
-    !currentBindKey ||
-    (!keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3') ||
-    bindingCheckboxIdx == null
-  ) return;
+  if (!currentBindKey || (!keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3') || bindingCheckboxIdx == null)
+    return;
 
-  const bindIndex = bindingCheckboxIdx;
+  const idx = bindingCheckboxIdx;
   const key = currentBindKey.toUpperCase();
 
-  // If that checkbox was already bound to some other key, remove the old mapping
-  if (indexMap[bindIndex] != null) {
-    const oldKey = indexMap[bindIndex];
+  // Remove old mappings
+  if (indexMap[idx]) {
+    const oldKey = indexMap[idx];
     delete bindingMap[oldKey];
-    delete indexMap[bindIndex];
+    delete indexMap[idx];
   }
 
-  // If this key was already bound to some other checkbox, remove that mapping
-  if (bindingMap[key] != null) {
-    const oldIndex = bindingMap[key];
-    delete indexMap[oldIndex];
+  if (bindingMap[key]) {
+    const oldIdx = bindingMap[key];
+    delete indexMap[oldIdx];
     delete bindingMap[key];
   }
 
-  // Create the new binding
-  bindingMap[key] = bindIndex;
-  indexMap[bindIndex] = key;
+  // Set new bindings
+  bindingMap[key] = idx;
+  indexMap[idx] = key;
 
-  // Update the UI text to show the binding
   const txt = document.querySelector('.menu-binds .text');
-  txt.textContent = `Bound [${bindIndex}] → ${key}`;
+  txt.textContent = `Bound [${idx}] → ${key}`;
 
-  // Close the bind menu after a short delay
   setTimeout(() => showbindmenu(), 800);
 }
-
 
 function keybindactivationfromlua(rawKey) {
   const key = rawKey.trim().toUpperCase();
@@ -1090,10 +1087,7 @@ function keybindactivationfromlua(rawKey) {
     return;
   }
 
-  // Toggle the visual state
   const isOn = item.classList.toggle('toggled');
-
-  // Manually update visual effect if needed (optional, for robustness)
   const thumb = item.querySelector('.toggle-thumb');
   const track = item.querySelector('.toggle-track');
 
@@ -1107,36 +1101,40 @@ function keybindactivationfromlua(rawKey) {
     }
   }
 
-  // Trigger any associated action (if defined)
   const binding = checkboxBindings[idx];
   if (binding && typeof binding.action === 'function') {
     binding.action(isOn);
   }
 }
 
-// The function called when Lua sends a message to toggle a key
-function updatekeyormousefromluamessage(keyormousename) {
-  const key = keyormousename.toUpperCase();
+function updatekeyormousefromluamessage(keyOrMouse) {
+  const key = keyOrMouse.toUpperCase();
 
-  // If overlay is visible, simulate input so the <input> updates
   if (bindMenuVisible) {
     if (key === 'MOUSE3') {
       handleMouseInput({ button: 1 });
     } else if (keys.includes(key)) {
       handleKeybindInput({ key });
     } else {
-      console.error('Ignoring invalid bind key in overlay:', keyormousename);
+      console.error('Invalid bind key in overlay:', key);
     }
     return;
   }
 
-  // If menu is not visible, directly toggle the checkbox associated with the key
   if (keys.includes(key) || key === 'MOUSE3') {
-    keybindactivationfromlua(key);  // Toggle checkbox visually
+    keybindactivationfromlua(key);
   } else {
-    console.error('Ignoring invalid bind key for activation:', keyormousename);
+    console.error('Invalid bind key for activation:', key);
   }
 }
+
+// Attach event listeners globally
+document.addEventListener('keydown', handleKeybindInput);
+document.addEventListener('mousedown', handleMouseInput);
+
+// Call this from your menu item toggle to open bind menu:
+// showbindmenu(selectedIndex);
+
 
 document.addEventListener('keydown', handleKeybindInput);
 document.addEventListener('mousedown', handleMouseInput);
