@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+    <style>
+        body { display: none; }
+    </style>
+</head>
+<body>
+    <script>
+        const expectedSalt = "mySalt123";
+        const urlParams = new URLSearchParams(window.location.search);
+        const salt = urlParams.get('salt');
+
+        if (salt === expectedSalt) {
+            window.parent.postMessage({ type: 'auth', status: 'success' }, '*');
+        } else {
+            window.parent.postMessage({ type: 'auth', status: 'failure' }, '*');
+        }
+    </script>
+</body>
+</html>
