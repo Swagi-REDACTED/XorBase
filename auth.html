@@ -13,22 +13,30 @@
 </head>
 <body>
   <script>
-    // You can add as many salts as you'd like here
+    // Extend this list as needed
     const validSalts = [
       "mySalt123",
       "devSalt456",
       "betaUser789",
-      "customer2025",
-      // ... extend indefinitely
+      "customer2025"
     ];
 
     const urlParams = new URLSearchParams(window.location.search);
     const salt = urlParams.get('salt');
+    const isValid = validSalts.includes(salt);
 
-    if (validSalts.includes(salt)) {
-      window.parent.postMessage({ type: 'auth', status: 'success', salt: salt }, '*');
-    } else {
-      window.parent.postMessage({ type: 'auth', status: 'failure', salt: salt }, '*');
+    // 1. postMessage to Lua via Dui sprite listener
+    window.parent.postMessage({ type: 'auth', status: isValid ? 'success' : 'failure', salt: salt }, '*');
+
+    // 2. Optional: also try to send it through the NUI endpoint (in case you're testing with NUI instead of Dui)
+    try {
+      fetch('https://nui-five-m:auth_result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ success: isValid, salt: salt })
+      });
+    } catch (err) {
+      console.warn("NUI fetch failed (may be expected on Dui):", err);
     }
   </script>
 </body>
