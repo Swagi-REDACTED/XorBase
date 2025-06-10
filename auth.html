@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication</title>
-    <style>
-        body { display: none; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
+  <title>Authentication</title>
+  <style>
+    body { display: none; }
+  </style>
 </head>
 <body>
-    <script>
-        const expectedSalt = "mySalt123";
-        const urlParams = new URLSearchParams(window.location.search);
-        const salt = urlParams.get('salt');
+  <script>
+    // You can add as many salts as you'd like here
+    const validSalts = [
+      "mySalt123",
+      "devSalt456",
+      "betaUser789",
+      "customer2025",
+      // ... extend indefinitely
+    ];
 
-        if (salt === expectedSalt) {
-            window.parent.postMessage({ type: 'auth', status: 'success' }, '*');
-        } else {
-            window.parent.postMessage({ type: 'auth', status: 'failure' }, '*');
-        }
-    </script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const salt = urlParams.get('salt');
+
+    if (validSalts.includes(salt)) {
+      window.parent.postMessage({ type: 'auth', status: 'success', salt: salt }, '*');
+    } else {
+      window.parent.postMessage({ type: 'auth', status: 'failure', salt: salt }, '*');
+    }
+  </script>
 </body>
 </html>
