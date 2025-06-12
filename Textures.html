@@ -408,7 +408,9 @@
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
     </div>
     <div class="menu-container">
+      <div class="smoke-overlay"></div>
       <div class="menu-header"></div>
+      
   
       <!-- original top-level tabs -->
       <div class="menu-tabs" id="menu-tabs">
@@ -1306,6 +1308,7 @@
     overflow-y: auto;
     max-height: 410px;
     scrollbar-width: none; /* hide scrollbar in Firefox */
+    position: relative; /* Required for smoke overlay to be anchored */
   }
 
   /* hide scrollbar in Chrome, Edge, Safari */
@@ -1313,6 +1316,46 @@
     width: 0;
     height: 0;
   }
+
+  .smoke-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150%;
+    height: 130%; /* Match the auto-detected height */
+    background: url('https://i.ibb.co/LhJKftbj/pngwing-com.png') center top no-repeat;
+    background-size: cover;
+    opacity: 0.15;
+    mix-blend-mode: screen;
+    filter: sepia(1) hue-rotate(270deg) saturate(4);
+    animation: smokeFloat 12s infinite ease-in-out;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @keyframes smokeFloat {
+    0% {
+      transform: translateX(-50px) translateY(0) scale(1) rotate(0deg);
+      opacity: 0.15;
+    }
+    25% {
+      transform: translateX(-50px) translateY(0) scale(0.95) rotate(15deg);
+      opacity: 0.15;
+    }
+    50% {
+      transform: translateX(-50px) translateY(-30px) scale(1.1) rotate(-15deg);
+      opacity: 0.3;
+    }
+    75% {
+      transform: translateX(-50px) translateY(-30px) scale(1.1) rotate(5deg);
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateX(-50px) translateY(0) scale(1) rotate(0deg);
+      opacity: 0.15;
+    }
+  }
+
 </style>
   <script>
   function updateLocalTimeAndDate() {
