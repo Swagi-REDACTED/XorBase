@@ -35,7 +35,7 @@
       border-radius: 10px;
       position: relative;
       margin-right: 13px;
-      top: 65px;
+      top: 215px;
     }
     .scrollbar-thumb {
       width: 100%;
@@ -63,6 +63,7 @@
         position: relative;
         z-index: 10;
         border: 2px solid #370467;
+        top: 150px;  
 
         /* glow effects */
         box-shadow:
@@ -407,8 +408,8 @@
     <div class="scrollbar-container">
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
     </div>
+    <div class="smoke-overlay"></div>
     <div class="menu-container">
-      <div class="smoke-overlay"></div>
       <div class="menu-header"></div>
       
   
@@ -1319,40 +1320,42 @@
 
   .smoke-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 150%;
-    height: 130%; /* Match the auto-detected height */
-    background: url('https://i.ibb.co/LhJKftbj/pngwing-com.png') center top no-repeat;
+    top: 4%;
+    left: 33%;
+    width: 900px;     /* make width and height equal */
+    height: 900px;
+    transform: translate(-50%, -50%);
+    background: url('https://i.ibb.co/60tnV7gw/smoke.png') center center no-repeat;
     background-size: cover;
     opacity: 0.15;
+    border-radius: 50%;
     mix-blend-mode: screen;
     filter: sepia(1) hue-rotate(270deg) saturate(4);
-    animation: smokeFloat 12s infinite ease-in-out;
+    animation: smokeFloat 12s infinite linear;
     pointer-events: none;
     z-index: -1;
   }
 
   @keyframes smokeFloat {
     0% {
-      transform: translateX(-50px) translateY(0) scale(1) rotate(0deg);
-      opacity: 0.15;
+      transform: translateX(-50px) translateY(0) scale(0.95) rotate(0deg);
+      opacity: 0.2;
     }
     25% {
-      transform: translateX(-50px) translateY(0) scale(0.95) rotate(15deg);
-      opacity: 0.15;
+      transform: translateX(-50px) translateY(0) scale(0.95) rotate(90deg);
+      opacity: 0.25;
     }
     50% {
-      transform: translateX(-50px) translateY(-30px) scale(1.1) rotate(-15deg);
-      opacity: 0.3;
+      transform: translateX(-50px) translateY(0) scale(0.95) rotate(180deg);
+      opacity: 0.35;
     }
     75% {
-      transform: translateX(-50px) translateY(-30px) scale(1.1) rotate(5deg);
-      opacity: 0.3;
+      transform: translateX(-50px) translateY(0) scale(0.95) rotate(270deg);
+      opacity: 0.25;
     }
     100% {
-      transform: translateX(-50px) translateY(0) scale(1) rotate(0deg);
-      opacity: 0.15;
+      transform: translateX(-50px) translateY(0) scale(0.95) rotate(360deg);
+      opacity: 0.2;
     }
   }
 
