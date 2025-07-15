@@ -73,21 +73,28 @@
     }
     .menu-binds {
         position: absolute;
-        bottom: 545px; /* Start hidden */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 300px;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         height: 120px;
-        background: #222222;
-        border-radius: 12px;
+        background: #1a1a1a;
+        border-radius: 0 0 12px 12px;
         padding: 0px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: bottom 0.4s ease;
-        z-index: 0; /* Below other UI */
+        z-index: 100;
+        transform: translateY(100%);
+        transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+        opacity: 0;
+        pointer-events: none;
+        border-top: 2px solid #370467;
+    }
+    .menu-binds.visible {
+        transform: translateY(0%);
+        opacity: 1;
+        pointer-events: all;
     }
     .menu-binds .text {
         color: rgb(255, 255, 255); /* bright violet base */
@@ -141,6 +148,8 @@
       background-size: cover;
       text-align: center;
       padding: 55px 0px;
+      border-top-left-radius: 13px;
+      border-top-right-radius: 13px;
     }
     .menu-tabs {
       display: flex;
@@ -359,31 +368,70 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom-left-radius: 13px;
+      border-bottom-right-radius: 13px;
     }
     .right-text {
       font-weight: bold;
     }
 
-    #footer-info-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(36, 0, 56, 0.92);
-      color: #ffffff;
-      font-family: 'Verdana', sans-serif;
-      font-size: 13px;
-      padding: 6px 12px;
-      text-align: center;
-      border-top: 1px solid #7c0bb5;
-      box-shadow: 0 -2px 6px rgba(154, 104, 255, 0.5);
-      transform: translateY(100%);
-      transition: transform 0.3s ease-in-out;
-      z-index: 20;
+    /* New Info Box Styles */
+    #info-notification-box {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 110; /* Above other elements */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
     }
 
-    #footer-info-bar.active {
-      transform: translateY(0%);
+    #info-notification-box .icon {
+        width: 30px;
+        height: 30px;
+        background-color: rgba(36, 0, 56, 0.92);
+        border: 1px solid #7c0bb5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: 'Verdana', sans-serif;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: default;
+        transition: opacity 0.3s ease-in-out;
+        opacity: 1;
+    }
+
+    #info-notification-box .text-container {
+        height: 30px;
+        background-color: rgba(36, 0, 56, 0.92);
+        border: 1px solid #7c0bb5;
+        border-radius: 15px;
+        color: white;
+        font-family: 'Verdana', sans-serif;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: max-width 0.4s ease-in-out, opacity 0.3s ease-in-out 0.2s;
+        margin-right: -30px; /* Overlap with icon initially */
+    }
+
+    #info-notification-box.active .icon {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    #info-notification-box.active .text-container {
+        max-width: 300px; /* Or whatever max-width you need */
+        opacity: 1;
+        margin-right: 0;
     }
 
   </style>
@@ -408,8 +456,11 @@
     <div class="scrollbar-container">
       <div class="scrollbar-thumb" id="scrollbar-thumb"></div>
     </div>
-    <div class="smoke-overlay"></div>
     <div class="menu-container">
+      <div id="info-notification-box">
+          <div class="icon">!</div>
+          <div class="text-container"></div>
+      </div>
       <div class="menu-header"></div>
       
   
@@ -1320,47 +1371,6 @@
     height: 0;
   }
 
-  .smoke-overlay {
-    position: absolute;
-    top: 3%;
-    left: 15%;
-    width: 900px;     /* make width and height equal */
-    height: 900px;
-    transform: translate(-50%, -50%);
-    background: url('https://i.ibb.co/60tnV7gw/smoke.png') center center no-repeat;
-    background-size: cover;
-    opacity: 0.05;
-    border-radius: 50%;
-    mix-blend-mode: screen;
-    filter: sepia(1) hue-rotate(270deg) saturate(4);
-    animation: smokeFloat 12s infinite linear;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  @keyframes smokeFloat {
-    0% {
-      transform: translateX(-50px) translateY(0) scale(0.95) rotate(0deg);
-      opacity: 0.05;
-    }
-    25% {
-      transform: translateX(-50px) translateY(0) scale(0.95) rotate(90deg);
-      opacity: 0.1;
-    }
-    50% {
-      transform: translateX(-50px) translateY(0) scale(0.95) rotate(180deg);
-      opacity: 0.15;
-    }
-    75% {
-      transform: translateX(-50px) translateY(0) scale(0.95) rotate(270deg);
-      opacity: 0.1;
-    }
-    100% {
-      transform: translateX(-50px) translateY(0) scale(0.95) rotate(360deg);
-      opacity: 0.05;
-    }
-  }
-
 </style>
   <script>
   function updateLocalTimeAndDate() {
@@ -1489,6 +1499,22 @@
   const serverToggle       = document.getElementById('server-options-toggle');
   const forceToggle        = document.getElementById('Force-options-toggle');
 
+  const infoBox = document.getElementById("info-notification-box");
+  const infoTextContainer = infoBox.querySelector(".text-container");
+  let infoTimer = null;
+
+  function showInfo(text) {
+      if(infoTimer) clearTimeout(infoTimer);
+      if (text) {
+          infoTextContainer.textContent = text;
+          infoBox.classList.add("active");
+      }
+  }
+
+  function hideInfo() {
+      infoBox.classList.remove("active");
+  }
+
   function getMenuItems() {
     if (currentTab <= 2) {
       return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
@@ -1506,10 +1532,18 @@
 
   function updateMenuSelection(dir) {
     const items = getMenuItems();
-    if (!items.length) return;
+    if (!items.length) {
+        hideInfo();
+        return;
+    }
 
-    // Remove selection class from current item
-    items[selectedIndex]?.classList.remove('selected');
+    // Deselect old item and hide its info if necessary
+    const oldItem = items[selectedIndex];
+    if(oldItem) {
+        oldItem.classList.remove('selected');
+    }
+    hideInfo();
+
 
     // Update index
     selectedIndex = (selectedIndex + dir + items.length) % items.length;
@@ -1518,6 +1552,12 @@
     const newItem = items[selectedIndex];
     newItem.classList.add('selected');
     newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    // Show info for the new item
+    if (newItem.hasAttribute('info')) {
+        showInfo(newItem.getAttribute('info'));
+    }
+
 
     // Update scrollbar
     const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
@@ -1526,75 +1566,8 @@
 
     // Update counter
     menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
-
-    // Spoof hover
-    let spoofLeaveTimer = null;
-
-    const oldItem = items[(selectedIndex - dir + items.length) % items.length];
-
-    // Always clear any existing leave timer before starting a new one or dispatching mouseenter
-    if (spoofLeaveTimer) {
-      clearTimeout(spoofLeaveTimer);
-      spoofLeaveTimer = null;
-    }
-
-    if (oldItem) {
-      // Start 1500ms timer to dispatch mouseleave event on old item
-      spoofLeaveTimer = setTimeout(() => {
-        oldItem.dispatchEvent(new Event("mouseleave"));
-        forceLeaveInfo()
-        spoofLeaveTimer = null;
-      }, 1500);
-    }
-    // Only dispatch mouseenter on newItem if it has an "info" attribute (non-empty)
-    if (newItem.hasAttribute && newItem.hasAttribute("info") && newItem.getAttribute("info").trim() !== "") {
-      const fakeEvent = new Event("mouseenter");
-      newItem.dispatchEvent(fakeEvent);
-      spoofHoverTransition(newItem, dir)
-    }
   }
-  let spoofLeaveTimer = null;
-  let lastHoveredItem = null;
-  function forceLeaveInfo() {
-    if (lastHoveredItem) {
-      lastHoveredItem.dispatchEvent(new Event("mouseleave"));
-      lastHoveredItem = null;
-    }
-    if (spoofLeaveTimer) {
-      clearTimeout(spoofLeaveTimer);
-      spoofLeaveTimer = null;
-    }
-  }
-  function spoofHoverTransition(newItem, dir) {
-    const items = getMenuItems(); // Ensure you fetch current items if dynamic
-    const oldIndex = (selectedIndex - dir + items.length) % items.length;
-    const oldItem = items[oldIndex];
-
-    // Always clear any existing timer
-    if (spoofLeaveTimer) {
-      clearTimeout(spoofLeaveTimer);
-      spoofLeaveTimer = null;
-    }
-
-    // If we hovered something before, forcibly end its hover
-    if (lastHoveredItem && lastHoveredItem !== newItem) {
-      lastHoveredItem.dispatchEvent(new Event("mouseleave"));
-    }
-
-    if (oldItem && oldItem !== newItem) {
-      // Start a fallback leave timer in case mouseleave isn’t manually triggered
-      spoofLeaveTimer = setTimeout(() => {
-        oldItem.dispatchEvent(new Event("mouseleave"));
-        spoofLeaveTimer = null;
-      }, 1500);
-    }
-
-    // Trigger new item's mouseenter if it has info
-    if (newItem && newItem.hasAttribute("info") && newItem.getAttribute("info").trim() !== "") {
-      newItem.dispatchEvent(new Event("mouseenter"));
-      lastHoveredItem = newItem;
-    }
-  }
+  
   function clearSelection() {
     document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
   }
@@ -1632,9 +1605,13 @@
       document.getElementById('outfits-tabs'),
       document.getElementById('world-tabs'),
       document.getElementById('server-tabs'),
-      document.getElementById('Force-tabs') // <-- Add this line
+      document.getElementById('Force-tabs')
     ];
-    groups.forEach(g => g.style.display = 'none');
+    groups.forEach(g => {
+        if (g) { // FIX: Check if the element exists before accessing its style
+            g.style.display = 'none';
+        }
+    });
 
     // show current header
     const displayMap = {
@@ -1643,21 +1620,29 @@
       6: 4, 7: 5, 8: 6,
       9: 7, 10: 8, 11: 9,
       12: 10, 13: 11,
-      14: 12 };
-    groups[displayMap[tabIdx]].style.display = 'flex';
+      14: 12 
+    };
+    const groupToShow = groups[displayMap[tabIdx]];
+    if (groupToShow) { // FIX: Check if the element to show exists
+        groupToShow.style.display = 'flex';
+    }
 
     // highlight tabs
     mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
-    [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs]
+    [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs] // FIX: Added forceTabs
       .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
 
     // show containers
-    containers.forEach((c,i) => c.style.display = i===tabIdx?'block':'none');
+    containers.forEach((c,i) => {
+        if (c) { // FIX: Check if container exists
+            c.style.display = i===tabIdx?'block':'none'
+        }
+    });
     updateMenuSelection(0);
     updateScrollbarHeight();
 
     // show subs
-    subContainers.forEach(c => c.style.display = 'none');
+    subContainers.forEach(c => { if(c) c.style.display = 'none' }); // FIX: Check if sub-container exists
     const countMap = {
       3: 2, 4: 2, 5: 3,
       6: 2, 7: 2, 8: 2,
@@ -1674,9 +1659,14 @@
       14: 24 // Force-main-items is at subContainers[24]
     };
 
-    const cCount = countMap[tabIdx] || 1;
-    for (let i = 0; i < cCount; i++) {
-      subContainers[startMap[tabIdx] + i].style.display = i === currentSubTab ? 'block' : 'none';
+    if (startMap[tabIdx] !== undefined) { // FIX: Guard this block for sub-menus only
+        const cCount = countMap[tabIdx] || 1;
+        for (let i = 0; i < cCount; i++) {
+          const subContainer = subContainers[startMap[tabIdx] + i];
+          if (subContainer) { // FIX: Check if sub-container exists
+            subContainer.style.display = i === currentSubTab ? 'block' : 'none';
+          }
+        }
     }
 
     // highlight first item
@@ -1688,10 +1678,12 @@
     if (currentTab >= 3 && currentTab <= 14) {
       const arrs = [
         playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
-        weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs
+        weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs // FIX: Added forceTabs
       ];
       const arr = arrs[currentTab - 3];
-      currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
+      if (arr) { // FIX: Check if tab array exists
+        currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
+      }
     } else {
       currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
     }
@@ -1778,44 +1770,41 @@ let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '
 
 let currentBindKey = null;
 let bindMenuVisible = false;
-let bindingCheckboxIdx = null;
-let firstinit = true;
+let currentBindingId = null;
+let firstInit = true;
+let openMenuKey = 'F5'; // Default open key
 
-const bindingMap = {}; // key → checkboxIdx
-const indexMap = {};   // checkboxIdx → key
+const bindingMap = {}; // key → globalBindId
+const indexMap = {};   // globalBindId → key
 
-// Map index → action
-const checkboxBindings = {
-  0: { action: (state) => console.log('Action 0:', state) },
-  1: { action: (state) => console.log('Action 1:', state) },
-  // Extend as needed...
-};
 
-function showbindmenu(currentselectedIndex = null) {
-  if (currentselectedIndex !== null) {
-    bindingCheckboxIdx = currentselectedIndex;
-  }
+function showbindmenu(isInitialSetup = false) {
+    const bindMenu = document.querySelector('.menu-binds');
+    const inputBox = bindMenu.querySelector('input');
+    const textElem = bindMenu.querySelector('.text');
 
-  const bindMenu = document.querySelector('.menu-binds');
-  const inputBox = bindMenu.querySelector('input');
-  const textElem = bindMenu.querySelector('.text');
+    if (isInitialSetup) {
+        currentBindingId = 'open-key';
+        textElem.textContent = "Press Any Key To Set Open-Key";
+    } else {
+        const items = getMenuItems();
+        const selectedItem = items[selectedIndex];
+        if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
+        currentBindingId = selectedItem.dataset.globalBindId;
+        textElem.textContent = "Press a key to bind, or DELETE to unbind.";
+    }
 
-  bindMenuVisible = !bindMenuVisible;
-  bindMenu.getBoundingClientRect(); // Force reflow
-  bindMenu.style.bottom = bindMenuVisible ? '45px' : '-150px';
-
-  if (bindMenuVisible) {
-    inputBox.value = '';
+    bindMenuVisible = true;
+    bindMenu.classList.add('visible');
+    inputBox.value = indexMap[currentBindingId] || (isInitialSetup ? openMenuKey : '');
     inputBox.focus();
-    textElem.textContent = firstinit ? "Press Any Key To Set Open-Key" : "Press Any Key To Set Key-bind";
-    if (!firstinit) currentBindKey = null;
-  } else if (firstinit) {
-    firstinit = false;
-  }
+    currentBindKey = null;
 }
-showbindmenu(selectedIndex)
+
 function handleKeybindInput(event) {
   if (!bindMenuVisible) return;
+  event.preventDefault();
+  event.stopPropagation();
 
   const k = event.key.toUpperCase();
 
@@ -1823,126 +1812,89 @@ function handleKeybindInput(event) {
     lockKeyBinding();
     return;
   }
+  
+  if (k === 'ESCAPE') {
+    bindMenuVisible = false;
+    document.querySelector('.menu-binds').classList.remove('visible');
+    return;
+  }
 
-  if (keys.includes(k)) {
+  if (keys.includes(k) || k.startsWith('F') && !isNaN(k.substring(1))) {
     currentBindKey = k;
     const bindMenu = document.querySelector('.menu-binds');
     bindMenu.querySelector('input').value = k;
-    bindMenu.querySelector('.text').textContent = "Press Enter To Confirm Selection";
+    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
+  } else if (k === 'DELETE') {
+    currentBindKey = 'DELETE';
+    const bindMenu = document.querySelector('.menu-binds');
+    bindMenu.querySelector('input').value = 'UNBOUND';
+    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
   }
 }
 
 function handleMouseInput(event) {
   if (!bindMenuVisible) return;
 
-  if (event.button === 1) {
+  if (event.button === 1) { // Middle mouse button
     currentBindKey = 'MOUSE3';
     const bindMenu = document.querySelector('.menu-binds');
     bindMenu.querySelector('input').value = 'MOUSE3';
-    bindMenu.querySelector('.text').textContent = "Press Enter To Confirm Selection";
+    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
   }
 }
 
 function lockKeyBinding() {
-  if (!currentBindKey || (!keys.includes(currentBindKey) && currentBindKey !== 'MOUSE3') || bindingCheckboxIdx == null)
-    return;
+    if (!currentBindKey || !currentBindingId) return;
 
-  const idx = bindingCheckboxIdx;
-  const key = currentBindKey.toUpperCase();
+    const key = currentBindKey.toUpperCase();
+    const txt = document.querySelector('.menu-binds .text');
 
-  // Remove old mappings
-  if (indexMap[idx]) {
-    const oldKey = indexMap[idx];
-    delete bindingMap[oldKey];
-    delete indexMap[idx];
-  }
+    if (currentBindingId === 'open-key') {
+        openMenuKey = key;
+        firstInit = false;
+        txt.textContent = `Open key set to ${key}`;
+    } else {
+        // Unbind old keys
+        if (indexMap[currentBindingId]) {
+            delete bindingMap[indexMap[currentBindingId]];
+        }
+        if (bindingMap[key]) {
+            delete indexMap[bindingMap[key]];
+        }
 
-  if (bindingMap[key]) {
-    const oldIdx = bindingMap[key];
-    delete indexMap[oldIdx];
-    delete bindingMap[key];
-  }
+        if (key === 'DELETE') {
+            delete indexMap[currentBindingId];
+             txt.textContent = `Unbound`;
+        } else {
+            bindingMap[key] = currentBindingId;
+            indexMap[currentBindingId] = key;
+            txt.textContent = `Bound to ${key}`;
+        }
+    }
 
-  // Set new bindings
-  bindingMap[key] = idx;
-  indexMap[idx] = key;
-
-  const txt = document.querySelector('.menu-binds .text');
-  txt.textContent = `Bound [${idx}] → ${key}`;
-
-  setTimeout(() => showbindmenu(), 800);
-}
-
-function keybindactivationfromlua(rawKey) {
-  const key = rawKey.trim().toUpperCase();
-  const idx = bindingMap[key];
-
-  if (idx == null) {
-    console.warn(`No binding found for key "${key}"`);
-    return;
-  }
-
-  const items = document.querySelectorAll('.menu-item.checkbox');
-  const item = items[idx];
-
-  if (!item) {
-    console.warn(`No checkbox element at index ${idx}`);
-    return;
-  }
-
-  // Simulate a real mouse click event on the element
-  const clickEvent = new MouseEvent('click', {
-    view: window,
-    bubbles: true,
-    cancelable: true
-  });
-
-  item.dispatchEvent(clickEvent);
+    setTimeout(() => {
+        bindMenuVisible = false;
+        document.querySelector('.menu-binds').classList.remove('visible');
+    }, 1000);
 }
 
 function activateCheckboxByKeybind(key) {
-  const boundIdx = bindingMap[key];
-  if (typeof boundIdx === 'undefined') return;
+  const keyUpper = key.toUpperCase();
+  const boundId = bindingMap[keyUpper];
+  if (typeof boundId === 'undefined') return;
 
-  const items = getMenuItems();
-  const checkboxItem = items.find(item => item.dataset?.bindIndex == boundIdx && item.classList.contains('checkbox'));
+  const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
 
   if (checkboxItem) {
-    checkboxItem.click(); // Simulate a click to properly toggle the checkbox and trigger any side effects
+    checkboxItem.click();
   } else {
-    console.warn(`Checkbox with bind index ${boundIdx} not found in current tab/subtab`);
+    console.warn(`Checkbox with bind ID ${boundId} not found.`);
   }
 }
-
-function updatekeyormousefromluamessage(keyOrMouse) {
-  const key = keyOrMouse.toUpperCase();
-
-  if (bindMenuVisible) {
-    if (key === 'MOUSE3') {
-      handleMouseInput({ button: 1 });
-    } else if (keys.includes(key)) {
-      handleKeybindInput({ key });
-    } else {
-      console.error('Invalid bind key in overlay:', key);
-    }
-    return;
-  }
-
-  if (keys.includes(key) || key === 'MOUSE3') {
-    keybindactivationfromlua(key);
-  } else {
-    console.error('Invalid bind key for activation:', key);
-  }
-}
-
-
 
 // Attach event listeners globally
 document.addEventListener('keydown', handleKeybindInput);
 document.addEventListener('mousedown', handleMouseInput);
-
-// Call this from your menu item toggle to open bind menu:
-// showbindmenu(selectedIndex);
 
   window.addEventListener('message', ({ data }) => {
     let msg = typeof data === 'string' ? JSON.parse(data) : data;
@@ -1952,6 +1904,7 @@ document.addEventListener('mousedown', handleMouseInput);
         menuVisible = !!msg.data.visible;
         if (!menuVisible) {
           menuWrapper.style.display = 'none';
+          hideInfo();
           return;
         }
         menuWrapper.style.display = 'flex';
@@ -1983,21 +1936,30 @@ document.addEventListener('mousedown', handleMouseInput);
         break;
 
       case 'keybind':
-        showbindmenu(selectedIndex);
+        showbindmenu();
         break;
       case 'updatekey':
-        updatekeyormousefromluamessage(msg.data.key);
+        if (bindMenuVisible) {
+            handleKeybindInput({ key: msg.data.key, preventDefault: () => {}, stopPropagation: () => {} });
+        }
         break;
       case 'togglekey': 
-        const key = msg.data.key.toUpperCase();
         activateCheckboxByKeybind(msg.data.key);
-        keybindactivationfromlua(msg.data.key);
         break;
     }
   });
 
   document.addEventListener('keydown', (e) => {
+  if (firstInit && bindMenuVisible) {
+      handleKeybindInput(e);
+      return;
+  }
   if (!menuVisible) return;
+    
+  if (bindMenuVisible) { // If bind menu is open, it handles its own keys
+      handleKeybindInput(e);
+      return;
+  }
 
   switch (e.key) {
     case 'ArrowUp':
@@ -2007,9 +1969,11 @@ document.addEventListener('mousedown', handleMouseInput);
       updateMenuSelection(1);
       break;
     case 'Q':
+    case 'q':
       updateTabSelection(-1);
       break;
     case 'E':
+    case 'e':
       updateTabSelection(1);
       break;
     case 'ArrowLeft':
@@ -2019,24 +1983,25 @@ document.addEventListener('mousedown', handleMouseInput);
       updateslidervalue(1);
       break;
     case 'F9':
-      showbindmenu(selectedIndex);
+      showbindmenu();
+      break;
+    case 'Enter':
+    case 'NumpadEnter':
+      getMenuItems()[selectedIndex]?.click();
       break;
     case 'Backspace':
-      getMenuItems()[selectedIndex]?.click();
+      goBack();
       break;
     case 'Escape':
       goBack();
       break;
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (!menuVisible || bindMenuVisible) return;
-
-  const key = e.key.toUpperCase();
-  if (bindingMap.hasOwnProperty(key)) {
-    e.preventDefault();
-    activateCheckboxByKeybind(key);
+    default:
+        // Check for general keybinds if no other key was handled
+        if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
+            e.preventDefault();
+            activateCheckboxByKeybind(e.key);
+        }
+        break;
   }
 });
 
@@ -2056,36 +2021,27 @@ document.addEventListener('keydown', (e) => {
 
   // DOMContentLoaded: build UI then init once
 document.addEventListener('DOMContentLoaded', () => {
-const infoBar = document.getElementById("footer-info-bar");
 
-// We'll keep track of the timer to clear if needed
-let leaveTimer = null;
+    document.querySelectorAll(".menu-item[info]").forEach((item) => {
+        item.addEventListener("mouseenter", () => {
+            if (item.hasAttribute('info')) {
+                showInfo(item.getAttribute('info'));
+            }
+        });
+        item.addEventListener("mouseleave", () => {
+            // Only hide if the item is not currently selected by keyboard
+            if (!item.classList.contains('selected')) {
+                hideInfo();
+            }
+        });
+    });
 
-document.querySelectorAll(".menu-item[info]").forEach((item) => {
-  const infoText = item.getAttribute("info");
 
-  item.addEventListener("mouseenter", () => {
-    // Cancel any pending hide timer
-    if (leaveTimer) {
-      clearTimeout(leaveTimer);
-      leaveTimer = null;
-    }
-
-    if (infoText) {
-      infoBar.textContent = infoText;
-      infoBar.classList.add("active");
-    }
+  // Assign a unique global ID to each bindable checkbox
+  let globalBindCounter = 0;
+  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+      item.dataset.globalBindId = globalBindCounter++;
   });
-
-  item.addEventListener("mouseleave", () => {
-    // Set a timer to hide after 1500ms
-    leaveTimer = setTimeout(() => {
-      infoBar.classList.remove("active");
-      infoBar.textContent = ""; // Clear text as well if you want
-      leaveTimer = null;
-    }, 1500);
-  });
-});
 
   // === 1. Checkbox-only ===
   document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
@@ -2108,14 +2064,14 @@ document.querySelectorAll(".menu-item[info]").forEach((item) => {
 
     item.append(label, input, toggleTrack);
 
-    item.addEventListener('click', () => {
+    item.addEventListener('click', (e) => {
+      // Stop the click from propagating if it's a checkbox, to avoid double-toggling issues
+      e.stopPropagation();
       item.classList.toggle('toggled');
       toggleThumb.classList.add('stretch');
       setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
 
       input.checked = item.classList.contains('toggled');
-      const checkbox = checkboxBindings?.[item.index];
-      if (checkbox?.action) checkbox.action(input.checked);
     });
   });
 
@@ -2217,18 +2173,21 @@ document.querySelectorAll(".menu-item[info]").forEach((item) => {
 
     render();
 
-    item.addEventListener('click', () => {
-      item.classList.toggle('toggled');
-      toggleThumb.classList.add('stretch');
-      setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
-
-      input.checked = item.classList.contains('toggled');
-      const checkbox = checkboxBindings?.[item.index];
-      if (checkbox?.action) checkbox.action(input.checked);
+    item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        item.classList.toggle('toggled');
+        toggleThumb.classList.add('stretch');
+        setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
+        input.checked = item.classList.contains('toggled');
     });
   });
 
-  updateTabUI(0);
+  if (firstInit) {
+      showbindmenu(true);
+  } else {
+      updateTabUI(0);
+  }
+
 });
   </script>
 </body>
