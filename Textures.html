@@ -1766,6 +1766,7 @@ function goBack() {
   }
 }
 
+// FIX #3: Removed F1-F12 keys from the bindable keys list.
 let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'];
 
 let currentBindKey = null;
@@ -1789,6 +1790,7 @@ function showbindmenu(isInitialSetup = false) {
     } else {
         const items = getMenuItems();
         const selectedItem = items[selectedIndex];
+        // FIX: Allow binding for slider checkboxes as well
         if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
         currentBindingId = selectedItem.dataset.globalBindId;
         textElem.textContent = "Press a key to bind, or DELETE to unbind.";
@@ -1819,7 +1821,8 @@ function handleKeybindInput(event) {
     return;
   }
 
-  if (keys.includes(k) || k.startsWith('F') && !isNaN(k.substring(1))) {
+  // FIX: Check against the updated `keys` array which excludes F-keys
+  if (keys.includes(k)) {
     currentBindKey = k;
     const bindMenu = document.querySelector('.menu-binds');
     bindMenu.querySelector('input').value = k;
@@ -1878,19 +1881,12 @@ function lockKeyBinding() {
     }, 1000);
 }
 
+// This function is no longer needed as Lua now sends the bindId directly
+/*
 function activateCheckboxByKeybind(key) {
-  const keyUpper = key.toUpperCase();
-  const boundId = bindingMap[keyUpper];
-  if (typeof boundId === 'undefined') return;
-
-  const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
-
-  if (checkboxItem) {
-    checkboxItem.click();
-  } else {
-    console.warn(`Checkbox with bind ID ${boundId} not found.`);
-  }
+  // ... (old implementation)
 }
+*/
 
 // Attach event listeners globally
 document.addEventListener('keydown', handleKeybindInput);
@@ -1943,8 +1939,14 @@ document.addEventListener('mousedown', handleMouseInput);
             handleKeybindInput({ key: msg.data.key, preventDefault: () => {}, stopPropagation: () => {} });
         }
         break;
-      case 'togglekey': 
-        activateCheckboxByKeybind(msg.data.key);
+      
+      // FIX #2: Handle the new message from Lua to toggle a checkbox by its ID
+      case 'toggleCheckboxById':
+        const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${msg.data.bindId}"]`);
+        if (checkboxItem) {
+          // Simulate a click to toggle the visual state
+          checkboxItem.click();
+        }
         break;
     }
   });
@@ -1997,10 +1999,13 @@ document.addEventListener('mousedown', handleMouseInput);
       break;
     default:
         // Check for general keybinds if no other key was handled
+        // This part is now handled by Lua, so we can remove the client-side check
+        /*
         if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
             e.preventDefault();
             activateCheckboxByKeybind(e.key);
         }
+        */
         break;
   }
 });
@@ -2040,7 +2045,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Assign a unique global ID to each bindable checkbox
   let globalBindCounter = 0;
   document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      item.dataset.globalBindId = globalBindCounter++;
+      item.dataset.globalBindId = `bind-id-${globalBindCounter++}`;
   });
 
   // === 1. Checkbox-only ===
