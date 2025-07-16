@@ -14,6 +14,7 @@
       height: 100vh;
       background: rgba(0, 0, 0, 0);
       padding-top: 65px; /* optional offset if needed */
+      color: white;
     }
     .menu-item svg {
       margin-right: 8px;
@@ -432,6 +433,52 @@
         max-width: 300px; /* Or whatever max-width you need */
         opacity: 1;
         margin-right: 0;
+    }
+
+    /* Bind Indicator Styles */
+    #binds-display {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(10, 0, 20, 0.75);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: 'Verdana', sans-serif;
+        font-size: 12px;
+        display: none; /* Initially hidden */
+        flex-direction: column;
+        gap: 5px;
+        border: 1px solid #4504a7;
+        box-shadow: 0 0 10px rgba(78, 0, 151, 0.7);
+        z-index: 120;
+    }
+    #binds-display.visible {
+        display: flex;
+    }
+    .bind-item {
+        display: grid;
+        grid-template-columns: 60px 1fr 40px;
+        align-items: center;
+        gap: 15px;
+    }
+    .bind-key {
+        font-weight: bold;
+        color: #d2a7ff;
+        text-align: left;
+    }
+    .bind-option {
+      text-align: left;
+    }
+    .bind-state {
+        text-align: right;
+        font-weight: bold;
+    }
+    .bind-state.on {
+        color: #90ee90; /* light green */
+    }
+    .bind-state.off {
+        color: #ff7f7f; /* light red */
     }
 
   </style>
@@ -1139,6 +1186,7 @@
             <div class="menu-item checkbox">Move & Resize Menu</div>
             <div class="menu-item">Save Config</div>
             <div class="menu-item">Load Config</div>
+            <div class="menu-item checkbox">Show Bind Indicator</div>
             <!-- etc… -->
           </div>
           <div class="menu-items" id="misc-extra-items" style="display: none;">
@@ -1353,6 +1401,8 @@
       <span class="right-text" id="menu-counter">1/9</span>
     <div id="footer-info-bar">info text</div>
   </div>
+  </div>
+  <div id="binds-display"></div>
 <style>
   .submenu-items {
     padding-left: 20px;
@@ -1523,7 +1573,7 @@
     const subIndexMap = {
     3: 0, 4: 2, 5: 4, 6: 7, 7: 9, 8: 11,
     9: 13, 10: 16, 11: 17, 12: 20, 13: 22,
-    14: 24 // <-- Add this!
+    14: 24
     };
     const start = subIndexMap[currentTab] || 0;
     return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
@@ -1537,7 +1587,6 @@
         return;
     }
 
-    // Deselect old item and hide its info if necessary
     const oldItem = items[selectedIndex];
     if(oldItem) {
         oldItem.classList.remove('selected');
@@ -1545,26 +1594,21 @@
     hideInfo();
 
 
-    // Update index
     selectedIndex = (selectedIndex + dir + items.length) % items.length;
 
-    // Get new selected item
     const newItem = items[selectedIndex];
     newItem.classList.add('selected');
     newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     
-    // Show info for the new item
     if (newItem.hasAttribute('info')) {
         showInfo(newItem.getAttribute('info'));
     }
 
 
-    // Update scrollbar
     const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
     const step = items.length > 1 ? max / (items.length - 1) : 0;
     scrollbarThumb.style.top = `${selectedIndex * step}px`;
 
-    // Update counter
     menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
   }
   
@@ -1573,7 +1617,6 @@
   }
 
   function updateTabUI(tabIdx, reset = true) {
-    // Ensure previousTab and previousSubTab are updated when the tab changes
     if (tabIdx !== currentTab) {
       previousTab = currentTab;
       previousSubTab = currentSubTab;
@@ -1591,7 +1634,6 @@
       }
     }
 
-    // hide all headers
     const groups = [
       document.getElementById('menu-tabs'),
       document.getElementById('player-tabs'),
@@ -1608,12 +1650,11 @@
       document.getElementById('Force-tabs')
     ];
     groups.forEach(g => {
-        if (g) { // FIX: Check if the element exists before accessing its style
+        if (g) {
             g.style.display = 'none';
         }
     });
 
-    // show current header
     const displayMap = {
       0: 0, 1: 0, 2: 0,
       3: 1, 4: 2, 5: 3,
@@ -1623,32 +1664,29 @@
       14: 12 
     };
     const groupToShow = groups[displayMap[tabIdx]];
-    if (groupToShow) { // FIX: Check if the element to show exists
+    if (groupToShow) {
         groupToShow.style.display = 'flex';
     }
 
-    // highlight tabs
     mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
-    [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs] // FIX: Added forceTabs
+    [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs]
       .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
 
-    // show containers
     containers.forEach((c,i) => {
-        if (c) { // FIX: Check if container exists
+        if (c) {
             c.style.display = i===tabIdx?'block':'none'
         }
     });
     updateMenuSelection(0);
     updateScrollbarHeight();
 
-    // show subs
-    subContainers.forEach(c => { if(c) c.style.display = 'none' }); // FIX: Check if sub-container exists
+    subContainers.forEach(c => { if(c) c.style.display = 'none' }); 
     const countMap = {
       3: 2, 4: 2, 5: 3,
       6: 2, 7: 2, 8: 2,
       9: 3, 10: 1, 11: 3,
       12: 2, 13: 2,
-      14: 1 // Force Emote has 1 subtab: Force-main-items
+      14: 1 
     };
 
     const startMap = {
@@ -1656,20 +1694,19 @@
       6: 7, 7: 9, 8: 11,
       9: 13, 10: 16, 11: 17,
       12: 20, 13: 22,
-      14: 24 // Force-main-items is at subContainers[24]
+      14: 24 
     };
 
-    if (startMap[tabIdx] !== undefined) { // FIX: Guard this block for sub-menus only
+    if (startMap[tabIdx] !== undefined) { 
         const cCount = countMap[tabIdx] || 1;
         for (let i = 0; i < cCount; i++) {
           const subContainer = subContainers[startMap[tabIdx] + i];
-          if (subContainer) { // FIX: Check if sub-container exists
+          if (subContainer) {
             subContainer.style.display = i === currentSubTab ? 'block' : 'none';
           }
         }
     }
 
-    // highlight first item
     updateMenuSelection(0);
     updateScrollbarHeight();
   }
@@ -1678,24 +1715,22 @@
     if (currentTab >= 3 && currentTab <= 14) {
       const arrs = [
         playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
-        weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs // FIX: Added forceTabs
+        weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs
       ];
       const arr = arrs[currentTab - 3];
-      if (arr) { // FIX: Check if tab array exists
+      if (arr) {
         currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
       }
     } else {
       currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
     }
 
-    // Update the selectedIndex and the menu selection after changing the tab
     selectedIndex = 0;
     updateTabUI(currentTab, true);
-    updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
+    updateMenuSelection(0);
     updateScrollbarHeight();
   }
 
-  // toggle buttons
   [playerToggle, miscToggle, scriptsToggle, vehicleToggle, espToggle,
   teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle, forceToggle]
   .forEach((el, i) => el.addEventListener('click', () => { currentSubTab = 0; updateTabUI(i + 3); }));
@@ -1709,7 +1744,7 @@ function updateslidervalue(dir) {
   s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
 
   const pct = (s.value - s.min) / (s.max - s.min);
-  const fillEl = s.fill || s.sliderFill; // supports both slider types
+  const fillEl = s.fill || s.sliderFill; 
   const valueEl = s.valueSpan;
 
   if (fillEl) fillEl.style.width = (pct * 100) + '%';
@@ -1723,38 +1758,30 @@ function updateslidervalue(dir) {
 
 function goBack() {
   if (currentTab >= 3 && currentSubTab > 0) {
-    // We’re in a deep sub‐submenu: go up to its parent submenu
     currentSubTab = 0;
     selectedIndex = 0;
     updateTabUI(currentTab, true);
     updateScrollbarHeight();
   }
   else if (currentSubTab !== previousSubTab) {
-    // We have a different “previous” sub‐tab to return to
     currentSubTab = previousSubTab;
     selectedIndex = previousIndex;
     updateTabUI(currentTab, true);
     updateScrollbarHeight();
   }
   else if (currentTab !== previousTab) {
-    // We have a different “previous” top‐level tab to return to
     currentTab = previousTab;
     selectedIndex = previousIndex;
-    currentSubTab = 0;              // ensure we reset any deeper sub‐tabs
+    currentSubTab = 0;
     updateTabUI(currentTab, true);
     updateScrollbarHeight();
   }
   else if (currentTab === previousTab && currentTab === 0) {
-    // We’re already on main tab and can’t go up any further → close menu
     menuVisible = false;
     menuWrapper.style.display = 'none';
-    // After hiding the menu, we still recalc scroll height so that
-    // if reopened, it’s correct for the default/main list
     updateScrollbarHeight();
   }
   else {
-    // We’re on some tab where previousTab === currentTab but not at root
-    // → reset everything back to the main tab
     currentTab = 0;
     previousTab = 0;
     currentSubTab = 0;
@@ -1765,132 +1792,6 @@ function goBack() {
     updateScrollbarHeight();
   }
 }
-
-// FIX #3: Removed F1-F12 keys from the bindable keys list.
-let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'];
-
-let currentBindKey = null;
-let bindMenuVisible = false;
-let currentBindingId = null;
-let firstInit = true;
-let openMenuKey = 'F5'; // Default open key
-
-const bindingMap = {}; // key → globalBindId
-const indexMap = {};   // globalBindId → key
-
-
-function showbindmenu(isInitialSetup = false) {
-    const bindMenu = document.querySelector('.menu-binds');
-    const inputBox = bindMenu.querySelector('input');
-    const textElem = bindMenu.querySelector('.text');
-
-    if (isInitialSetup) {
-        currentBindingId = 'open-key';
-        textElem.textContent = "Press Any Key To Set Open-Key";
-    } else {
-        const items = getMenuItems();
-        const selectedItem = items[selectedIndex];
-        // FIX: Allow binding for slider checkboxes as well
-        if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
-        currentBindingId = selectedItem.dataset.globalBindId;
-        textElem.textContent = "Press a key to bind, or DELETE to unbind.";
-    }
-
-    bindMenuVisible = true;
-    bindMenu.classList.add('visible');
-    inputBox.value = indexMap[currentBindingId] || (isInitialSetup ? openMenuKey : '');
-    inputBox.focus();
-    currentBindKey = null;
-}
-
-function handleKeybindInput(event) {
-  if (!bindMenuVisible) return;
-  event.preventDefault();
-  event.stopPropagation();
-
-  const k = event.key.toUpperCase();
-
-  if (k === 'ENTER' && currentBindKey) {
-    lockKeyBinding();
-    return;
-  }
-  
-  if (k === 'ESCAPE') {
-    bindMenuVisible = false;
-    document.querySelector('.menu-binds').classList.remove('visible');
-    return;
-  }
-
-  // FIX: Check against the updated `keys` array which excludes F-keys
-  if (keys.includes(k)) {
-    currentBindKey = k;
-    const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = k;
-    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
-  } else if (k === 'DELETE') {
-    currentBindKey = 'DELETE';
-    const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = 'UNBOUND';
-    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
-  }
-}
-
-function handleMouseInput(event) {
-  if (!bindMenuVisible) return;
-
-  if (event.button === 1) { // Middle mouse button
-    currentBindKey = 'MOUSE3';
-    const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = 'MOUSE3';
-    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
-  }
-}
-
-function lockKeyBinding() {
-    if (!currentBindKey || !currentBindingId) return;
-
-    const key = currentBindKey.toUpperCase();
-    const txt = document.querySelector('.menu-binds .text');
-
-    if (currentBindingId === 'open-key') {
-        openMenuKey = key;
-        firstInit = false;
-        txt.textContent = `Open key set to ${key}`;
-    } else {
-        // Unbind old keys
-        if (indexMap[currentBindingId]) {
-            delete bindingMap[indexMap[currentBindingId]];
-        }
-        if (bindingMap[key]) {
-            delete indexMap[bindingMap[key]];
-        }
-
-        if (key === 'DELETE') {
-            delete indexMap[currentBindingId];
-             txt.textContent = `Unbound`;
-        } else {
-            bindingMap[key] = currentBindingId;
-            indexMap[currentBindingId] = key;
-            txt.textContent = `Bound to ${key}`;
-        }
-    }
-
-    setTimeout(() => {
-        bindMenuVisible = false;
-        document.querySelector('.menu-binds').classList.remove('visible');
-    }, 1000);
-}
-
-// This function is no longer needed as Lua now sends the bindId directly
-/*
-function activateCheckboxByKeybind(key) {
-  // ... (old implementation)
-}
-*/
-
-// Attach event listeners globally
-document.addEventListener('keydown', handleKeybindInput);
-document.addEventListener('mousedown', handleMouseInput);
 
   window.addEventListener('message', ({ data }) => {
     let msg = typeof data === 'string' ? JSON.parse(data) : data;
@@ -1924,7 +1825,12 @@ document.addEventListener('mousedown', handleMouseInput);
         break;
 
       case 'selectbind':
-        lockKeyBinding();
+        const bindMenuSelect = document.querySelector('.menu-binds');
+        const textElemSelect = bindMenuSelect.querySelector('.text');
+        textElemSelect.textContent = "Bound!";
+        setTimeout(() => {
+            bindMenuSelect.classList.remove('visible');
+        }, 1000);
         break;
 
       case 'back':
@@ -1932,100 +1838,155 @@ document.addEventListener('mousedown', handleMouseInput);
         break;
 
       case 'keybind':
-        showbindmenu();
+        const bindMenu = document.querySelector('.menu-binds');
+        const textElem = bindMenu.querySelector('.text');
+        const inputBox = bindMenu.querySelector('input');
+        textElem.textContent = "Press a key to bind, or DELETE to unbind.";
+        inputBox.value = '';
+        bindMenu.classList.add('visible');
         break;
+        
       case 'updatekey':
-        if (bindMenuVisible) {
-            handleKeybindInput({ key: msg.data.key, preventDefault: () => {}, stopPropagation: () => {} });
-        }
+        const bindMenuUpdate = document.querySelector('.menu-binds');
+        const textElemUpdate = bindMenuUpdate.querySelector('.text');
+        const inputBoxUpdate = bindMenuUpdate.querySelector('input');
+        inputBoxUpdate.value = msg.data.key;
+        textElemUpdate.textContent = "Press Enter to confirm";
         break;
       
-      // FIX #2: Handle the new message from Lua to toggle a checkbox by its ID
       case 'toggleCheckboxById':
-        const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${msg.data.bindId}"]`);
-        if (checkboxItem) {
-          // Simulate a click to toggle the visual state
-          checkboxItem.click();
+        const itemToToggle = document.querySelector(`[data-bind-id="${msg.data.bindId}"]`);
+        if (itemToToggle && (itemToToggle.classList.contains('checkbox') || itemToToggle.classList.contains('slidercb'))) {
+            itemToToggle.classList.toggle('toggled', msg.data.state);
+            const thumb = itemToToggle.querySelector('.toggle-thumb');
+            if (thumb) {
+              thumb.classList.add('stretch');
+              setTimeout(() => thumb.classList.remove('stretch'), 200);
+            }
+            const input = itemToToggle.querySelector('input[type="checkbox"]');
+            if (input) {
+              input.checked = msg.data.state;
+            }
         }
+        break;
+
+      case 'updateBindsDisplay':
+        const container = document.getElementById('binds-display');
+        container.innerHTML = ''; // Clear old binds
+        if (msg.data && msg.data.length > 0) {
+            msg.data.forEach(bind => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'bind-item';
+                
+                const keySpan = document.createElement('span');
+                keySpan.className = 'bind-key';
+                keySpan.textContent = `[${bind.key}]`;
+
+                const optionSpan = document.createElement('span');
+                optionSpan.className = 'bind-option';
+                optionSpan.textContent = bind.option;
+
+                const stateSpan = document.createElement('span');
+                stateSpan.className = `bind-state ${bind.state === 'On' ? 'on' : 'off'}`;
+                stateSpan.textContent = bind.state;
+
+                itemDiv.append(keySpan, optionSpan, stateSpan);
+                container.appendChild(itemDiv);
+            });
+        }
+        break;
+    
+    case 'toggleBindsDisplay':
+        document.getElementById('binds-display').classList.toggle('visible', msg.data.visible);
         break;
     }
   });
 
   document.addEventListener('keydown', (e) => {
-  if (firstInit && bindMenuVisible) {
-      handleKeybindInput(e);
-      return;
-  }
-  if (!menuVisible) return;
+    if (!menuVisible) return;
     
-  if (bindMenuVisible) { // If bind menu is open, it handles its own keys
-      handleKeybindInput(e);
-      return;
-  }
-
-  switch (e.key) {
-    case 'ArrowUp':
-      updateMenuSelection(-1);
-      break;
-    case 'ArrowDown':
-      updateMenuSelection(1);
-      break;
-    case 'Q':
-    case 'q':
-      updateTabSelection(-1);
-      break;
-    case 'E':
-    case 'e':
-      updateTabSelection(1);
-      break;
-    case 'ArrowLeft':
-      updateslidervalue(-1);
-      break;
-    case 'ArrowRight':
-      updateslidervalue(1);
-      break;
-    case 'F9':
-      showbindmenu();
-      break;
-    case 'Enter':
-    case 'NumpadEnter':
-      getMenuItems()[selectedIndex]?.click();
-      break;
-    case 'Backspace':
-      goBack();
-      break;
-    case 'Escape':
-      goBack();
-      break;
-    default:
-        // Check for general keybinds if no other key was handled
-        // This part is now handled by Lua, so we can remove the client-side check
-        /*
-        if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
-            e.preventDefault();
-            activateCheckboxByKeybind(e.key);
-        }
-        */
-        break;
-  }
-});
+    switch (e.key) {
+      case 'ArrowUp':   updateMenuSelection(-1); break;
+      case 'ArrowDown': updateMenuSelection(1); break;
+      case 'Q': case 'q': updateTabSelection(-1); break;
+      case 'E': case 'e': updateTabSelection(1); break;
+      case 'ArrowLeft':  updateslidervalue(-1); break;
+      case 'ArrowRight': updateslidervalue(1); break;
+      case 'Enter': case 'NumpadEnter': getMenuItems()[selectedIndex]?.click(); break;
+      case 'Backspace': goBack(); break;
+      case 'Escape': goBack(); break;
+    }
+  });
 
   function updateScrollbarHeight() {
     const menuItemsContainer = document.querySelector('.menu-items-container');
     const scrollbarContainer = document.querySelector('.scrollbar-container');
-    
-    // Get the height of the menu-items-container and cap it at 400px
     const containerHeight = Math.min(menuItemsContainer.scrollHeight, 400);
-    
-    // Set the scrollbar height to match the container's height
     scrollbarContainer.style.height = `${containerHeight}px`;
   }
 
-  // Call this function every time the menu items are updated or the height might change
   updateScrollbarHeight();
 
-  // DOMContentLoaded: build UI then init once
-document.addEventListener('DOMContentLoaded', () => {
+  /**
+   * This function traverses the DOM and assigns a unique `data-bind-id` to each
+   * bindable menu item. The order of assignment MUST EXACTLY MATCH the order
+   * in which items are created in the `CompiledV2.lua` script to ensure the
+   * `toggleCheckboxById` message from Lua works correctly.
+   */
+  function assignBindIds() {
+      const mainMenuIndexMap = { 'Main': 1, 'Scripts': 2, 'Settings': 3 };
+      const subTabIndexCounters = { 'Main': 1, 'Scripts': 1, 'Settings': 1 };
+      const itemIndexCounters = {};
+
+      const processPanel = (panel, parentLabel, subTabIndex) => {
+          if (!panel) return;
+          const menuId = panel.id;
+          if (!itemIndexCounters[menuId]) {
+              itemIndexCounters[menuId] = 1;
+          }
+
+          panel.querySelectorAll('.menu-item.checkbox, .menu-item.slidercb').forEach(item => {
+              // Only assign if it doesn't have an ID yet
+              if (!item.dataset.bindId) {
+                  const mainMenuIndex = mainMenuIndexMap[parentLabel];
+                  const itemIndex = itemIndexCounters[menuId];
+                  
+                  if (mainMenuIndex !== undefined && subTabIndex !== undefined) {
+                      const bindId = `${mainMenuIndex}:${subTabIndex}:${itemIndex}`;
+                      item.dataset.bindId = bindId;
+                  }
+                  itemIndexCounters[menuId]++;
+              }
+          });
+      };
+      
+      // This array defines the exact order sub-tabs are created in Lua
+      const subTabCreationOrder = [
+          { parent: 'Main', panels: ['#player-main-items', '#player-movement-items'] },
+          { parent: 'Main', panels: ['#vehicle-main-items', '#vehicle-spawner-items'] },
+          { parent: 'Main', panels: ['#esp-main-items', '#esp-toggle-items'] },
+          { parent: 'Main', panels: ['#teleport-main-items', '#teleport-player-items'] },
+          { parent: 'Main', panels: ['#weapons-main-items', '#weapons-aimbot-items', '#weapons-spawner-items'] },
+          { parent: 'Main', panels: ['#model-main-items'] },
+          { parent: 'Main', panels: ['#outfits-main-items', '#outfits-upper-items', '#outfits-lower-items'] },
+          { parent: 'Main', panels: ['#world-main-items', '#world-atmosphere-items'] },
+          { parent: 'Main', panels: ['#server-main-items', '#server-destroyer-items'] },
+          { parent: 'Scripts', panels: ['#scripts-main-items', '#misc-Built-items', '#scripts-misc-items'] },
+          { parent: 'Scripts', panels: ['#Force-main-items'] },
+          { parent: 'Settings', panels: ['#misc-main-items', '#misc-extra-items'] }
+      ];
+
+      subTabCreationOrder.forEach(group => {
+          group.panels.forEach(panelSelector => {
+              const panel = document.querySelector(panelSelector);
+              const subTabIndex = subTabIndexCounters[group.parent]++;
+              processPanel(panel, group.parent, subTabIndex);
+          });
+      });
+  }
+
+
+  document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll(".menu-item[info]").forEach((item) => {
         item.addEventListener("mouseenter", () => {
@@ -2034,166 +1995,112 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         item.addEventListener("mouseleave", () => {
-            // Only hide if the item is not currently selected by keyboard
             if (!item.classList.contains('selected')) {
                 hideInfo();
             }
         });
     });
 
+    assignBindIds();
 
-  // Assign a unique global ID to each bindable checkbox
-  let globalBindCounter = 0;
-  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      item.dataset.globalBindId = `bind-id-${globalBindCounter++}`;
-  });
-
-  // === 1. Checkbox-only ===
-  document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
-    const text = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = text;
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.style.display = 'none';
-
-    const toggleTrack = document.createElement('div');
-    toggleTrack.className = 'toggle-track';
-
-    const toggleThumb = document.createElement('div');
-    toggleThumb.className = 'toggle-thumb';
-    toggleTrack.appendChild(toggleThumb);
-
-    item.append(label, input, toggleTrack);
-
-    item.addEventListener('click', (e) => {
-      // Stop the click from propagating if it's a checkbox, to avoid double-toggling issues
-      e.stopPropagation();
-      item.classList.toggle('toggled');
-      toggleThumb.classList.add('stretch');
-      setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
-
-      input.checked = item.classList.contains('toggled');
-    });
-  });
-
-  // === 2. Slider-only ===
-  document.querySelectorAll('.menu-item.slider:not(.checkbox)').forEach(item => {
-    const min   = +item.dataset.min,
-          max   = +item.dataset.max,
-          step  = +item.dataset.step;
-    let   value = +item.dataset.value;
-
-    const labelText = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = labelText;
-
-    const track = document.createElement('div');
-    track.className = 'slider-track';
-
-    const fill = document.createElement('div');
-    fill.className = 'slider-fill';
-    track.appendChild(fill);
-
-    const valueSpan = document.createElement('span');
-    valueSpan.className = 'value';
-    valueSpan.textContent = value;
-    track.appendChild(valueSpan);
-
-    item._slider = { min, max, step, value, valueSpan, fill };
-
-    item.append(label, track);
-
-    const render = () => {
-      const s = item._slider;
-      const pct = (s.value - s.min) / (s.max - s.min);
-      s.fill.style.width = `${pct * 100}%`;
-      s.valueSpan.textContent = s.value;
-
-      const px1 = 2 + pct * 3,
-            px2 = 5 + pct * 5,
-            px3 = 9 + pct * 9;
-      s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-    };
-
-    render();
-  });
-
-  // === 3. Checkbox + Slider Combo ===
-  document.querySelectorAll('.menu-item.checkbox.slider').forEach(item => {
-    const text = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = text;
-
-    const min   = +item.dataset.min,
-          max   = +item.dataset.max,
-          step  = +item.dataset.step;
-    let   value = +item.dataset.value;
-
-    const sliderTrack = document.createElement('div');
-    sliderTrack.className = 'slider-track';
-
-    const sliderFill = document.createElement('div');
-    sliderFill.className = 'slider-fill';
-    sliderTrack.appendChild(sliderFill);
-
-    const valueSpan = document.createElement('span');
-    valueSpan.className = 'value';
-    valueSpan.textContent = value;
-    sliderTrack.appendChild(valueSpan);
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.style.display = 'none';
-
-    const toggleTrack = document.createElement('div');
-    toggleTrack.className = 'toggle-track';
-
-    const toggleThumb = document.createElement('div');
-    toggleThumb.className = 'toggle-thumb';
-    toggleTrack.appendChild(toggleThumb);
-
-    item._slider = { min, max, step, value, valueSpan, sliderFill };
-
-    item.append(label, sliderTrack, input, toggleTrack);
-
-    const render = () => {
-      const s = item._slider;
-      const pct = (s.value - s.min) / (s.max - s.min);
-      s.sliderFill.style.width = `${pct * 100}%`;
-      s.valueSpan.textContent = s.value;
-
-      const px1 = 2 + pct * 3,
-            px2 = 5 + pct * 5,
-            px3 = 9 + pct * 9;
-      s.sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-    };
-
-    render();
-
-    item.addEventListener('click', (e) => {
+    document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
+      const label = document.createElement('span');
+      label.textContent = text;
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none';
+      const toggleTrack = document.createElement('div');
+      toggleTrack.className = 'toggle-track';
+      const toggleThumb = document.createElement('div');
+      toggleThumb.className = 'toggle-thumb';
+      toggleTrack.appendChild(toggleThumb);
+      item.append(label, input, toggleTrack);
+      item.addEventListener('click', (e) => {
         e.stopPropagation();
         item.classList.toggle('toggled');
         toggleThumb.classList.add('stretch');
         setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
         input.checked = item.classList.contains('toggled');
+      });
     });
+
+    document.querySelectorAll('.menu-item.slider:not(.checkbox)').forEach(item => {
+      const min   = +item.dataset.min, max   = +item.dataset.max, step  = +item.dataset.step;
+      let   value = +item.dataset.value;
+      const labelText = item.textContent.trim();
+      item.textContent = '';
+      const label = document.createElement('span');
+      label.textContent = labelText;
+      const track = document.createElement('div');
+      track.className = 'slider-track';
+      const fill = document.createElement('div');
+      fill.className = 'slider-fill';
+      track.appendChild(fill);
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      valueSpan.textContent = value;
+      track.appendChild(valueSpan);
+      item._slider = { min, max, step, value, valueSpan, fill };
+      item.append(label, track);
+      const render = () => {
+        const s = item._slider;
+        const pct = (s.value - s.min) / (s.max - s.min);
+        s.fill.style.width = `${pct * 100}%`;
+        s.valueSpan.textContent = s.value;
+        const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
+        s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      };
+      render();
+    });
+
+    document.querySelectorAll('.menu-item.checkbox.slider').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
+      const label = document.createElement('span');
+      label.textContent = text;
+      const min   = +item.dataset.min, max   = +item.dataset.max, step  = +item.dataset.step;
+      let   value = +item.dataset.value;
+      const sliderTrack = document.createElement('div');
+      sliderTrack.className = 'slider-track';
+      const sliderFill = document.createElement('div');
+      sliderFill.className = 'slider-fill';
+      sliderTrack.appendChild(sliderFill);
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      valueSpan.textContent = value;
+      sliderTrack.appendChild(valueSpan);
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none';
+      const toggleTrack = document.createElement('div');
+      toggleTrack.className = 'toggle-track';
+      const toggleThumb = document.createElement('div');
+      toggleThumb.className = 'toggle-thumb';
+      toggleTrack.appendChild(toggleThumb);
+      item._slider = { min, max, step, value, valueSpan, sliderFill };
+      item.append(label, sliderTrack, input, toggleTrack);
+      const render = () => {
+        const s = item._slider;
+        const pct = (s.value - s.min) / (s.max - s.min);
+        s.sliderFill.style.width = `${pct * 100}%`;
+        s.valueSpan.textContent = s.value;
+        const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
+        s.sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      };
+      render();
+      item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('toggled');
+          toggleThumb.classList.add('stretch');
+          setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
+          input.checked = item.classList.contains('toggled');
+      });
+    });
+
+    updateTabUI(0);
   });
-
-  if (firstInit) {
-      showbindmenu(true);
-  } else {
-      updateTabUI(0);
-  }
-
-});
   </script>
 </body>
 </html>
