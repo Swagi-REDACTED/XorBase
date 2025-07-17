@@ -1766,7 +1766,6 @@ function goBack() {
   }
 }
 
-// FIX #3: Removed F1-F12 keys from the bindable keys list.
 let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'];
 
 let currentBindKey = null;
@@ -1790,7 +1789,6 @@ function showbindmenu(isInitialSetup = false) {
     } else {
         const items = getMenuItems();
         const selectedItem = items[selectedIndex];
-        // FIX: Allow binding for slider checkboxes as well
         if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
         currentBindingId = selectedItem.dataset.globalBindId;
         textElem.textContent = "Press a key to bind, or DELETE to unbind.";
@@ -1821,8 +1819,7 @@ function handleKeybindInput(event) {
     return;
   }
 
-  // FIX: Check against the updated `keys` array which excludes F-keys
-  if (keys.includes(k)) {
+  if (keys.includes(k) || k.startsWith('F') && !isNaN(k.substring(1))) {
     currentBindKey = k;
     const bindMenu = document.querySelector('.menu-binds');
     bindMenu.querySelector('input').value = k;
@@ -1881,12 +1878,19 @@ function lockKeyBinding() {
     }, 1000);
 }
 
-// This function is no longer needed as Lua now sends the bindId directly
-/*
 function activateCheckboxByKeybind(key) {
-  // ... (old implementation)
+  const keyUpper = key.toUpperCase();
+  const boundId = bindingMap[keyUpper];
+  if (typeof boundId === 'undefined') return;
+
+  const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
+
+  if (checkboxItem) {
+    checkboxItem.click();
+  } else {
+    console.warn(`Checkbox with bind ID ${boundId} not found.`);
+  }
 }
-*/
 
 // Attach event listeners globally
 document.addEventListener('keydown', handleKeybindInput);
@@ -1939,15 +1943,9 @@ document.addEventListener('mousedown', handleMouseInput);
             handleKeybindInput({ key: msg.data.key, preventDefault: () => {}, stopPropagation: () => {} });
         }
         break;
-      
-      // FIX #2: Handle the new message from Lua to toggle a checkbox by its ID
-      case 'toggleCheckboxById':
-          const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${msg.data.bindId}"]`);
-          if (checkboxItem) {
-            // Simulate a click to toggle the visual state
-            checkboxItem.click();
-          }
-          break;
+      case 'togglekey': 
+        activateCheckboxByKeybind(msg.data.key);
+        break;
     }
   });
 
@@ -1999,13 +1997,10 @@ document.addEventListener('mousedown', handleMouseInput);
       break;
     default:
         // Check for general keybinds if no other key was handled
-        // This part is now handled by Lua, so we can remove the client-side check
-        /*
         if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
             e.preventDefault();
             activateCheckboxByKeybind(e.key);
         }
-        */
         break;
   }
 });
@@ -2043,41 +2038,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Assign a unique global ID to each bindable checkbox
-  // ADD THIS NEW BLOCK in goopV2.html inside the DOMContentLoaded listener
-
-// This map connects the HTML container IDs to the Lua menu IDs
-  const menuIdMap = {
-      'player-main-items': 'PlayerOptions_Player',
-      'player-movement-items': 'PlayerOptions_Movement',
-      'vehicle-main-items': 'VehicleOptions_Vehicle',
-      'vehicle-spawner-items': 'VehicleOptions_Spawner',
-      'esp-main-items': 'EspOptions_Esp',
-      'esp-toggle-items': 'EspOptions_Toggles',
-      'weapons-main-items': 'WeaponsOptions_Weapon',
-      'weapons-aimbot-items': 'WeaponsOptions_Aimbot',
-      'weapons-spawner-items': 'WeaponsOptions_Spawner',
-      'world-main-items': 'WorldOptions_World',
-      'server-destroyer-items': 'ServerOptions_Destroyer',
-      'scripts-main-items': 'ScriptsOptions_Scripts',
-      'misc-main-items': 'MiscOptions_Misc'
-  };
-
-  // Assign unique, readable IDs to every bindable item based on the menu structure.
-  // This ensures the IDs in HTML match the ones generated in Lua.
+  let globalBindCounter = 0;
   document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      const container = item.closest('.menu-items');
-      if (container && menuIdMap[container.id]) {
-          const menuId = menuIdMap[container.id];
-          // The item's text is in a <span> after the UI is built.
-          // This text MUST match the 'name' parameter in your Lua script.
-          const itemName = item.querySelector('span').textContent.trim();
-          const generatedId = `${menuId}::${itemName}`;
-          
-          item.dataset.globalBindId = generatedId;
-          // console.log(`Assigned ID: ${generatedId}`); // Optional: for debugging
-      } else {
-          // console.warn('Could not find a mapping for container:', container.id); // Optional: for debugging
-      }
+      item.dataset.globalBindId = globalBindCounter++;
   });
 
   // === 1. Checkbox-only ===
