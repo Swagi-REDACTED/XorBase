@@ -1774,76 +1774,8 @@ let currentBindingId = null;
 let firstInit = true;
 let openMenuKey = 'F5'; // Default open key
 
-// --- NEW BINDING SYSTEM ---
-// These maps will be populated by Lua on load.
-const bindingMap = {}; // keyName -> globalBindId
-const indexMap = {};   // globalBindId -> keyName
-
-// NEW: Visually toggles a checkbox based on its unique bind ID.
-// This is called when loading a config.
-function setCheckboxVisualStateByBindId(bindId, shouldBeToggled) {
-    const item = document.querySelector(`.menu-item.checkbox[data-global-bind-id="${bindId}"]`);
-    if (!item) {
-        // It's possible the item doesn't exist if the menu structure changed.
-        // console.warn(`setCheckboxVisualState: Checkbox with bindId "${bindId}" not found.`);
-        return;
-    }
-    const isToggled = item.classList.contains('toggled');
-    if (isToggled !== shouldBeToggled) {
-        item.classList.toggle('toggled', shouldBeToggled);
-        const input = item.querySelector('input[type="checkbox"]');
-        if (input) input.checked = shouldBeToggled;
-    }
-}
-
-// NEW: Toggles a checkbox visually without sending a message back to Lua.
-// This is triggered by a keybind press from Lua.
-function toggleCheckboxVisualsByBindId(bindId) {
-    const item = document.querySelector(`.menu-item.checkbox[data-global-bind-id="${bindId}"]`);
-    if (item) {
-        item.classList.toggle('toggled');
-        const toggleThumb = item.querySelector('.toggle-thumb');
-        if (toggleThumb) {
-            toggleThumb.classList.add('stretch');
-            setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
-        }
-        const input = item.querySelector('input[type="checkbox"]');
-        if (input) input.checked = item.classList.contains('toggled');
-    }
-}
-
-// NEW: Called by the 'togglekey' message from Lua.
-function activateCheckboxByKeybind(key) {
-  const keyUpper = key.toUpperCase();
-  const boundId = bindingMap[keyUpper];
-  if (typeof boundId !== 'undefined') {
-    toggleCheckboxVisualsByBindId(boundId);
-  }
-}
-
-// NEW: Initializes all bindings and checkbox states from Lua config.
-function applyConfigAndBinds(config) {
-    // 1. Initialize Keybinds
-    Object.keys(bindingMap).forEach(key => delete bindingMap[key]);
-    Object.keys(indexMap).forEach(key => delete indexMap[key]);
-
-    if (config && config.keyBinds) {
-        for (const keyName in config.keyBinds) {
-            const bindId = config.keyBinds[keyName];
-            bindingMap[keyName.toUpperCase()] = bindId;
-            indexMap[bindId] = keyName.toUpperCase();
-        }
-    }
-
-    // 2. Initialize Checkbox States
-    if (config && config.checkboxStates) {
-        for (const bindId in config.checkboxStates) {
-            const state = config.checkboxStates[bindId];
-            setCheckboxVisualStateByBindId(bindId, state);
-        }
-    }
-}
-// --- END NEW BINDING SYSTEM ---
+const bindingMap = {}; // key → globalBindId
+const indexMap = {};   // globalBindId → key
 
 
 function showbindmenu(isInitialSetup = false) {
@@ -1946,6 +1878,19 @@ function lockKeyBinding() {
     }, 1000);
 }
 
+function activateCheckboxByKeybind(key) {
+  const keyUpper = key.toUpperCase();
+  const boundId = bindingMap[keyUpper];
+  if (typeof boundId === 'undefined') return;
+
+  const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
+
+  if (checkboxItem) {
+    checkboxItem.click();
+  } else {
+    console.warn(`Checkbox with bind ID ${boundId} not found.`);
+  }
+}
 
 // Attach event listeners globally
 document.addEventListener('keydown', handleKeybindInput);
@@ -2001,9 +1946,6 @@ document.addEventListener('mousedown', handleMouseInput);
       case 'togglekey': 
         activateCheckboxByKeybind(msg.data.key);
         break;
-      case 'applyConfigAndBinds': // NEW
-        applyConfigAndBinds(msg.data);
-        break;
     }
   });
 
@@ -2054,8 +1996,11 @@ document.addEventListener('mousedown', handleMouseInput);
       goBack();
       break;
     default:
-        // Keybinds are now handled by Lua, which sends a 'togglekey' message.
-        // The check here is removed to prevent double-toggling.
+        // Check for general keybinds if no other key was handled
+        if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
+            e.preventDefault();
+            activateCheckboxByKeybind(e.key);
+        }
         break;
   }
 });
