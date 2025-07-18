@@ -1406,629 +1406,672 @@
   updateLocalTimeAndDate();
   setInterval(updateLocalTimeAndDate, 1_000);
 
-  // State
-  let selectedIndex   = 0;
-  let previousIndex  = 0;
-  let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
-  let currentSubTab   = 0;
-  let previousTab = 0; // track the tab/subtab user entered from
-  let previousSubTab = 0; // track the tab/subtab user entered from
-  let menuVisible     = true;
+  // -------------------------------------------------------------------
+  // FIX: ALL SCRIPT LOGIC IS NOW WRAPPED IN DOMCONTENTLOADED
+  // This ensures that the script does not try to access DOM elements
+  // before they have been created by the browser, fixing the error.
+  // -------------------------------------------------------------------
+  document.addEventListener('DOMContentLoaded', () => {
+    // State
+    let selectedIndex   = 0;
+    let previousIndex  = 0;
+    let currentTab      = 0; // 0=Main,1=ScriptsList,2=Settings,3=PlayerOpts,4=Misc,5=ScriptsOpts
+    let currentSubTab   = 0;
+    let previousTab = 0; // track the tab/subtab user entered from
+    let previousSubTab = 0; // track the tab/subtab user entered from
+    let menuVisible     = true;
 
-  // DOM refs
-  const menuWrapper     = document.querySelector('.menu-wrapper');
-  const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
-  const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
-  const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
-  const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
-  const vehicleTabs     = document.querySelectorAll('#vehicle-tabs .menu-tab');
-  const espTabs         = document.querySelectorAll('#esp-tabs .menu-tab');
-  const teleportTabs    = document.querySelectorAll('#teleport-tabs .menu-tab');
-  const weaponsTabs     = document.querySelectorAll('#weapons-tabs .menu-tab');
-  const modelTabs       = document.querySelectorAll('#model-tabs .menu-tab');
-  const outfitsTabs     = document.querySelectorAll('#outfits-tabs .menu-tab');
-  const worldTabs       = document.querySelectorAll('#world-tabs .menu-tab');
-  const serverTabs      = document.querySelectorAll('#server-tabs .menu-tab');
-  const forceTabs       = document.querySelectorAll('#Force-tabs .menu-tab');
+    // DOM refs
+    const menuWrapper     = document.querySelector('.menu-wrapper');
+    const mainTabs        = document.querySelectorAll('#menu-tabs .menu-tab');
+    const playerTabs      = document.querySelectorAll('#player-tabs .menu-tab');
+    const miscTabs        = document.querySelectorAll('#misc-tabs .menu-tab');
+    const scriptsTabs     = document.querySelectorAll('#scripts-tabs .menu-tab');
+    const vehicleTabs     = document.querySelectorAll('#vehicle-tabs .menu-tab');
+    const espTabs         = document.querySelectorAll('#esp-tabs .menu-tab');
+    const teleportTabs    = document.querySelectorAll('#teleport-tabs .menu-tab');
+    const weaponsTabs     = document.querySelectorAll('#weapons-tabs .menu-tab');
+    const modelTabs       = document.querySelectorAll('#model-tabs .menu-tab');
+    const outfitsTabs     = document.querySelectorAll('#outfits-tabs .menu-tab');
+    const worldTabs       = document.querySelectorAll('#world-tabs .menu-tab');
+    const serverTabs      = document.querySelectorAll('#server-tabs .menu-tab');
+    const forceTabs       = document.querySelectorAll('#Force-tabs .menu-tab');
 
-  const containers      = [
-    document.getElementById('main-items'),
-    document.getElementById('scripts-items'),
-    document.getElementById('settings-items'),
-    document.getElementById('player-options-items'),
-    document.getElementById('misc-options-items'),
-    document.getElementById('scripts-options-items'),
-    document.getElementById('vehicle-options-items'),
-    document.getElementById('esp-options-items'),
-    document.getElementById('teleport-options-items'),
-    document.getElementById('weapons-options-items'),
-    document.getElementById('model-options-items'),
-    document.getElementById('outfits-options-items'),
-    document.getElementById('world-options-items'),
-    document.getElementById('server-options-items'),
-    document.getElementById('Force-options-items')
-  ];
+    const containers      = [
+      document.getElementById('main-items'),
+      document.getElementById('scripts-items'),
+      document.getElementById('settings-items'),
+      document.getElementById('player-options-items'),
+      document.getElementById('misc-options-items'),
+      document.getElementById('scripts-options-items'),
+      document.getElementById('vehicle-options-items'),
+      document.getElementById('esp-options-items'),
+      document.getElementById('teleport-options-items'),
+      document.getElementById('weapons-options-items'),
+      document.getElementById('model-options-items'),
+      document.getElementById('outfits-options-items'),
+      document.getElementById('world-options-items'),
+      document.getElementById('server-options-items'),
+      document.getElementById('Force-options-items')
+    ];
 
-  const subContainers = [
-    document.getElementById('player-main-items'),
-    document.getElementById('player-movement-items'),
-    document.getElementById('misc-main-items'),
-    document.getElementById('misc-extra-items'),
-    document.getElementById('scripts-main-items'),
-    document.getElementById('misc-Built-items'),
-    document.getElementById('scripts-misc-items'),
-    document.getElementById('vehicle-main-items'),
-    document.getElementById('vehicle-spawner-items'),
-    document.getElementById('esp-main-items'),
-    document.getElementById('esp-toggle-items'),
-    document.getElementById('teleport-main-items'),
-    document.getElementById('teleport-player-items'),
-    document.getElementById('weapons-main-items'),
-    document.getElementById('weapons-aimbot-items'),
-    document.getElementById('weapons-spawner-items'),
-    document.getElementById('model-main-items'),
-    document.getElementById('outfits-main-items'),
-    document.getElementById('outfits-upper-items'),
-    document.getElementById('outfits-lower-items'),
-    document.getElementById('world-main-items'),
-    document.getElementById('world-atmosphere-items'),
-    document.getElementById('server-main-items'),
-    document.getElementById('server-destroyer-items'),
-    document.getElementById('Force-main-items')
-  ];
+    const subContainers = [
+      document.getElementById('player-main-items'),
+      document.getElementById('player-movement-items'),
+      document.getElementById('misc-main-items'),
+      document.getElementById('misc-extra-items'),
+      document.getElementById('scripts-main-items'),
+      document.getElementById('misc-Built-items'),
+      document.getElementById('scripts-misc-items'),
+      document.getElementById('vehicle-main-items'),
+      document.getElementById('vehicle-spawner-items'),
+      document.getElementById('esp-main-items'),
+      document.getElementById('esp-toggle-items'),
+      document.getElementById('teleport-main-items'),
+      document.getElementById('teleport-player-items'),
+      document.getElementById('weapons-main-items'),
+      document.getElementById('weapons-aimbot-items'),
+      document.getElementById('weapons-spawner-items'),
+      document.getElementById('model-main-items'),
+      document.getElementById('outfits-main-items'),
+      document.getElementById('outfits-upper-items'),
+      document.getElementById('outfits-lower-items'),
+      document.getElementById('world-main-items'),
+      document.getElementById('world-atmosphere-items'),
+      document.getElementById('server-main-items'),
+      document.getElementById('server-destroyer-items'),
+      document.getElementById('Force-main-items')
+    ];
 
-  const mainTabsEl      = document.getElementById('menu-tabs');
-  const playerTabsEl    = document.getElementById('player-tabs');
-  const miscTabsEl      = document.getElementById('misc-tabs');
-  const scriptsTabsEl   = document.getElementById('scripts-tabs');
-  const vehicleTabsEl   = document.getElementById('vehicle-tabs');
-  const espTabsEl       = document.getElementById('esp-tabs');
-  const teleportTabsEl  = document.getElementById('teleport-tabs');
-  const weaponsTabsEl   = document.getElementById('weapons-tabs');
-  const modelTabsEl     = document.getElementById('model-tabs');
-  const outfitsTabsEl   = document.getElementById('outfits-tabs');
-  const worldTabsEl     = document.getElementById('world-tabs');
-  const serverTabsEl    = document.getElementById('server-tabs');
-  const forceTabsEl     = document.getElementById('Force-tabs');
+    const mainTabsEl      = document.getElementById('menu-tabs');
+    const playerTabsEl    = document.getElementById('player-tabs');
+    const miscTabsEl      = document.getElementById('misc-tabs');
+    const scriptsTabsEl   = document.getElementById('scripts-tabs');
+    const vehicleTabsEl   = document.getElementById('vehicle-tabs');
+    const espTabsEl       = document.getElementById('esp-tabs');
+    const teleportTabsEl  = document.getElementById('teleport-tabs');
+    const weaponsTabsEl   = document.getElementById('weapons-tabs');
+    const modelTabsEl     = document.getElementById('model-tabs');
+    const outfitsTabsEl   = document.getElementById('outfits-tabs');
+    const worldTabsEl     = document.getElementById('world-tabs');
+    const serverTabsEl    = document.getElementById('server-tabs');
+    const forceTabsEl     = document.getElementById('Force-tabs');
 
-  const scrollbarContainer = document.querySelector('.scrollbar-container');
-  const scrollbarThumb     = document.getElementById('scrollbar-thumb');
-  const menuCounter        = document.getElementById('menu-counter');
-  const playerToggle       = document.getElementById('player-options-toggle');
-  const miscToggle         = document.getElementById('misc-options-toggle');
-  const scriptsToggle      = document.getElementById('scripts-options-toggle');
-  const vehicleToggle      = document.getElementById('vehicle-options-toggle');
-  const espToggle          = document.getElementById('esp-options-toggle');
-  const teleportToggle     = document.getElementById('teleport-options-toggle');
-  const weaponsToggle      = document.getElementById('weapons-options-toggle');
-  const modelToggle        = document.getElementById('model-options-toggle');
-  const outfitsToggle      = document.getElementById('outfits-options-toggle');
-  const worldToggle        = document.getElementById('world-options-toggle');
-  const serverToggle       = document.getElementById('server-options-toggle');
-  const forceToggle        = document.getElementById('Force-options-toggle');
+    const scrollbarContainer = document.querySelector('.scrollbar-container');
+    const scrollbarThumb     = document.getElementById('scrollbar-thumb');
+    const menuCounter        = document.getElementById('menu-counter');
+    const playerToggle       = document.getElementById('player-options-toggle');
+    const miscToggle         = document.getElementById('misc-options-toggle');
+    const scriptsToggle      = document.getElementById('scripts-options-toggle');
+    const vehicleToggle      = document.getElementById('vehicle-options-toggle');
+    const espToggle          = document.getElementById('esp-options-toggle');
+    const teleportToggle     = document.getElementById('teleport-options-toggle');
+    const weaponsToggle      = document.getElementById('weapons-options-toggle');
+    const modelToggle        = document.getElementById('model-options-toggle');
+    const outfitsToggle      = document.getElementById('outfits-options-toggle');
+    const worldToggle        = document.getElementById('world-options-toggle');
+    const serverToggle       = document.getElementById('server-options-toggle');
+    const forceToggle        = document.getElementById('Force-options-toggle');
 
-  const infoBox = document.getElementById("info-notification-box");
-  const infoTextContainer = infoBox.querySelector(".text-container");
-  let infoTimer = null;
+    const infoBox = document.getElementById("info-notification-box");
+    const infoTextContainer = infoBox.querySelector(".text-container");
+    let infoTimer = null;
 
-  function showInfo(text) {
-      if(infoTimer) clearTimeout(infoTimer);
-      if (text) {
-          infoTextContainer.textContent = text;
-          infoBox.classList.add("active");
+    function showInfo(text) {
+        if(infoTimer) clearTimeout(infoTimer);
+        if (text) {
+            infoTextContainer.textContent = text;
+            infoBox.classList.add("active");
+        }
+    }
+
+    function hideInfo() {
+        infoBox.classList.remove("active");
+    }
+
+    function getMenuItems() {
+      if (currentTab <= 2) {
+        return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+          .filter(i => i.offsetParent !== null);
       }
-  }
-
-  function hideInfo() {
-      infoBox.classList.remove("active");
-  }
-
-  function getMenuItems() {
-    if (currentTab <= 2) {
-      return Array.from(containers[currentTab].querySelectorAll('.menu-item'))
+      const subIndexMap = {
+      3: 0, 4: 2, 5: 4, 6: 7, 7: 9, 8: 11,
+      9: 13, 10: 16, 11: 17, 12: 20, 13: 22,
+      14: 24 // <-- Add this!
+      };
+      const start = subIndexMap[currentTab] || 0;
+      return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
         .filter(i => i.offsetParent !== null);
     }
-    const subIndexMap = {
-    3: 0, 4: 2, 5: 4, 6: 7, 7: 9, 8: 11,
-    9: 13, 10: 16, 11: 17, 12: 20, 13: 22,
-    14: 24 // <-- Add this!
-    };
-    const start = subIndexMap[currentTab] || 0;
-    return Array.from(subContainers[start + currentSubTab].querySelectorAll('.menu-item'))
-      .filter(i => i.offsetParent !== null);
+
+    function updateMenuSelection(dir) {
+      const items = getMenuItems();
+      if (!items.length) {
+          hideInfo();
+          return;
+      }
+
+      // Deselect old item and hide its info if necessary
+      const oldItem = items[selectedIndex];
+      if(oldItem) {
+          oldItem.classList.remove('selected');
+      }
+      hideInfo();
+
+
+      // Update index
+      selectedIndex = (selectedIndex + dir + items.length) % items.length;
+
+      // Get new selected item
+      const newItem = items[selectedIndex];
+      newItem.classList.add('selected');
+      newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      // Show info for the new item
+      if (newItem.hasAttribute('info')) {
+          showInfo(newItem.getAttribute('info'));
+      }
+
+
+      // Update scrollbar
+      const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
+      const step = items.length > 1 ? max / (items.length - 1) : 0;
+      scrollbarThumb.style.top = `${selectedIndex * step}px`;
+
+      // Update counter
+      menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
+    }
+    
+    function clearSelection() {
+      document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
+    }
+
+    function updateTabUI(tabIdx, reset = true) {
+      // Ensure previousTab and previousSubTab are updated when the tab changes
+      if (tabIdx !== currentTab) {
+        previousTab = currentTab;
+        previousSubTab = currentSubTab;
+      }
+
+      currentTab = tabIdx;
+      clearSelection();
+
+      if (reset) {
+        if (tabIdx === previousTab) {
+          selectedIndex = previousIndex;
+        } else {
+          previousIndex = selectedIndex;
+          selectedIndex = 0;
+        }
+      }
+
+      // hide all headers
+      const groups = [
+        document.getElementById('menu-tabs'),
+        document.getElementById('player-tabs'),
+        document.getElementById('misc-tabs'),
+        document.getElementById('scripts-tabs'),
+        document.getElementById('vehicle-tabs'),
+        document.getElementById('esp-tabs'),
+        document.getElementById('teleport-tabs'),
+        document.getElementById('weapons-tabs'),
+        document.getElementById('model-tabs'),
+        document.getElementById('outfits-tabs'),
+        document.getElementById('world-tabs'),
+        document.getElementById('server-tabs'),
+        document.getElementById('Force-tabs')
+      ];
+      groups.forEach(g => {
+          if (g) { // FIX: Check if the element exists before accessing its style
+              g.style.display = 'none';
+          }
+      });
+
+      // show current header
+      const displayMap = {
+        0: 0, 1: 0, 2: 0,
+        3: 1, 4: 2, 5: 3,
+        6: 4, 7: 5, 8: 6,
+        9: 7, 10: 8, 11: 9,
+        12: 10, 13: 11,
+        14: 12 
+      };
+      const groupToShow = groups[displayMap[tabIdx]];
+      if (groupToShow) { // FIX: Check if the element to show exists
+          groupToShow.style.display = 'flex';
+      }
+
+      // highlight tabs
+      mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
+      [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs] // FIX: Added forceTabs
+        .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
+
+      // show containers
+      containers.forEach((c,i) => {
+          if (c) { // FIX: Check if container exists
+              c.style.display = i===tabIdx?'block':'none'
+          }
+      });
+      updateMenuSelection(0);
+      updateScrollbarHeight();
+
+      // show subs
+      subContainers.forEach(c => { if(c) c.style.display = 'none' }); // FIX: Check if sub-container exists
+      const countMap = {
+        3: 2, 4: 2, 5: 3,
+        6: 2, 7: 2, 8: 2,
+        9: 3, 10: 1, 11: 3,
+        12: 2, 13: 2,
+        14: 1 // Force Emote has 1 subtab: Force-main-items
+      };
+
+      const startMap = {
+        3: 0, 4: 2, 5: 4,
+        6: 7, 7: 9, 8: 11,
+        9: 13, 10: 16, 11: 17,
+        12: 20, 13: 22,
+        14: 24 // Force-main-items is at subContainers[24]
+      };
+
+      if (startMap[tabIdx] !== undefined) { // FIX: Guard this block for sub-menus only
+          const cCount = countMap[tabIdx] || 1;
+          for (let i = 0; i < cCount; i++) {
+            const subContainer = subContainers[startMap[tabIdx] + i];
+            if (subContainer) { // FIX: Check if sub-container exists
+              subContainer.style.display = i === currentSubTab ? 'block' : 'none';
+            }
+          }
+      }
+
+      // highlight first item
+      updateMenuSelection(0);
+      updateScrollbarHeight();
+    }
+
+    function updateTabSelection(dir) {
+      if (currentTab >= 3 && currentTab <= 14) {
+        const arrs = [
+          playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
+          weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs // FIX: Added forceTabs
+        ];
+        const arr = arrs[currentTab - 3];
+        if (arr) { // FIX: Check if tab array exists
+          currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
+        }
+      } else {
+        currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
+      }
+
+      // Update the selectedIndex and the menu selection after changing the tab
+      selectedIndex = 0;
+      updateTabUI(currentTab, true);
+      updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
+      updateScrollbarHeight();
+    }
+
+    // toggle buttons
+    [playerToggle, miscToggle, scriptsToggle, vehicleToggle, espToggle,
+    teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle, forceToggle]
+    .forEach((el, i) => {
+        if (el) { // Add a null check to prevent errors if an element is missing
+            el.addEventListener('click', () => { currentSubTab = 0; updateTabUI(i + 3); });
+        }
+    });
+
+  function updateslidervalue(dir) {
+    const items = getMenuItems();
+    const item = items[selectedIndex];
+    if (!item || !item.classList.contains('slider')) return;
+
+    const s = item._slider;
+    s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
+
+    const pct = (s.value - s.min) / (s.max - s.min);
+    const fillEl = s.fill || s.sliderFill; // supports both slider types
+    const valueEl = s.valueSpan;
+
+    if (fillEl) fillEl.style.width = (pct * 100) + '%';
+    if (valueEl) valueEl.textContent = s.value;
+
+    const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
+    if (fillEl) {
+      fillEl.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+    }
   }
 
-  function updateMenuSelection(dir) {
-    const items = getMenuItems();
-    if (!items.length) {
-        hideInfo();
+  function goBack() {
+    if (currentTab >= 3 && currentSubTab > 0) {
+      // We’re in a deep sub‐submenu: go up to its parent submenu
+      currentSubTab = 0;
+      selectedIndex = 0;
+      updateTabUI(currentTab, true);
+      updateScrollbarHeight();
+    }
+    else if (currentSubTab !== previousSubTab) {
+      // We have a different “previous” sub‐tab to return to
+      currentSubTab = previousSubTab;
+      selectedIndex = previousIndex;
+      updateTabUI(currentTab, true);
+      updateScrollbarHeight();
+    }
+    else if (currentTab !== previousTab) {
+      // We have a different “previous” top‐level tab to return to
+      currentTab = previousTab;
+      selectedIndex = previousIndex;
+      currentSubTab = 0;              // ensure we reset any deeper sub‐tabs
+      updateTabUI(currentTab, true);
+      updateScrollbarHeight();
+    }
+    else if (currentTab === previousTab && currentTab === 0) {
+      // We’re already on main tab and can’t go up any further → close menu
+      menuVisible = false;
+      menuWrapper.style.display = 'none';
+      // After hiding the menu, we still recalc scroll height so that
+      // if reopened, it’s correct for the default/main list
+      updateScrollbarHeight();
+    }
+    else {
+      // We’re on some tab where previousTab === currentTab but not at root
+      // → reset everything back to the main tab
+      currentTab = 0;
+      previousTab = 0;
+      currentSubTab = 0;
+      previousIndex = 0;
+      selectedIndex = 0;
+      updateTabUI(currentTab, true);
+      updateMenuSelection(0);
+      updateScrollbarHeight();
+    }
+  }
+
+  let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'];
+
+  let currentBindKey = null;
+  let bindMenuVisible = false;
+  let currentBindingId = null;
+  let firstInit = true;
+  let openMenuKey = 'F5'; // Default open key
+
+  const bindingMap = {}; // key → globalBindId
+  const indexMap = {};   // globalBindId → key
+
+
+  function showbindmenu(isInitialSetup = false) {
+      const bindMenu = document.querySelector('.menu-binds');
+      const inputBox = bindMenu.querySelector('input');
+      const textElem = bindMenu.querySelector('.text');
+
+      if (isInitialSetup) {
+          currentBindingId = 'open-key';
+          textElem.textContent = "Press Any Key To Set Open-Key";
+      } else {
+          const items = getMenuItems();
+          const selectedItem = items[selectedIndex];
+          if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
+          currentBindingId = selectedItem.dataset.globalBindId;
+          textElem.textContent = "Press a key to bind, or DELETE to unbind.";
+      }
+
+      bindMenuVisible = true;
+      bindMenu.classList.add('visible');
+      inputBox.value = indexMap[currentBindingId] || (isInitialSetup ? openMenuKey : '');
+      inputBox.focus();
+      currentBindKey = null;
+  }
+
+  function handleKeybindInput(event) {
+    if (!bindMenuVisible) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const k = event.key.toUpperCase();
+
+    if (k === 'ENTER' && currentBindKey) {
+      lockKeyBinding();
+      return;
+    }
+    
+    if (k === 'ESCAPE') {
+      bindMenuVisible = false;
+      document.querySelector('.menu-binds').classList.remove('visible');
+      return;
+    }
+
+    if (keys.includes(k) || k.startsWith('F') && !isNaN(k.substring(1))) {
+      currentBindKey = k;
+      const bindMenu = document.querySelector('.menu-binds');
+      bindMenu.querySelector('input').value = k;
+      bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
+    } else if (k === 'DELETE') {
+      currentBindKey = 'DELETE';
+      const bindMenu = document.querySelector('.menu-binds');
+      bindMenu.querySelector('input').value = 'UNBOUND';
+      bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
+    }
+  }
+
+  function handleMouseInput(event) {
+    if (!bindMenuVisible) return;
+
+    if (event.button === 1) { // Middle mouse button
+      currentBindKey = 'MOUSE3';
+      const bindMenu = document.querySelector('.menu-binds');
+      bindMenu.querySelector('input').value = 'MOUSE3';
+      bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
+    }
+  }
+
+  function lockKeyBinding() {
+      if (!currentBindKey || !currentBindingId) return;
+
+      const key = currentBindKey.toUpperCase();
+      const txt = document.querySelector('.menu-binds .text');
+
+      if (currentBindingId === 'open-key') {
+          openMenuKey = key;
+          firstInit = false;
+          txt.textContent = `Open key set to ${key}`;
+      } else {
+          // Unbind old keys
+          if (indexMap[currentBindingId]) {
+              delete bindingMap[indexMap[currentBindingId]];
+          }
+          if (bindingMap[key]) {
+              delete indexMap[bindingMap[key]];
+          }
+
+          if (key === 'DELETE') {
+              delete indexMap[currentBindingId];
+               txt.textContent = `Unbound`;
+          } else {
+              bindingMap[key] = currentBindingId;
+              indexMap[currentBindingId] = key;
+              txt.textContent = `Bound to ${key}`;
+          }
+      }
+
+      setTimeout(() => {
+          bindMenuVisible = false;
+          document.querySelector('.menu-binds').classList.remove('visible');
+      }, 1000);
+  }
+
+  function activateCheckboxByKeybind(key) {
+    const keyUpper = key.toUpperCase();
+    const boundId = bindingMap[keyUpper];
+    if (typeof boundId === 'undefined') return;
+
+    const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
+
+    if (checkboxItem) {
+      checkboxItem.click();
+    } else {
+      console.warn(`Checkbox with bind ID ${boundId} not found.`);
+    }
+  }
+
+  // Attach event listeners globally
+  document.addEventListener('keydown', handleKeybindInput);
+  document.addEventListener('mousedown', handleMouseInput);
+
+    window.addEventListener('message', ({ data }) => {
+      let msg = typeof data === 'string' ? JSON.parse(data) : data;
+      
+      switch (msg.type) {
+        case 'toggleMenu':
+          menuVisible = !!msg.data.visible;
+          if (!menuVisible) {
+            menuWrapper.style.display = 'none';
+            hideInfo();
+            return;
+          }
+          menuWrapper.style.display = 'flex';
+          updateTabUI(currentTab, false);
+          break;
+
+        case 'navigate':
+          updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
+          break;
+
+        case 'tab':
+          updateTabSelection(msg.data.direction === 'left' ? -1 : 1);
+          break;
+
+        case 'slide':
+          updateslidervalue(msg.data.direction === 'left' ? -1 : 1);
+          break;
+
+        case 'select':
+          getMenuItems()[selectedIndex]?.click();
+          break;
+
+        case 'selectbind':
+          lockKeyBinding();
+          break;
+
+        case 'back':
+          goBack();
+          break;
+
+        case 'keybind':
+          showbindmenu();
+          break;
+        case 'updatekey':
+          if (bindMenuVisible) {
+              handleKeybindInput({ key: msg.data.key, preventDefault: () => {}, stopPropagation: () => {} });
+          }
+          break;
+        case 'togglekey': 
+          activateCheckboxByKeybind(msg.data.key);
+          break;
+        // -------------------------------------------------------------------
+        // 🔑 FIX: ADDED THIS HANDLER TO SYNCHRONIZE BINDINGS FROM LUA
+        // -------------------------------------------------------------------
+        // When a config is loaded, Lua sends a complete map of all active bindings.
+        // This function clears the old JS binding maps and rebuilds them based
+        // on the data received from the Lua backend. This ensures that the
+        // frontend knows which key is bound to which menu item.
+        case 'syncBinds':
+          const loadedBinds = msg.data.binds;
+          
+          // 1. Clear the old JavaScript binding maps
+          for (const key in bindingMap) {
+              delete bindingMap[key];
+          }
+          for (const key in indexMap) {
+              delete indexMap[key];
+          }
+
+          // 2. Rebuild the maps from the loaded data
+          // The data comes in as { "bindId": "htmlKey" }
+          for (const bindId in loadedBinds) {
+              const htmlKey = loadedBinds[bindId];
+              if (htmlKey) {
+                  // The `bindId` from Lua (e.g., "PlayerOptions_Player::Gm") needs to match
+                  // the `data-global-bind-id` we assign to checkboxes in the DOM.
+                  // Let's find the DOM element to get its local, numeric ID.
+                  const itemElement = document.querySelector(`.menu-item[data-global-bind-id-name="${bindId}"]`);
+                  if (itemElement) {
+                      const numericBindId = itemElement.dataset.globalBindId;
+                      bindingMap[htmlKey.toUpperCase()] = numericBindId; // map: "NUMPAD5" -> "0"
+                      indexMap[numericBindId] = htmlKey.toUpperCase();   // map: "0" -> "NUMPAD5"
+                  }
+              }
+          }
+          console.log('Keybinds synchronized with Lua backend.', indexMap);
+          break;
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+    if (firstInit && bindMenuVisible) {
+        handleKeybindInput(e);
+        return;
+    }
+    if (!menuVisible) return;
+      
+    if (bindMenuVisible) { // If bind menu is open, it handles its own keys
+        handleKeybindInput(e);
         return;
     }
 
-    // Deselect old item and hide its info if necessary
-    const oldItem = items[selectedIndex];
-    if(oldItem) {
-        oldItem.classList.remove('selected');
-    }
-    hideInfo();
-
-
-    // Update index
-    selectedIndex = (selectedIndex + dir + items.length) % items.length;
-
-    // Get new selected item
-    const newItem = items[selectedIndex];
-    newItem.classList.add('selected');
-    newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
-    // Show info for the new item
-    if (newItem.hasAttribute('info')) {
-        showInfo(newItem.getAttribute('info'));
-    }
-
-
-    // Update scrollbar
-    const max = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
-    const step = items.length > 1 ? max / (items.length - 1) : 0;
-    scrollbarThumb.style.top = `${selectedIndex * step}px`;
-
-    // Update counter
-    menuCounter.textContent = `${selectedIndex + 1}/${items.length}`;
-  }
-  
-  function clearSelection() {
-    document.querySelectorAll('.menu-item.selected').forEach(el => el.classList.remove('selected'));
-  }
-
-  function updateTabUI(tabIdx, reset = true) {
-    // Ensure previousTab and previousSubTab are updated when the tab changes
-    if (tabIdx !== currentTab) {
-      previousTab = currentTab;
-      previousSubTab = currentSubTab;
-    }
-
-    currentTab = tabIdx;
-    clearSelection();
-
-    if (reset) {
-      if (tabIdx === previousTab) {
-        selectedIndex = previousIndex;
-      } else {
-        previousIndex = selectedIndex;
-        selectedIndex = 0;
-      }
-    }
-
-    // hide all headers
-    const groups = [
-      document.getElementById('menu-tabs'),
-      document.getElementById('player-tabs'),
-      document.getElementById('misc-tabs'),
-      document.getElementById('scripts-tabs'),
-      document.getElementById('vehicle-tabs'),
-      document.getElementById('esp-tabs'),
-      document.getElementById('teleport-tabs'),
-      document.getElementById('weapons-tabs'),
-      document.getElementById('model-tabs'),
-      document.getElementById('outfits-tabs'),
-      document.getElementById('world-tabs'),
-      document.getElementById('server-tabs'),
-      document.getElementById('Force-tabs')
-    ];
-    groups.forEach(g => {
-        if (g) { // FIX: Check if the element exists before accessing its style
-            g.style.display = 'none';
-        }
-    });
-
-    // show current header
-    const displayMap = {
-      0: 0, 1: 0, 2: 0,
-      3: 1, 4: 2, 5: 3,
-      6: 4, 7: 5, 8: 6,
-      9: 7, 10: 8, 11: 9,
-      12: 10, 13: 11,
-      14: 12 
-    };
-    const groupToShow = groups[displayMap[tabIdx]];
-    if (groupToShow) { // FIX: Check if the element to show exists
-        groupToShow.style.display = 'flex';
-    }
-
-    // highlight tabs
-    mainTabs.forEach((t,i) => t.classList.toggle('selected', tabIdx <=2 && i===tabIdx));
-    [playerTabs,miscTabs,scriptsTabs,vehicleTabs,espTabs,teleportTabs,weaponsTabs,modelTabs,outfitsTabs,worldTabs,serverTabs,forceTabs] // FIX: Added forceTabs
-      .forEach((arr, idx) => arr.forEach((t,i) => t.classList.toggle('selected', tabIdx===idx+3 && i===currentSubTab)));
-
-    // show containers
-    containers.forEach((c,i) => {
-        if (c) { // FIX: Check if container exists
-            c.style.display = i===tabIdx?'block':'none'
-        }
-    });
-    updateMenuSelection(0);
-    updateScrollbarHeight();
-
-    // show subs
-    subContainers.forEach(c => { if(c) c.style.display = 'none' }); // FIX: Check if sub-container exists
-    const countMap = {
-      3: 2, 4: 2, 5: 3,
-      6: 2, 7: 2, 8: 2,
-      9: 3, 10: 1, 11: 3,
-      12: 2, 13: 2,
-      14: 1 // Force Emote has 1 subtab: Force-main-items
-    };
-
-    const startMap = {
-      3: 0, 4: 2, 5: 4,
-      6: 7, 7: 9, 8: 11,
-      9: 13, 10: 16, 11: 17,
-      12: 20, 13: 22,
-      14: 24 // Force-main-items is at subContainers[24]
-    };
-
-    if (startMap[tabIdx] !== undefined) { // FIX: Guard this block for sub-menus only
-        const cCount = countMap[tabIdx] || 1;
-        for (let i = 0; i < cCount; i++) {
-          const subContainer = subContainers[startMap[tabIdx] + i];
-          if (subContainer) { // FIX: Check if sub-container exists
-            subContainer.style.display = i === currentSubTab ? 'block' : 'none';
-          }
-        }
-    }
-
-    // highlight first item
-    updateMenuSelection(0);
-    updateScrollbarHeight();
-  }
-
-  function updateTabSelection(dir) {
-    if (currentTab >= 3 && currentTab <= 14) {
-      const arrs = [
-        playerTabs, miscTabs, scriptsTabs, vehicleTabs, espTabs, teleportTabs,
-        weaponsTabs, modelTabs, outfitsTabs, worldTabs, serverTabs, forceTabs // FIX: Added forceTabs
-      ];
-      const arr = arrs[currentTab - 3];
-      if (arr) { // FIX: Check if tab array exists
-        currentSubTab = (currentSubTab + dir + arr.length) % arr.length;
-      }
-    } else {
-      currentTab = (currentTab + dir + mainTabs.length) % mainTabs.length;
-    }
-
-    // Update the selectedIndex and the menu selection after changing the tab
-    selectedIndex = 0;
-    updateTabUI(currentTab, true);
-    updateMenuSelection(0); // Ensure the menu reflects the first item on the newly selected tab
-    updateScrollbarHeight();
-  }
-
-  // toggle buttons
-  [playerToggle, miscToggle, scriptsToggle, vehicleToggle, espToggle,
-  teleportToggle, weaponsToggle, modelToggle, outfitsToggle, worldToggle, serverToggle, forceToggle]
-  .forEach((el, i) => el.addEventListener('click', () => { currentSubTab = 0; updateTabUI(i + 3); }));
-
-function updateslidervalue(dir) {
-  const items = getMenuItems();
-  const item = items[selectedIndex];
-  if (!item || !item.classList.contains('slider')) return;
-
-  const s = item._slider;
-  s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
-
-  const pct = (s.value - s.min) / (s.max - s.min);
-  const fillEl = s.fill || s.sliderFill; // supports both slider types
-  const valueEl = s.valueSpan;
-
-  if (fillEl) fillEl.style.width = (pct * 100) + '%';
-  if (valueEl) valueEl.textContent = s.value;
-
-  const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
-  if (fillEl) {
-    fillEl.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-  }
-}
-
-function goBack() {
-  if (currentTab >= 3 && currentSubTab > 0) {
-    // We’re in a deep sub‐submenu: go up to its parent submenu
-    currentSubTab = 0;
-    selectedIndex = 0;
-    updateTabUI(currentTab, true);
-    updateScrollbarHeight();
-  }
-  else if (currentSubTab !== previousSubTab) {
-    // We have a different “previous” sub‐tab to return to
-    currentSubTab = previousSubTab;
-    selectedIndex = previousIndex;
-    updateTabUI(currentTab, true);
-    updateScrollbarHeight();
-  }
-  else if (currentTab !== previousTab) {
-    // We have a different “previous” top‐level tab to return to
-    currentTab = previousTab;
-    selectedIndex = previousIndex;
-    currentSubTab = 0;              // ensure we reset any deeper sub‐tabs
-    updateTabUI(currentTab, true);
-    updateScrollbarHeight();
-  }
-  else if (currentTab === previousTab && currentTab === 0) {
-    // We’re already on main tab and can’t go up any further → close menu
-    menuVisible = false;
-    menuWrapper.style.display = 'none';
-    // After hiding the menu, we still recalc scroll height so that
-    // if reopened, it’s correct for the default/main list
-    updateScrollbarHeight();
-  }
-  else {
-    // We’re on some tab where previousTab === currentTab but not at root
-    // → reset everything back to the main tab
-    currentTab = 0;
-    previousTab = 0;
-    currentSubTab = 0;
-    previousIndex = 0;
-    selectedIndex = 0;
-    updateTabUI(currentTab, true);
-    updateMenuSelection(0);
-    updateScrollbarHeight();
-  }
-}
-
-let keys = ['CAPSLOCK', 'DELETE', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '+'];
-
-let currentBindKey = null;
-let bindMenuVisible = false;
-let currentBindingId = null;
-let firstInit = true;
-let openMenuKey = 'F5'; // Default open key
-
-const bindingMap = {}; // key → globalBindId
-const indexMap = {};   // globalBindId → key
-
-
-function showbindmenu(isInitialSetup = false) {
-    const bindMenu = document.querySelector('.menu-binds');
-    const inputBox = bindMenu.querySelector('input');
-    const textElem = bindMenu.querySelector('.text');
-
-    if (isInitialSetup) {
-        currentBindingId = 'open-key';
-        textElem.textContent = "Press Any Key To Set Open-Key";
-    } else {
-        const items = getMenuItems();
-        const selectedItem = items[selectedIndex];
-        if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
-        currentBindingId = selectedItem.dataset.globalBindId;
-        textElem.textContent = "Press a key to bind, or DELETE to unbind.";
-    }
-
-    bindMenuVisible = true;
-    bindMenu.classList.add('visible');
-    inputBox.value = indexMap[currentBindingId] || (isInitialSetup ? openMenuKey : '');
-    inputBox.focus();
-    currentBindKey = null;
-}
-
-function handleKeybindInput(event) {
-  if (!bindMenuVisible) return;
-  event.preventDefault();
-  event.stopPropagation();
-
-  const k = event.key.toUpperCase();
-
-  if (k === 'ENTER' && currentBindKey) {
-    lockKeyBinding();
-    return;
-  }
-  
-  if (k === 'ESCAPE') {
-    bindMenuVisible = false;
-    document.querySelector('.menu-binds').classList.remove('visible');
-    return;
-  }
-
-  if (keys.includes(k) || k.startsWith('F') && !isNaN(k.substring(1))) {
-    currentBindKey = k;
-    const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = k;
-    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
-  } else if (k === 'DELETE') {
-    currentBindKey = 'DELETE';
-    const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = 'UNBOUND';
-    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
-  }
-}
-
-function handleMouseInput(event) {
-  if (!bindMenuVisible) return;
-
-  if (event.button === 1) { // Middle mouse button
-    currentBindKey = 'MOUSE3';
-    const bindMenu = document.querySelector('.menu-binds');
-    bindMenu.querySelector('input').value = 'MOUSE3';
-    bindMenu.querySelector('.text').textContent = "Press Enter to confirm";
-  }
-}
-
-function lockKeyBinding() {
-    if (!currentBindKey || !currentBindingId) return;
-
-    const key = currentBindKey.toUpperCase();
-    const txt = document.querySelector('.menu-binds .text');
-
-    if (currentBindingId === 'open-key') {
-        openMenuKey = key;
-        firstInit = false;
-        txt.textContent = `Open key set to ${key}`;
-    } else {
-        // Unbind old keys
-        if (indexMap[currentBindingId]) {
-            delete bindingMap[indexMap[currentBindingId]];
-        }
-        if (bindingMap[key]) {
-            delete indexMap[bindingMap[key]];
-        }
-
-        if (key === 'DELETE') {
-            delete indexMap[currentBindingId];
-             txt.textContent = `Unbound`;
-        } else {
-            bindingMap[key] = currentBindingId;
-            indexMap[currentBindingId] = key;
-            txt.textContent = `Bound to ${key}`;
-        }
-    }
-
-    setTimeout(() => {
-        bindMenuVisible = false;
-        document.querySelector('.menu-binds').classList.remove('visible');
-    }, 1000);
-}
-
-function activateCheckboxByKeybind(key) {
-  const keyUpper = key.toUpperCase();
-  const boundId = bindingMap[keyUpper];
-  if (typeof boundId === 'undefined') return;
-
-  const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
-
-  if (checkboxItem) {
-    checkboxItem.click();
-  } else {
-    console.warn(`Checkbox with bind ID ${boundId} not found.`);
-  }
-}
-
-// Attach event listeners globally
-document.addEventListener('keydown', handleKeybindInput);
-document.addEventListener('mousedown', handleMouseInput);
-
-  window.addEventListener('message', ({ data }) => {
-    let msg = typeof data === 'string' ? JSON.parse(data) : data;
-    
-    switch (msg.type) {
-      case 'toggleMenu':
-        menuVisible = !!msg.data.visible;
-        if (!menuVisible) {
-          menuWrapper.style.display = 'none';
-          hideInfo();
-          return;
-        }
-        menuWrapper.style.display = 'flex';
-        updateTabUI(currentTab, false);
+    switch (e.key) {
+      case 'ArrowUp':
+        updateMenuSelection(-1);
         break;
-
-      case 'navigate':
-        updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
+      case 'ArrowDown':
+        updateMenuSelection(1);
         break;
-
-      case 'tab':
-        updateTabSelection(msg.data.direction === 'left' ? -1 : 1);
+      case 'Q':
+      case 'q':
+        updateTabSelection(-1);
         break;
-
-      case 'slide':
-        updateslidervalue(msg.data.direction === 'left' ? -1 : 1);
+      case 'E':
+      case 'e':
+        updateTabSelection(1);
         break;
-
-      case 'select':
-        getMenuItems()[selectedIndex]?.click();
+      case 'ArrowLeft':
+        updateslidervalue(-1);
         break;
-
-      case 'selectbind':
-        lockKeyBinding();
+      case 'ArrowRight':
+        updateslidervalue(1);
         break;
-
-      case 'back':
-        goBack();
-        break;
-
-      case 'keybind':
+      case 'F9':
         showbindmenu();
         break;
-      case 'updatekey':
-        if (bindMenuVisible) {
-            handleKeybindInput({ key: msg.data.key, preventDefault: () => {}, stopPropagation: () => {} });
-        }
+      case 'Enter':
+      case 'NumpadEnter':
+        getMenuItems()[selectedIndex]?.click();
         break;
-      case 'togglekey': 
-        activateCheckboxByKeybind(msg.data.key);
+      case 'Backspace':
+        goBack();
         break;
+      case 'Escape':
+        goBack();
+        break;
+      default:
+          // Check for general keybinds if no other key was handled
+          if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
+              e.preventDefault();
+              activateCheckboxByKeybind(e.key);
+          }
+          break;
     }
   });
 
-  document.addEventListener('keydown', (e) => {
-  if (firstInit && bindMenuVisible) {
-      handleKeybindInput(e);
-      return;
-  }
-  if (!menuVisible) return;
-    
-  if (bindMenuVisible) { // If bind menu is open, it handles its own keys
-      handleKeybindInput(e);
-      return;
-  }
+    function updateScrollbarHeight() {
+      const menuItemsContainer = document.querySelector('.menu-items-container');
+      const scrollbarContainer = document.querySelector('.scrollbar-container');
+      
+      // Get the height of the menu-items-container and cap it at 400px
+      const containerHeight = Math.min(menuItemsContainer.scrollHeight, 400);
+      
+      // Set the scrollbar height to match the container's height
+      scrollbarContainer.style.height = `${containerHeight}px`;
+    }
 
-  switch (e.key) {
-    case 'ArrowUp':
-      updateMenuSelection(-1);
-      break;
-    case 'ArrowDown':
-      updateMenuSelection(1);
-      break;
-    case 'Q':
-    case 'q':
-      updateTabSelection(-1);
-      break;
-    case 'E':
-    case 'e':
-      updateTabSelection(1);
-      break;
-    case 'ArrowLeft':
-      updateslidervalue(-1);
-      break;
-    case 'ArrowRight':
-      updateslidervalue(1);
-      break;
-    case 'F9':
-      showbindmenu();
-      break;
-    case 'Enter':
-    case 'NumpadEnter':
-      getMenuItems()[selectedIndex]?.click();
-      break;
-    case 'Backspace':
-      goBack();
-      break;
-    case 'Escape':
-      goBack();
-      break;
-    default:
-        // Check for general keybinds if no other key was handled
-        if (bindingMap.hasOwnProperty(e.key.toUpperCase())) {
-            e.preventDefault();
-            activateCheckboxByKeybind(e.key);
-        }
-        break;
-  }
-});
-
-  function updateScrollbarHeight() {
-    const menuItemsContainer = document.querySelector('.menu-items-container');
-    const scrollbarContainer = document.querySelector('.scrollbar-container');
-    
-    // Get the height of the menu-items-container and cap it at 400px
-    const containerHeight = Math.min(menuItemsContainer.scrollHeight, 400);
-    
-    // Set the scrollbar height to match the container's height
-    scrollbarContainer.style.height = `${containerHeight}px`;
-  }
-
-  // Call this function every time the menu items are updated or the height might change
-  updateScrollbarHeight();
-
-  // DOMContentLoaded: build UI then init once
-document.addEventListener('DOMContentLoaded', () => {
+    // Call this function every time the menu items are updated or the height might change
+    updateScrollbarHeight();
 
     document.querySelectorAll(".menu-item[info]").forEach((item) => {
         item.addEventListener("mouseenter", () => {
@@ -2045,158 +2088,161 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-  // Assign a unique global ID to each bindable checkbox
-  let globalBindCounter = 0;
-  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      item.dataset.globalBindId = globalBindCounter++;
-  });
-
-  // === 1. Checkbox-only ===
-  document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
-    const text = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = text;
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.style.display = 'none';
-
-    const toggleTrack = document.createElement('div');
-    toggleTrack.className = 'toggle-track';
-
-    const toggleThumb = document.createElement('div');
-    toggleThumb.className = 'toggle-thumb';
-    toggleTrack.appendChild(toggleThumb);
-
-    item.append(label, input, toggleTrack);
-
-    item.addEventListener('click', (e) => {
-      // Stop the click from propagating if it's a checkbox, to avoid double-toggling issues
-      e.stopPropagation();
-      item.classList.toggle('toggled');
-      toggleThumb.classList.add('stretch');
-      setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
-
-      input.checked = item.classList.contains('toggled');
+    // Assign a unique global ID to each bindable checkbox
+    let globalBindCounter = 0;
+    document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+        // This is the numeric ID used internally by the JS
+        item.dataset.globalBindId = globalBindCounter++; 
+        // This is the string-based ID from Lua that we'll use for syncing
+        item.dataset.globalBindIdName = item.textContent.trim();
     });
-  });
 
-  // === 2. Slider-only ===
-  document.querySelectorAll('.menu-item.slider:not(.checkbox)').forEach(item => {
-    const min   = +item.dataset.min,
-          max   = +item.dataset.max,
-          step  = +item.dataset.step;
-    let   value = +item.dataset.value;
+    // === 1. Checkbox-only ===
+    document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
 
-    const labelText = item.textContent.trim();
-    item.textContent = '';
+      const label = document.createElement('span');
+      label.textContent = text;
 
-    const label = document.createElement('span');
-    label.textContent = labelText;
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none';
 
-    const track = document.createElement('div');
-    track.className = 'slider-track';
+      const toggleTrack = document.createElement('div');
+      toggleTrack.className = 'toggle-track';
 
-    const fill = document.createElement('div');
-    fill.className = 'slider-fill';
-    track.appendChild(fill);
+      const toggleThumb = document.createElement('div');
+      toggleThumb.className = 'toggle-thumb';
+      toggleTrack.appendChild(toggleThumb);
 
-    const valueSpan = document.createElement('span');
-    valueSpan.className = 'value';
-    valueSpan.textContent = value;
-    track.appendChild(valueSpan);
+      item.append(label, input, toggleTrack);
 
-    item._slider = { min, max, step, value, valueSpan, fill };
-
-    item.append(label, track);
-
-    const render = () => {
-      const s = item._slider;
-      const pct = (s.value - s.min) / (s.max - s.min);
-      s.fill.style.width = `${pct * 100}%`;
-      s.valueSpan.textContent = s.value;
-
-      const px1 = 2 + pct * 3,
-            px2 = 5 + pct * 5,
-            px3 = 9 + pct * 9;
-      s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-    };
-
-    render();
-  });
-
-  // === 3. Checkbox + Slider Combo ===
-  document.querySelectorAll('.menu-item.checkbox.slider').forEach(item => {
-    const text = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = text;
-
-    const min   = +item.dataset.min,
-          max   = +item.dataset.max,
-          step  = +item.dataset.step;
-    let   value = +item.dataset.value;
-
-    const sliderTrack = document.createElement('div');
-    sliderTrack.className = 'slider-track';
-
-    const sliderFill = document.createElement('div');
-    sliderFill.className = 'slider-fill';
-    sliderTrack.appendChild(sliderFill);
-
-    const valueSpan = document.createElement('span');
-    valueSpan.className = 'value';
-    valueSpan.textContent = value;
-    sliderTrack.appendChild(valueSpan);
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.style.display = 'none';
-
-    const toggleTrack = document.createElement('div');
-    toggleTrack.className = 'toggle-track';
-
-    const toggleThumb = document.createElement('div');
-    toggleThumb.className = 'toggle-thumb';
-    toggleTrack.appendChild(toggleThumb);
-
-    item._slider = { min, max, step, value, valueSpan, sliderFill };
-
-    item.append(label, sliderTrack, input, toggleTrack);
-
-    const render = () => {
-      const s = item._slider;
-      const pct = (s.value - s.min) / (s.max - s.min);
-      s.sliderFill.style.width = `${pct * 100}%`;
-      s.valueSpan.textContent = s.value;
-
-      const px1 = 2 + pct * 3,
-            px2 = 5 + pct * 5,
-            px3 = 9 + pct * 9;
-      s.sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-    };
-
-    render();
-
-    item.addEventListener('click', (e) => {
+      item.addEventListener('click', (e) => {
+        // Stop the click from propagating if it's a checkbox, to avoid double-toggling issues
         e.stopPropagation();
         item.classList.toggle('toggled');
         toggleThumb.classList.add('stretch');
         setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
+
         input.checked = item.classList.contains('toggled');
+      });
     });
+
+    // === 2. Slider-only ===
+    document.querySelectorAll('.menu-item.slider:not(.checkbox)').forEach(item => {
+      const min   = +item.dataset.min,
+            max   = +item.dataset.max,
+            step  = +item.dataset.step;
+      let   value = +item.dataset.value;
+
+      const labelText = item.textContent.trim();
+      item.textContent = '';
+
+      const label = document.createElement('span');
+      label.textContent = labelText;
+
+      const track = document.createElement('div');
+      track.className = 'slider-track';
+
+      const fill = document.createElement('div');
+      fill.className = 'slider-fill';
+      track.appendChild(fill);
+
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      valueSpan.textContent = value;
+      track.appendChild(valueSpan);
+
+      item._slider = { min, max, step, value, valueSpan, fill };
+
+      item.append(label, track);
+
+      const render = () => {
+        const s = item._slider;
+        const pct = (s.value - s.min) / (s.max - s.min);
+        s.fill.style.width = `${pct * 100}%`;
+        s.valueSpan.textContent = s.value;
+
+        const px1 = 2 + pct * 3,
+              px2 = 5 + pct * 5,
+              px3 = 9 + pct * 9;
+        s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      };
+
+      render();
+    });
+
+    // === 3. Checkbox + Slider Combo ===
+    document.querySelectorAll('.menu-item.checkbox.slider').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
+
+      const label = document.createElement('span');
+      label.textContent = text;
+
+      const min   = +item.dataset.min,
+            max   = +item.dataset.max,
+            step  = +item.dataset.step;
+      let   value = +item.dataset.value;
+
+      const sliderTrack = document.createElement('div');
+      sliderTrack.className = 'slider-track';
+
+      const sliderFill = document.createElement('div');
+      sliderFill.className = 'slider-fill';
+      sliderTrack.appendChild(sliderFill);
+
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      valueSpan.textContent = value;
+      sliderTrack.appendChild(valueSpan);
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none';
+
+      const toggleTrack = document.createElement('div');
+      toggleTrack.className = 'toggle-track';
+
+      const toggleThumb = document.createElement('div');
+      toggleThumb.className = 'toggle-thumb';
+      toggleTrack.appendChild(toggleThumb);
+
+      item._slider = { min, max, step, value, valueSpan, sliderFill };
+
+      item.append(label, sliderTrack, input, toggleTrack);
+
+      const render = () => {
+        const s = item._slider;
+        const pct = (s.value - s.min) / (s.max - s.min);
+        s.sliderFill.style.width = `${pct * 100}%`;
+        s.valueSpan.textContent = s.value;
+
+        const px1 = 2 + pct * 3,
+              px2 = 5 + pct * 5,
+              px3 = 9 + pct * 9;
+        s.sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      };
+
+      render();
+
+      item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('toggled');
+          toggleThumb.classList.add('stretch');
+          setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
+          input.checked = item.classList.contains('toggled');
+      });
+    });
+
+    if (firstInit) {
+        showbindmenu(true);
+    } else {
+        updateTabUI(0);
+    }
+
   });
-
-  if (firstInit) {
-      showbindmenu(true);
-  } else {
-      updateTabUI(0);
-  }
-
-});
   </script>
 </body>
 </html>
