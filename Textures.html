@@ -1911,8 +1911,9 @@ document.addEventListener('mousedown', handleMouseInput);
         break;
 
       // --- [FIXED & IMPROVED] ---
-      // This case handles the full config sync from Lua
-      case 'syncConfig': {
+      // This case handles the full config sync from Lua.
+      // The event name has been changed from 'syncConfig' to match the Lua script.
+      case 'heartbeatSync': {
         const { binds, states } = msg.data;
 
         // --- 1. Sync Bindings ---
