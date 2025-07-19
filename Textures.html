@@ -464,79 +464,64 @@
       <div class="menu-header"></div>
       
   
-      <!-- original top-level tabs -->
       <div class="menu-tabs" id="menu-tabs">
         <div class="menu-tab selected" id="main-tab">Main</div>
         <div class="menu-tab" id="scripts-tab">Scripts</div>
         <div class="menu-tab" id="settings-tab">Settings</div>
       </div>
   
-      <!-- new Player-Options tabs (hidden until you enter PO) -->
       <div class="menu-tabs" id="player-tabs" style="display: none;">
         <div class="menu-tab selected" id="player-main-tab">Player</div>
         <div class="menu-tab" id="player-movement-tab">Movement</div>
       </div>
-      <!-- misc settings tabs -->
       <div class="menu-tabs" id="misc-tabs" style="display: none;">
         <div class="menu-tab selected" id="misc-main-tab">Misc</div>
         <div class="menu-tab" id="misc-settings-tab">Extra Options</div>
       </div>
-      <!-- scripts tabs -->
       <div class="menu-tabs" id="scripts-tabs" style="display: none;">
         <div class="menu-tab selected" id="scripts-main-tab">Scripts</div>
         <div class="menu-tab" id="scripts-Built-tab">Built-In</div>
         <div class="menu-tab" id="scripts-misc-tab">Misc</div>
       </div>
-      <!-- scripts tabs -->
       <div class="menu-tabs" id="Force-tabs" style="display: none;">
         <div class="menu-tab selected" id="Force-main-tab">Force Emote</div>
       </div>
-      <!-- vehicle tabs -->
       <div class="menu-tabs" id="vehicle-tabs" style="display: none;">
         <div class="menu-tab selected" id="vehicle-main-tab">Vehicle</div>
         <div class="menu-tab" id="vehicle-spawner-tab">Mods</div>
       </div>
-      <!-- esp tabs -->
       <div class="menu-tabs" id="esp-tabs" style="display: none;">
         <div class="menu-tab selected" id="esp-main-tab">Esp</div>
         <div class="menu-tab" id="esp-toggle-tab">Toggles</div>
       </div>
-      <!-- teleport tabs -->
       <div class="menu-tabs" id="teleport-tabs" style="display: none;">
         <div class="menu-tab selected" id="teleport-main-tab">Teleport</div>
         <div class="menu-tab" id="teleport-player-tab">Player</div>
       </div>
-      <!-- weapons tabs -->
       <div class="menu-tabs" id="weapons-tabs" style="display: none;">
         <div class="menu-tab selected" id="weapons-main-tab">Weapon</div>
         <div class="menu-tab" id="weapons-aimbot-tab">Aimbot</div>
         <div class="menu-tab" id="weapons-spawner-tab">Spawner</div>
       </div>
-      <!-- model tabs -->
       <div class="menu-tabs" id="model-tabs" style="display: none;">
         <div class="menu-tab selected" id="model-main-tab">Model</div>
       </div>
-      <!-- outfits tabs -->
       <div class="menu-tabs" id="outfits-tabs" style="display: none;">
         <div class="menu-tab selected" id="outfits-main-tab">Outfits</div>
         <div class="menu-tab" id="outfits-upper-tab">Clothing</div>
         <div class="menu-tab" id="outfits-lower-tab">Props</div>
       </div>
-      <!-- world tabs -->
       <div class="menu-tabs" id="world-tabs" style="display: none;">
         <div class="menu-tab selected" id="world-main-tab">World</div>
         <div class="menu-tab" id="world-atmosphere-tab">Atmosphere</div>
       </div>
-      <!-- server tabs -->
       <div class="menu-tabs" id="server-tabs" style="display: none;">
         <div class="menu-tab selected" id="server-main-tab">Server</div>
         <div class="menu-tab" id="server-destoryer-tab">Destroyer</div>
       </div>
   
-      <!-- Menu items -->
       <div class="menu-items-container" id="menu-items-container">
-        <!-- Main -->
-      <div class="menu-items" id="main-items">
+        <div class="menu-items" id="main-items">
         <div class="menu-item" id="player-options-toggle">
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
           Player
@@ -715,23 +700,18 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <!-- Globe background -->
             <circle cx="32" cy="32" r="30" fill="#7851A9" />
 
-            <!-- Equator -->
             <line x1="2" y1="32" x2="62" y2="32" stroke="#currentColor" stroke-opacity="0.3" stroke-width="1.5" />
 
-            <!-- Longitude curves -->
             <path d="M32 2 C20 16, 20 48, 32 62 C44 48, 44 16, 32 2" stroke="#currentColor" stroke-opacity="0.3" stroke-width="1.5" fill="none" />
 
-            <!-- Continent 1 -->
             <path
               d="M16 18 C22 14, 34 14, 38 18 C42 22, 38 30, 34 34 C30 38, 22 38, 20 32 C18 28, 16 24, 16 18 Z"
               fill="#currentColor"
               fill-opacity="0.3"
             />
 
-            <!-- Continent 2 -->
             <path
               d="M42 40 C46 38, 52 38, 52 44 C52 50, 46 50, 42 46 C40 44, 40 42, 42 40 Z"
               fill="#currentColor"
@@ -753,21 +733,18 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <!-- Server rack 1 -->
             <rect x="6" y="6" width="52" height="14" rx="2" ry="2" fill="#7851A9" />
             <circle cx="12" cy="13" r="2" fill="#22ff22" />
             <circle cx="18" cy="13" r="2" fill="#ffcc00" />
             <circle cx="24" cy="13" r="2" fill="#ff4444" />
             <line x1="30" y1="13" x2="50" y2="13" stroke="#FFFFFF" stroke-width="1" />
 
-            <!-- Server rack 2 -->
             <rect x="6" y="25" width="52" height="14" rx="2" ry="2" fill="#7851A9" />
             <circle cx="12" cy="32" r="2" fill="#22ff22" />
             <circle cx="18" cy="32" r="2" fill="#ffcc00" />
             <circle cx="24" cy="32" r="2" fill="#ff4444" />
             <line x1="30" y1="32" x2="50" y2="32" stroke="#FFFFFF" stroke-width="1" />
 
-            <!-- Server rack 3 -->
             <rect x="6" y="44" width="52" height="14" rx="2" ry="2" fill="#7851A9" />
             <circle cx="12" cy="51" r="2" fill="#22ff22" />
             <circle cx="18" cy="51" r="2" fill="#ffcc00" />
@@ -778,7 +755,6 @@
         </div>
       </div>
   
-        <!-- Scripts -->
         <div class="menu-items" id="scripts-items" style="display: none;">
           <div class="menu-item" id="scripts-options-toggle">
           <svg
@@ -891,7 +867,6 @@
             Force Emote</div>
         </div>
   
-        <!-- Settings -->
         <div class="menu-items" id="settings-items" style="display: none;">
           <div class="menu-item">
           <svg
@@ -1108,13 +1083,11 @@
         </div>
 
         <div class="menu-items" id="scripts-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="scripts-main-items">
             <div class="menu-item">Add Item to Inventory</div>
-            <div class="menu-item checkbox">Force Hands up With F6</div>
-            <div class="menu-item checkbox">Auto-Rob Ox(Detected on Reaper)</div>
-            <!-- etc… -->
-          </div>
+            <div class="menu-item checkbox" data-bind-id="ScriptsOptions_Scripts::force hands up with f6">Force Hands up With F6</div>
+            <div class="menu-item checkbox" data-bind-id="ScriptsOptions_Scripts::Ox Robber">Auto-Rob Ox(Detected on Reaper)</div>
+            </div>
           <div class="menu-items" id="misc-Built-items" style="display: none;">
             <div class="menu-item">Throw Cars/Props/Peds</div>
             <div class="menu-item">Earthquake</div>
@@ -1125,18 +1098,15 @@
         </div>
 
         <div class="menu-items" id="Force-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="Force-main-items">
             <div class="menu-item">Force 1</div>
             <div class="menu-item">Force 2</div>
-            <!-- etc… -->
-          </div>
+            </div>
         </div>
 
         <div class="menu-items" id="misc-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="misc-main-items">
-            <div class="menu-item checkbox">Move & Resize Menu</div>
+            <div class="menu-item checkbox" data-bind-id="MiscOptions_Misc::Mouseshit">Move & Resize Menu</div>
             <div class="menu-item">Save Config 1</div>
             <div class="menu-item">Save Config 2</div>
             <div class="menu-item">Save Config 3</div>
@@ -1147,83 +1117,68 @@
             <div class="menu-item">Load Config 3</div>
             <div class="menu-item">Load Config 4</div>
             <div class="menu-item">Load Config 5</div>
-            <!-- etc… -->
-          </div>
+            </div>
           <div class="menu-items" id="misc-extra-items" style="display: none;">
             <div class="menu-item">Damn you found a placeholder</div>
           </div>
         </div>
   
-        <!-- Main Options -->
-        <!-- Player Options full screen -->
         <div class="menu-items" id="player-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="player-main-items">
-            <div class="menu-item checkbox slider" data-min="0" data-max="3" data-step="1" data-value="0" info = "0:Safe 1:Basic 2:headshots 3:Full">Godmode</div>
+            <div class="menu-item checkbox slider" data-bind-id="PlayerOptions_Player::Gm" data-min="0" data-max="3" data-step="1" data-value="0" info = "0:Safe 1:Basic 2:headshots 3:Full">Godmode</div>
             <div class="menu-item">Fill Hp</div>
             <div class="menu-item">Fill Armour</div>
-            <div class="menu-item checkbox">Invisible</div>
-            <div class="menu-item checkbox">One Punch</div>
-            <!-- etc… -->
-          </div>
-          <!-- Movement panel -->
+            <div class="menu-item checkbox" data-bind-id="PlayerOptions_Player::Invisible">Invisible</div>
+            <div class="menu-item checkbox" data-bind-id="PlayerOptions_Player::One Punch Goat">One Punch</div>
+            </div>
           <div class="menu-items" id="player-movement-items" style="display: none;">
-            <div class="menu-item checkbox slider" data-min="1" data-max="20" data-step="1" data-value="1">No-Clip</div>
-            <div class="menu-item checkbox slider" data-min="1" data-max="20" data-step="1" data-value="10">Super Run</div>
-            <div class="menu-item checkbox">Infinite Stamina</div>
-            <div class="menu-item checkbox">Anti-tp</div>
+            <div class="menu-item checkbox slider" data-bind-id="PlayerOptions_Movement::No Clip" data-min="1" data-max="20" data-step="1" data-value="1">No-Clip</div>
+            <div class="menu-item checkbox slider" data-bind-id="PlayerOptions_Movement::cold run" data-min="1" data-max="20" data-step="1" data-value="10">Super Run</div>
+            <div class="menu-item checkbox" data-bind-id="PlayerOptions_Movement::Infinite Stamina">Infinite Stamina</div>
+            <div class="menu-item checkbox" data-bind-id="PlayerOptions_Movement::Anti-tp">Anti-tp</div>
           </div>
         </div>
         <div class="menu-items" id="vehicle-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="vehicle-main-items">
-            <div class="menu-item checkbox slider" data-min="20" data-max="200" data-step="20" data-value="100">Boost</div>
-            <div class="menu-item checkbox slider" data-min="0" data-max="40" data-step="5" data-value="5">Easy Handling</div>
-            <div class="menu-item checkbox">Seatbelt</div>
-            <div class="menu-item checkbox slider" data-min="1" data-max="2" data-step="1" data-value="1" info = "1:safe 2:Full">Godmode</div>
+            <div class="menu-item checkbox slider" data-bind-id="VehicleOptions_Vehicle::Boost" data-min="20" data-max="200" data-step="20" data-value="100">Boost</div>
+            <div class="menu-item checkbox slider" data-bind-id="VehicleOptions_Vehicle::easyH" data-min="0" data-max="40" data-step="5" data-value="5">Easy Handling</div>
+            <div class="menu-item checkbox" data-bind-id="VehicleOptions_Vehicle::Cant Fly Off">Seatbelt</div>
+            <div class="menu-item checkbox slider" data-bind-id="VehicleOptions_Vehicle::Gm" data-min="1" data-max="2" data-step="1" data-value="1" info = "1:safe 2:Full">Godmode</div>
             <div class="menu-item">Repair</div>
-            <div class="menu-item checkbox slider" data-min="1" data-max="2" data-step="1" data-value="1" info = "1:Single 2:All">Road Rage</div>
-            <div class="menu-item checkbox">Ramp Handling</div>
-            <!-- etc… -->
-          </div>
-          <!-- spawner panel -->
+            <div class="menu-item checkbox slider" data-bind-id="VehicleOptions_Vehicle::road" data-min="1" data-max="2" data-step="1" data-value="1" info = "1:Single 2:All">Road Rage</div>
+            <div class="menu-item checkbox" data-bind-id="VehicleOptions_Vehicle::RampHandling">Ramp Handling</div>
+            </div>
           <div class="menu-items" id="vehicle-spawner-items" style="display: none;">
             <div class="menu-item">Spawn From Hash</div>
-            <div class="menu-item checkbox">Rainbow leds</div>
-            <div class="menu-item checkbox" info = "Press and hold F Nearby Player To Pull">Pull Players From Whip</div>
+            <div class="menu-item checkbox" data-bind-id="VehicleOptions_Spawner::Rainbowlights">Rainbow leds</div>
+            <div class="menu-item checkbox" data-bind-id="VehicleOptions_Spawner::Pull From Whip" info = "Press and hold F Nearby Player To Pull">Pull Players From Whip</div>
           </div>
         </div>
         <div class="menu-items" id="esp-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="esp-main-items">
-            <div class="menu-item checkbox">Enable Esp</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Esp::Enable esp">Enable Esp</div>
             <div class="menu-item slider" data-min="1" data-max="7" data-step="1" data-value="1" info = "1:White 2:Red 3:Green 4:Blue 5:Purple 6:Pink 7:yellow">Esp Color</div>
-            <!-- etc… -->
-          </div>
-          <!-- Toggles panel -->
+            </div>
           <div class="menu-items" id="esp-toggle-items" style="display: none;">
-            <div class="menu-item checkbox">Health</div>
-            <div class="menu-item checkbox">Armor</div>
-            <div class="menu-item checkbox">Bones</div>
-            <div class="menu-item checkbox">Boxes</div>
-            <div class="menu-item checkbox">Tracers</div>
-            <div class="menu-item checkbox">Legacy Info</div>
-            <div class="menu-item checkbox">Info (Legacy Recommended)</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Hp Bars">Health</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Armour Bars">Armor</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Bones">Bones</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Boxes">Boxes</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Tracers">Tracers</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::LegacyData">Legacy Info</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Infobar">Info (Legacy Recommended)</div>
             <div class="menu-item">vv Controls For Legacy Info vv</div>
-            <div class="menu-item checkbox">Name</div>
-            <div class="menu-item checkbox">Ids</div>
-            <div class="menu-item checkbox">Weapon</div>
-            <div class="menu-item checkbox">Distance</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Name">Name</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Ids">Ids</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Weapon">Weapon</div>
+            <div class="menu-item checkbox" data-bind-id="EspOptions_Toggles::Distance">Distance</div>
           </div>
         </div>
         <div class="menu-items" id="teleport-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="teleport-main-items">
             <div class="menu-item">Tp to Waypoint</div>
             <div class="menu-item">Tp to Coords</div>
-            <!-- etc… -->
-          </div>
-          <!-- player panel -->
+            </div>
           <div class="menu-items" id="teleport-player-items" style="display: none;">
             <div class="menu-item">Tp to Player by Look</div>
             <div class="menu-item">Tp to Player by Id</div>
@@ -1231,22 +1186,20 @@
           </div>
         </div>
         <div class="menu-items" id="weapons-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="weapons-main-items">
-            <div class="menu-item checkbox slider" data-min="25" data-max="500" data-step="25" data-value="100">Alter Damage</div>
+            <div class="menu-item checkbox slider" data-bind-id="WeaponsOptions_Weapon::Damage" data-min="25" data-max="500" data-step="25" data-value="100">Alter Damage</div>
             <div class="menu-item">Spread</div>
-            <!-- etc… -->
-          </div>
+            </div>
           <div class="menu-items" id="weapons-aimbot-items" style="display: none;">
-            <div class="menu-item checkbox">Aimbot</div>
+            <div class="menu-item checkbox" data-bind-id="WeaponsOptions_Aimbot::aimbot">Aimbot</div>
             <div class="menu-item">Aimbot Type</div>
-            <div class="menu-item checkbox">show Aimbot Fov</div>
+            <div class="menu-item checkbox" data-bind-id="WeaponsOptions_Aimbot::show aimbot fov">show Aimbot Fov</div>
             <div class="menu-item">Aimbot Fov</div>
           </div>
           <div class="menu-items" id="weapons-spawner-items" style="display: none;">
             <div class="menu-item">Spawn by Hash</div>
             <div class="menu-item">Spawner</div>
-            <div class="menu-item checkbox">Spoof</div>
+            <div class="menu-item checkbox" data-bind-id="WeaponsOptions_Spawner::Spoof">Spoof</div>
             <div class="menu-item">Add Ammo to Clip</div>
             <div class="menu-item">Add Ammo to Reserve</div>
             <div class="menu-item">Set Ammo to Clip</div>
@@ -1254,16 +1207,13 @@
           </div>
         </div>
         <div class="menu-items" id="model-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="model-main-items">
             <div class="menu-item">Changer</div>
             <div class="menu-item">Save Ped</div>
             <div class="menu-item">Load Peds</div>
-            <!-- etc… -->
-          </div>
+            </div>
         </div>
         <div class="menu-items" id="outfits-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="outfits-main-items">
             <div class="menu-item">Save Outfit 1</div>
             <div class="menu-item">Save Outfit 2</div>
@@ -1275,8 +1225,7 @@
             <div class="menu-item">Load Outfit 3</div>
             <div class="menu-item">Load Outfit 4</div>
             <div class="menu-item">Load Outfit 5</div>
-            <!-- etc… -->
-          </div>
+            </div>
           <div class="menu-items" id="outfits-upper-items">
             <div class="menu-item">Ph 0</div>
             <div class="menu-item">Ph 1</div>
@@ -1291,8 +1240,7 @@
             <div class="menu-item">Ph 10</div>
             <div class="menu-item">Ph 11</div>
             <div class="menu-item">Ph 12</div>
-            <!-- etc… -->
-          </div>
+            </div>
           <div class="menu-items" id="outfits-lower-items" style="display: none;">
             <div class="menu-item">Ph 0</div>
             <div class="menu-item">Ph 1</div>
@@ -1311,45 +1259,38 @@
           </div>
         </div>
         <div class="menu-items" id="world-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="world-main-items">
-            <div class="menu-item checkbox">Npcs Crashout</div>
-            <div class="menu-item checkbox">Floating Cars</div>
-            <div class="menu-item checkbox">Low Gravity</div>
-            <!-- etc… -->
-          </div>
-          <!-- atmosphere panel -->
+            <div class="menu-item checkbox" data-bind-id="WorldOptions_World::Npc Crash">Npcs Crashout</div>
+            <div class="menu-item checkbox" data-bind-id="WorldOptions_World::Flying whip">Floating Cars</div>
+            <div class="menu-item checkbox" data-bind-id="WorldOptions_World::Low Gravity">Low Gravity</div>
+            </div>
           <div class="menu-items" id="world-atmosphere-items" style="display: none;">
             <div class="menu-item">Time</div>
             <div class="menu-item">Weather</div>
           </div>
         </div>
         <div class="menu-items" id="server-options-items" style="display: none;">
-          <!-- Main panel -->
           <div class="menu-items" id="server-main-items">
             <div class="menu-item">God Mode All</div>
             <div class="menu-item">Invisible All</div>
-            <!-- etc… -->
-          </div>
-          <!-- destroyer panel -->
+            </div>
           <div class="menu-items" id="server-destroyer-items" style="display: none;">
-            <div class="menu-item checkbox">Destroy All</div>
-            <div class="menu-item checkbox">Cage All</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::Rape All">Destroy All</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::Cage All">Cage All</div>
             <div class="menu-item">Cage Nearest</div>
-            <div class="menu-item checkbox">Explode All</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::Explode All">Explode All</div>
             <div class="menu-item">Explode Nearest</div>
-            <div class="menu-item checkbox">Bird All</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::Seagull All">Bird All</div>
             <div class="menu-item">Bird Nearest</div>
-            <div class="menu-item checkbox">Boost All Cars</div>
-            <div class="menu-item checkbox">Glitch Cars On Crash</div>
-            <div class="menu-item checkbox">Nuke</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::Boost All Cars">Boost All Cars</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::Vglitcher">Glitch Cars On Crash</div>
+            <div class="menu-item checkbox" data-bind-id="ServerOptions_Destroyer::nuke">Nuke</div>
           </div>
         </div>
       </div>
       
       <div class="menu-binds">
-        <div class="text"></div>  <!-- This will hold the header text -->
-        <div class="inner-rect">
+        <div class="text"></div>  <div class="inner-rect">
             <input type="text" readonly />
         </div>
       </div>
@@ -1782,8 +1723,8 @@ let currentBindingId = null;
 let firstInit = true;
 let openMenuKey = 'F5'; // Default open key
 
-const bindingMap = {}; // key → globalBindId
-const indexMap = {};   // globalBindId → key
+const bindingMap = {}; // key → bindId
+const indexMap = {};   // bindId → key
 
 
 function showbindmenu(isInitialSetup = false) {
@@ -1798,7 +1739,8 @@ function showbindmenu(isInitialSetup = false) {
         const items = getMenuItems();
         const selectedItem = items[selectedIndex];
         if (!selectedItem || !selectedItem.classList.contains('checkbox')) return;
-        currentBindingId = selectedItem.dataset.globalBindId;
+        // 🟨 FIX: Use the permanent data-bind-id attribute
+        currentBindingId = selectedItem.dataset.bindId;
         textElem.textContent = "Press a key to bind, or DELETE to unbind.";
     }
 
@@ -1891,7 +1833,8 @@ function activateCheckboxByKeybind(key) {
   const boundId = bindingMap[keyUpper];
   if (typeof boundId === 'undefined') return;
 
-  const checkboxItem = document.querySelector(`.menu-item[data-global-bind-id="${boundId}"]`);
+  // 🟨 FIX: Use the permanent data-bind-id attribute for the selector
+  const checkboxItem = document.querySelector(`.menu-item[data-bind-id="${boundId}"]`);
 
   if (checkboxItem) {
     checkboxItem.click();
@@ -1919,7 +1862,7 @@ document.addEventListener('mousedown', handleMouseInput);
         updateTabUI(currentTab, false);
         break;
 
-      // NEW: Add this case to handle the full config sync
+      // 🟩 NEW/CORRECTED: This case now handles the full config sync properly
       case 'syncConfig': {
         const { binds, states } = msg.data;
 
@@ -1949,7 +1892,8 @@ document.addEventListener('mousedown', handleMouseInput);
             for (const bindId in states) {
                 if (Object.hasOwnProperty.call(states, bindId)) {
                     const savedState = states[bindId];
-                    const item = document.querySelector(`.menu-item[data-global-bind-id="${bindId}"]`);
+                    // 🟨 FIX: Use the permanent data-bind-id for the selector
+                    const item = document.querySelector(`.menu-item[data-bind-id="${bindId}"]`);
                     if (item) {
                         // Toggle the checkbox if its saved state is true
                         if (savedState.state) {
@@ -2103,11 +2047,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-  // Assign a unique global ID to each bindable checkbox
-  let globalBindCounter = 0;
-  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      item.dataset.globalBindId = globalBindCounter++;
-  });
+  // 🟥 REMOVED: The old logic that generated temporary numeric IDs is no longer needed.
+  // The permanent IDs are now part of the HTML structure.
 
   // === 1. Checkbox-only ===
   document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
