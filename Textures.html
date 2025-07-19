@@ -1919,6 +1919,64 @@ document.addEventListener('mousedown', handleMouseInput);
         updateTabUI(currentTab, false);
         break;
 
+      // NEW: Add this case to handle the full config sync
+      case 'syncConfig': {
+        const { binds, states } = msg.data;
+
+        // --- Sync Bindings ---
+        if (binds) {
+            Object.keys(bindingMap).forEach(key => delete bindingMap[key]);
+            Object.keys(indexMap).forEach(key => delete indexMap[key]);
+            for (const key in binds) {
+                if (Object.hasOwnProperty.call(binds, key)) {
+                    const bindId = binds[key];
+                    bindingMap[key.toUpperCase()] = bindId;
+                    indexMap[bindId] = key.toUpperCase();
+                }
+            }
+        }
+
+        // --- Sync UI States (Toggles and Sliders) ---
+        if (states) {
+            // 1. Reset all controls to their default (untoggled) state first
+            document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+                item.classList.remove('toggled');
+                const input = item.querySelector('input[type="checkbox"]');
+                if (input) input.checked = false;
+            });
+
+            // 2. Apply the loaded states from the config
+            for (const bindId in states) {
+                if (Object.hasOwnProperty.call(states, bindId)) {
+                    const savedState = states[bindId];
+                    const item = document.querySelector(`.menu-item[data-global-bind-id="${bindId}"]`);
+                    if (item) {
+                        // Toggle the checkbox if its saved state is true
+                        if (savedState.state) {
+                            item.classList.add('toggled');
+                            const input = item.querySelector('input[type="checkbox"]');
+                            if (input) input.checked = true;
+                        }
+                        
+                        // Update the slider's value if it's a slider combo
+                        if (item.classList.contains('slider') && savedState.value !== undefined && item._slider) {
+                            const s = item._slider;
+                            s.value = savedState.value;
+                            
+                            // Re-render the slider's UI to reflect the new value
+                            const pct = (s.value - s.min) / (s.max - s.min);
+                            const fillEl = s.fill || s.sliderFill;
+                            const valueEl = s.valueSpan;
+                            if (fillEl) fillEl.style.width = (pct * 100) + '%';
+                            if (valueEl) valueEl.textContent = s.value;
+                        }
+                    }
+                }
+            }
+        }
+        break;
+      }
+
       case 'navigate':
         updateMenuSelection(msg.data.direction === 'up' ? -1 : 1);
         break;
