@@ -1895,10 +1895,9 @@ function activateCheckboxByKeybind(key) {
 document.addEventListener('keydown', handleKeybindInput);
 document.addEventListener('mousedown', handleMouseInput);
 
-  window.addEventListener('message', ({ data }) => {
-    let msg = typeof data === 'string' ? JSON.parse(data) : data;
-    
-    switch (msg.type) {
+window.addEventListener('message', ({ data }) => {
+  let msg = typeof data === 'string' ? JSON.parse(data) : data;
+  switch (msg.type) {
       case 'toggleMenu':
         menuVisible = !!msg.data.visible;
         if (!menuVisible) {
@@ -1916,57 +1915,41 @@ document.addEventListener('mousedown', handleMouseInput);
       case 'heartbeatSync': {
         const { binds, states } = msg.data;
 
-        // --- 1. Sync Bindings ---
-        // Clear existing JS binding maps
-        Object.keys(bindingMap).forEach(key => delete bindingMap[key]);
-        Object.keys(indexMap).forEach(key => delete indexMap[key]);
-        
-        // Repopulate from the received data
+        // Sync key bindings: overwrite all maps
+        Object.keys(bindingMap).forEach(k => delete bindingMap[k]);
+        Object.keys(indexMap).forEach(k => delete indexMap[k]);
         if (binds) {
-            for (const key in binds) {
-                if (Object.hasOwnProperty.call(binds, key)) {
-                    const bindId = binds[key];
-                    bindingMap[key.toUpperCase()] = bindId;
-                    indexMap[bindId] = key.toUpperCase();
-                }
-            }
+          for (const key in binds) {
+            bindingMap[key.toUpperCase()] = binds[key];
+            indexMap[binds[key]] = key.toUpperCase();
+          }
         }
 
-        // --- 2. Sync UI States (Toggles and Sliders) ---
-        // Iterate over every single bindable item in the UI
+        // Sync all UI states
         document.querySelectorAll('.menu-item[data-global-bind-id]').forEach(item => {
-            const bindId = item.dataset.globalBindId;
-            const savedState = states ? states[bindId] : undefined;
+          const bindId = item.dataset.globalBindId;
+          const savedState = states ? states[bindId] : undefined;
+          if (savedState) {
+            // Checkbox toggle state
+            item.classList.toggle('toggled', !!savedState.state);
+            const input = item.querySelector('input[type="checkbox"]');
+            if (input) input.checked = !!savedState.state;
 
-            if (savedState) {
-                // This item has a saved state, so apply it
-                
-                // Handle the checkbox toggle state
-                const isToggled = !!savedState.state;
-                item.classList.toggle('toggled', isToggled);
-                const input = item.querySelector('input[type="checkbox"]');
-                if (input) input.checked = isToggled;
-
-                // Handle the slider value state (if it's a slider)
-                if (item.classList.contains('slider') && savedState.value !== undefined && item._slider) {
-                    item._slider.value = savedState.value;
-                    item._slider.render(); // Re-render the slider UI
-                }
-
-            } else {
-                // This item does NOT have a saved state, reset it to default
-                
-                // Reset checkbox toggle state
-                item.classList.remove('toggled');
-                const input = item.querySelector('input[type="checkbox"]');
-                if (input) input.checked = false;
-
-                // Reset slider value state (if it's a slider)
-                if (item.classList.contains('slider') && item._slider) {
-                    item._slider.value = +item.dataset.value; // Reset to default value from data attribute
-                    item._slider.render(); // Re-render the slider UI
-                }
+            // Slider value state
+            if (item.classList.contains('slider') && savedState.value !== undefined && item._slider) {
+              item._slider.value = savedState.value;
+              item._slider.render();
             }
+          } else {
+            // Reset to default
+            item.classList.remove('toggled');
+            const input = item.querySelector('input[type="checkbox"]');
+            if (input) input.checked = false;
+            if (item.classList.contains('slider') && item._slider) {
+              item._slider.value = +item.dataset.value;
+              item._slider.render();
+            }
+          }
         });
         break;
       }
