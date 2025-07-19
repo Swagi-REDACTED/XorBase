@@ -1823,7 +1823,7 @@ let currentBindKey = null;
 let bindMenuVisible = false;
 let currentBindingId = null;
 let firstInit = true;
-let openMenuKey = 'F5'; // Default open key
+let openMenuKey = 'CAPSLOCK'; // Default open key
 
 const bindingMap = {}; // key → globalBindId
 const indexMap = {};   // globalBindId → key
@@ -2029,6 +2029,16 @@ window.addEventListener('message', ({ data }) => {
           panel.classList.remove('active');
           setTimeout(() => panel.style.display = 'none', 500); // after slide up
         }
+      break;
+
+      case 'info':
+      // Show notification using your info-notification-box
+      showInfo(msg.data.text);
+      // Optionally auto-hide after msg.data.timeout ms
+      if (msg.data.timeout) {
+        if (window._infoHideTimer) clearTimeout(window._infoHideTimer);
+        window._infoHideTimer = setTimeout(hideInfo, msg.data.timeout);
+      }
       break;
 
       case 'navigate':
@@ -2304,7 +2314,8 @@ window.addEventListener('message', ({ data }) => {
       'world-main-items': 'WorldOptions_World',
       'server-destroyer-items': 'ServerOptions_Destroyer',
       'scripts-main-items': 'ScriptsOptions_Scripts',
-      'misc-main-items': 'MiscOptions_Misc'
+      'misc-main-items': 'MiscOptions_Misc',
+      'misc-extra-items': 'MiscOptions_Extra'
     };
 
     document.querySelectorAll('.menu-item.checkbox, .menu-item.slider').forEach(item => {
