@@ -2080,7 +2080,7 @@ document.addEventListener('mousedown', handleMouseInput);
   updateScrollbarHeight();
 
   // DOMContentLoaded: build UI then init once
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll(".menu-item[info]").forEach((item) => {
         item.addEventListener("mouseenter", () => {
@@ -2096,152 +2096,180 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // === 1. Checkbox-only ===
+    document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
 
-  // Assign a unique global ID to each bindable checkbox
-  let globalBindCounter = 0;
-  document.querySelectorAll('.menu-item.checkbox').forEach(item => {
-      item.dataset.globalBindId = globalBindCounter++;
-  });
+      const label = document.createElement('span');
+      label.textContent = text;
 
-  // === 1. Checkbox-only ===
-  document.querySelectorAll('.menu-item.checkbox:not(.slider)').forEach(item => {
-    const text = item.textContent.trim();
-    item.textContent = '';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none';
 
-    const label = document.createElement('span');
-    label.textContent = text;
+      const toggleTrack = document.createElement('div');
+      toggleTrack.className = 'toggle-track';
 
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.style.display = 'none';
+      const toggleThumb = document.createElement('div');
+      toggleThumb.className = 'toggle-thumb';
+      toggleTrack.appendChild(toggleThumb);
 
-    const toggleTrack = document.createElement('div');
-    toggleTrack.className = 'toggle-track';
+      item.append(label, input, toggleTrack);
 
-    const toggleThumb = document.createElement('div');
-    toggleThumb.className = 'toggle-thumb';
-    toggleTrack.appendChild(toggleThumb);
-
-    item.append(label, input, toggleTrack);
-
-    item.addEventListener('click', (e) => {
-      // Stop the click from propagating if it's a checkbox, to avoid double-toggling issues
-      e.stopPropagation();
-      item.classList.toggle('toggled');
-      toggleThumb.classList.add('stretch');
-      setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
-
-      input.checked = item.classList.contains('toggled');
-    });
-  });
-
-  // === 2. Slider-only ===
-  document.querySelectorAll('.menu-item.slider:not(.checkbox)').forEach(item => {
-    const min   = +item.dataset.min,
-          max   = +item.dataset.max,
-          step  = +item.dataset.step;
-    let   value = +item.dataset.value;
-
-    const labelText = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = labelText;
-
-    const track = document.createElement('div');
-    track.className = 'slider-track';
-
-    const fill = document.createElement('div');
-    fill.className = 'slider-fill';
-    track.appendChild(fill);
-
-    const valueSpan = document.createElement('span');
-    valueSpan.className = 'value';
-    valueSpan.textContent = value;
-    track.appendChild(valueSpan);
-
-    const render = () => {
-      const pct = (item._slider.value - min) / (max - min);
-      fill.style.width = `${pct * 100}%`;
-      valueSpan.textContent = item._slider.value;
-
-      const px1 = 2 + pct * 3,
-            px2 = 5 + pct * 5,
-            px3 = 9 + pct * 9;
-      fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-    };
-
-    item._slider = { min, max, step, value, render };
-    render();
-  });
-
-  // === 3. Checkbox + Slider Combo ===
-  document.querySelectorAll('.menu-item.checkbox.slider').forEach(item => {
-    const text = item.textContent.trim();
-    item.textContent = '';
-
-    const label = document.createElement('span');
-    label.textContent = text;
-
-    const min   = +item.dataset.min,
-          max   = +item.dataset.max,
-          step  = +item.dataset.step;
-    let   value = +item.dataset.value;
-
-    const sliderTrack = document.createElement('div');
-    sliderTrack.className = 'slider-track';
-
-    const sliderFill = document.createElement('div');
-    sliderFill.className = 'slider-fill';
-    sliderTrack.appendChild(sliderFill);
-
-    const valueSpan = document.createElement('span');
-    valueSpan.className = 'value';
-    valueSpan.textContent = value;
-    sliderTrack.appendChild(valueSpan);
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.style.display = 'none';
-
-    const toggleTrack = document.createElement('div');
-    toggleTrack.className = 'toggle-track';
-
-    const toggleThumb = document.createElement('div');
-    toggleThumb.className = 'toggle-thumb';
-    toggleTrack.appendChild(toggleThumb);
-
-    const render = () => {
-      const pct = (item._slider.value - min) / (max - min);
-      sliderFill.style.width = `${pct * 100}%`;
-      valueSpan.textContent = item._slider.value;
-
-      const px1 = 2 + pct * 3,
-            px2 = 5 + pct * 5,
-            px3 = 9 + pct * 9;
-      sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-    };
-
-    item._slider = { min, max, step, value, render };
-    item.append(label, sliderTrack, input, toggleTrack);
-    render();
-
-    item.addEventListener('click', (e) => {
+      item.addEventListener('click', (e) => {
         e.stopPropagation();
         item.classList.toggle('toggled');
         toggleThumb.classList.add('stretch');
         setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
         input.checked = item.classList.contains('toggled');
+      });
     });
+
+    // === 2. Slider-only ===
+    document.querySelectorAll('.menu-item.slider:not(.checkbox)').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
+      
+      const label = document.createElement('span');
+      label.textContent = text;
+
+      const track = document.createElement('div');
+      track.className = 'slider-track';
+
+      const fill = document.createElement('div');
+      fill.className = 'slider-fill';
+      track.appendChild(fill);
+
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      
+      const min = +item.dataset.min;
+      const max = +item.dataset.max;
+      const step = +item.dataset.step;
+      let value = +item.dataset.value;
+      valueSpan.textContent = value;
+      track.appendChild(valueSpan);
+      
+      item.append(label, track);
+
+      const render = () => {
+        const pct = (item._slider.value - min) / (max - min);
+        fill.style.width = `${pct * 100}%`;
+        valueSpan.textContent = item._slider.value;
+
+        const px1 = 2 + pct * 3,
+              px2 = 5 + pct * 5,
+              px3 = 9 + pct * 9;
+        fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      };
+
+      item._slider = { min, max, step, value, render };
+      render();
+    });
+
+    // === 3. Checkbox + Slider Combo ===
+    document.querySelectorAll('.menu-item.checkbox.slider').forEach(item => {
+      const text = item.textContent.trim();
+      item.textContent = '';
+
+      const label = document.createElement('span');
+      label.textContent = text;
+
+      const min   = +item.dataset.min,
+            max   = +item.dataset.max,
+            step  = +item.dataset.step;
+      let   value = +item.dataset.value;
+
+      const sliderTrack = document.createElement('div');
+      sliderTrack.className = 'slider-track';
+
+      const sliderFill = document.createElement('div');
+      sliderFill.className = 'slider-fill';
+      sliderTrack.appendChild(sliderFill);
+
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'value';
+      valueSpan.textContent = value;
+      sliderTrack.appendChild(valueSpan);
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.style.display = 'none';
+
+      const toggleTrack = document.createElement('div');
+      toggleTrack.className = 'toggle-track';
+
+      const toggleThumb = document.createElement('div');
+      toggleThumb.className = 'toggle-thumb';
+      toggleTrack.appendChild(toggleThumb);
+
+      const render = () => {
+        const pct = (item._slider.value - min) / (max - min);
+        sliderFill.style.width = `${pct * 100}%`;
+        valueSpan.textContent = item._slider.value;
+
+        const px1 = 2 + pct * 3,
+              px2 = 5 + pct * 5,
+              px3 = 9 + pct * 9;
+        sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      };
+
+      item._slider = { min, max, step, value, render };
+      item.append(label, sliderTrack, input, toggleTrack);
+      render();
+
+      item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.classList.toggle('toggled');
+          toggleThumb.classList.add('stretch');
+          setTimeout(() => toggleThumb.classList.remove('stretch'), 200);
+          input.checked = item.classList.contains('toggled');
+      });
+    });
+
+    // --- [FIXED & IMPROVED] ---
+    // Assign a stable, unique global ID to each bindable item based on its
+    // parent menu and its text content. This MUST match the format in Lua.
+    const menuIdMap = {
+      'player-main-items': 'PlayerOptions_Player',
+      'player-movement-items': 'PlayerOptions_Movement',
+      'vehicle-main-items': 'VehicleOptions_Vehicle',
+      'vehicle-spawner-items': 'VehicleOptions_Spawner',
+      'esp-main-items': 'EspOptions_Esp',
+      'esp-toggle-items': 'EspOptions_Toggles',
+      'weapons-main-items': 'WeaponsOptions_Weapon',
+      'weapons-aimbot-items': 'WeaponsOptions_Aimbot',
+      'weapons-spawner-items': 'WeaponsOptions_Spawner',
+      'world-main-items': 'WorldOptions_World',
+      'server-destroyer-items': 'ServerOptions_Destroyer',
+      'scripts-main-items': 'ScriptsOptions_Scripts',
+      'misc-main-items': 'MiscOptions_Misc'
+    };
+
+    document.querySelectorAll('.menu-item.checkbox, .menu-item.slider').forEach(item => {
+        const parentContainer = item.closest('.menu-items');
+        if (parentContainer && menuIdMap[parentContainer.id]) {
+            const menuId = menuIdMap[parentContainer.id];
+            // Find the label text, which is now in a <span>
+            const label = item.querySelector('span');
+            if (label) {
+              const itemName = label.textContent.trim();
+              if (itemName) {
+                  item.dataset.globalBindId = `${menuId}::${itemName}`;
+              }
+            }
+        }
+    });
+
+
+    if (firstInit) {
+        showbindmenu(true);
+    } else {
+        updateTabUI(0);
+    }
+
   });
-
-  if (firstInit) {
-      showbindmenu(true);
-  } else {
-      updateTabUI(0);
-  }
-
-});
   </script>
 </body>
 </html>
