@@ -1715,18 +1715,9 @@ function updateslidervalue(dir) {
 
   const s = item._slider;
   s.value = Math.min(s.max, Math.max(s.min, s.value + dir * s.step));
-
-  const pct = (s.value - s.min) / (s.max - s.min);
-  const fillEl = s.fill || s.sliderFill; // supports both slider types
-  const valueEl = s.valueSpan;
-
-  if (fillEl) fillEl.style.width = (pct * 100) + '%';
-  if (valueEl) valueEl.textContent = s.value;
-
-  const px1 = 2 + pct * 3, px2 = 5 + pct * 5, px3 = 9 + pct * 9;
-  if (fillEl) {
-    fillEl.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
-  }
+  
+  // Call the render function to update the UI
+  item._slider.render();
 }
 
 function goBack() {
@@ -1919,14 +1910,18 @@ document.addEventListener('mousedown', handleMouseInput);
         updateTabUI(currentTab, false);
         break;
 
-      // NEW: Add this case to handle the full config sync
+      // --- [FIXED & IMPROVED] ---
+      // This case handles the full config sync from Lua
       case 'syncConfig': {
         const { binds, states } = msg.data;
 
-        // --- Sync Bindings ---
+        // --- 1. Sync Bindings ---
+        // Clear existing JS binding maps
+        Object.keys(bindingMap).forEach(key => delete bindingMap[key]);
+        Object.keys(indexMap).forEach(key => delete indexMap[key]);
+        
+        // Repopulate from the received data
         if (binds) {
-            Object.keys(bindingMap).forEach(key => delete bindingMap[key]);
-            Object.keys(indexMap).forEach(key => delete indexMap[key]);
             for (const key in binds) {
                 if (Object.hasOwnProperty.call(binds, key)) {
                     const bindId = binds[key];
@@ -1936,44 +1931,42 @@ document.addEventListener('mousedown', handleMouseInput);
             }
         }
 
-        // --- Sync UI States (Toggles and Sliders) ---
-        if (states) {
-            // 1. Reset all controls to their default (untoggled) state first
-            document.querySelectorAll('.menu-item.checkbox').forEach(item => {
+        // --- 2. Sync UI States (Toggles and Sliders) ---
+        // Iterate over every single bindable item in the UI
+        document.querySelectorAll('.menu-item[data-global-bind-id]').forEach(item => {
+            const bindId = item.dataset.globalBindId;
+            const savedState = states ? states[bindId] : undefined;
+
+            if (savedState) {
+                // This item has a saved state, so apply it
+                
+                // Handle the checkbox toggle state
+                const isToggled = !!savedState.state;
+                item.classList.toggle('toggled', isToggled);
+                const input = item.querySelector('input[type="checkbox"]');
+                if (input) input.checked = isToggled;
+
+                // Handle the slider value state (if it's a slider)
+                if (item.classList.contains('slider') && savedState.value !== undefined && item._slider) {
+                    item._slider.value = savedState.value;
+                    item._slider.render(); // Re-render the slider UI
+                }
+
+            } else {
+                // This item does NOT have a saved state, reset it to default
+                
+                // Reset checkbox toggle state
                 item.classList.remove('toggled');
                 const input = item.querySelector('input[type="checkbox"]');
                 if (input) input.checked = false;
-            });
 
-            // 2. Apply the loaded states from the config
-            for (const bindId in states) {
-                if (Object.hasOwnProperty.call(states, bindId)) {
-                    const savedState = states[bindId];
-                    const item = document.querySelector(`.menu-item[data-global-bind-id="${bindId}"]`);
-                    if (item) {
-                        // Toggle the checkbox if its saved state is true
-                        if (savedState.state) {
-                            item.classList.add('toggled');
-                            const input = item.querySelector('input[type="checkbox"]');
-                            if (input) input.checked = true;
-                        }
-                        
-                        // Update the slider's value if it's a slider combo
-                        if (item.classList.contains('slider') && savedState.value !== undefined && item._slider) {
-                            const s = item._slider;
-                            s.value = savedState.value;
-                            
-                            // Re-render the slider's UI to reflect the new value
-                            const pct = (s.value - s.min) / (s.max - s.min);
-                            const fillEl = s.fill || s.sliderFill;
-                            const valueEl = s.valueSpan;
-                            if (fillEl) fillEl.style.width = (pct * 100) + '%';
-                            if (valueEl) valueEl.textContent = s.value;
-                        }
-                    }
+                // Reset slider value state (if it's a slider)
+                if (item.classList.contains('slider') && item._slider) {
+                    item._slider.value = +item.dataset.value; // Reset to default value from data attribute
+                    item._slider.render(); // Re-render the slider UI
                 }
             }
-        }
+        });
         break;
       }
 
@@ -2166,22 +2159,18 @@ document.addEventListener('DOMContentLoaded', () => {
     valueSpan.textContent = value;
     track.appendChild(valueSpan);
 
-    item._slider = { min, max, step, value, valueSpan, fill };
-
-    item.append(label, track);
-
     const render = () => {
-      const s = item._slider;
-      const pct = (s.value - s.min) / (s.max - s.min);
-      s.fill.style.width = `${pct * 100}%`;
-      s.valueSpan.textContent = s.value;
+      const pct = (item._slider.value - min) / (max - min);
+      fill.style.width = `${pct * 100}%`;
+      valueSpan.textContent = item._slider.value;
 
       const px1 = 2 + pct * 3,
             px2 = 5 + pct * 5,
             px3 = 9 + pct * 9;
-      s.fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      fill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
     };
 
+    item._slider = { min, max, step, value, render };
     render();
   });
 
@@ -2221,22 +2210,19 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleThumb.className = 'toggle-thumb';
     toggleTrack.appendChild(toggleThumb);
 
-    item._slider = { min, max, step, value, valueSpan, sliderFill };
-
-    item.append(label, sliderTrack, input, toggleTrack);
-
     const render = () => {
-      const s = item._slider;
-      const pct = (s.value - s.min) / (s.max - s.min);
-      s.sliderFill.style.width = `${pct * 100}%`;
-      s.valueSpan.textContent = s.value;
+      const pct = (item._slider.value - min) / (max - min);
+      sliderFill.style.width = `${pct * 100}%`;
+      valueSpan.textContent = item._slider.value;
 
       const px1 = 2 + pct * 3,
             px2 = 5 + pct * 5,
             px3 = 9 + pct * 9;
-      s.sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
+      sliderFill.style.boxShadow = `0 0 ${px1}px #9e00ff, 0 0 ${px2}px #9e00ff, 0 0 ${px3}px #9e00ff`;
     };
 
+    item._slider = { min, max, step, value, render };
+    item.append(label, sliderTrack, input, toggleTrack);
     render();
 
     item.addEventListener('click', (e) => {
