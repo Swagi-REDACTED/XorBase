@@ -2336,8 +2336,10 @@ window.addEventListener('message', ({ data }) => {
 
     if (firstInit) {
         showbindmenu(true);
+        updateMenuSelection(0);
     } else {
         updateTabUI(0);
+        updateMenuSelection(0);
     }
 
   });
