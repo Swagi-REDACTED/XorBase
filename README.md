@@ -13,3 +13,6 @@ yk rico u couldve asked and i wouldve let u use my html as a base instead bro ju
 ibb DOT co/JWptjkm3
 ibb DOT co/R4S2gjyQ
 ^^Links are for the comparison from my menu to "his" menu
+
+
+Oh also X9 ik what you did "https://exiled.wtf/TestMenu123xwq" nice menu bro im glad you made it all by urself enjoy working with my mapping it was hell to make
